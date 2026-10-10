@@ -1,0 +1,396 @@
+<Rive version="1" kind="fragment">
+
+    <!-- ═══════════════════ ASSETS ═══════════════════════════════════ -->
+    <FontAsset  file="Rag-NarrowRegular.otf" name="RagNarrow" id="0:100"/>
+
+    <ImageAsset file="images/img-155.png" name="img155" id="0:155"/>
+    <ImageAsset file="images/img-156.png" name="img156" id="0:156"/>
+    <ImageAsset file="images/img-157.png" name="img157" id="0:157"/>
+    <ImageAsset file="images/img-158.png" name="img158" id="0:158"/>
+    <ImageAsset file="images/img-159.png" name="img159" id="0:159"/>
+    <ImageAsset file="images/img-160.png" name="img160" id="0:160"/>
+    <ImageAsset file="images/img-161.png" name="img161" id="0:161"/>
+    <ImageAsset file="images/img-162.png" name="img162" id="0:162"/>
+    <ImageAsset file="images/img-163.png" name="img163" id="0:163"/>
+
+    <!-- ═══════════════════ VIEW MODEL ═══════════════════════════════ -->
+    <!-- Section carries two live inputs the host can set:
+         - play: trigger to kick off the entrance from idle
+         - activeness: 0..1, scales the whole scene with the user's engagement -->
+    <ViewModel name="Section" defaultInstanceId="0:201" id="0:200">
+        <ViewModelPropertyTrigger name="play"       id="0:210"/>
+        <ViewModelPropertyNumber  name="activeness" id="0:211"/>
+        <ViewModelInstance exports="true" name="Default" id="0:201">
+            <ViewModelInstanceNumber propertyValue="1" viewModelPropertyId="0:211"/>
+        </ViewModelInstance>
+    </ViewModel>
+
+    <!-- ═══════════════════ ARTBOARD ═════════════════════════════════ -->
+    <!-- 1000×900: top carousel band 100–400, text 450±65, bottom band 600–900. -->
+    <Artboard defaultStateMachineId="0:300"
+              viewModelId="0:200" viewModelInstanceId="0:201"
+              styleId="0:11"
+              width="1000" height="900"
+              name="Artboard" id="0:2">
+
+        <LayoutComponentStyle name="Artboard Style" id="0:11"/>
+
+        <Fill name="Background">
+            <SolidColor colorValue="FFFFFFFF" name="Color"/>
+        </Fill>
+
+        <!-- Draw order: earlier siblings paint on top. Text first so it sits over images. -->
+
+        <!-- ═══ Headline (centered, Rag Narrow 36) ═══ -->
+        <Text x="500" y="450" width="728" height="130"
+              sizingValue="fixed" overflowValue="visible"
+              alignValue="center" verticalAlignValue="middle"
+              wrapValue="wrap" originX="0.5" originY="0.5"
+              name="Headline" id="0:400">
+            <TextStylePaint fontSize="36" letterSpacing="1.08" fontAssetId="0:100"
+                            name="Body" id="0:410">
+                <Fill name="Fill">
+                    <SolidColor colorValue="FF000000" name="Color"/>
+                </Fill>
+            </TextStylePaint>
+            <TextValueRun styleId="0:410"
+                          text="Designing and building spaces for communities, institutions and individuals for 30 years."
+                          name="Run"/>
+        </Text>
+
+        <!-- ═══ TOP CAROUSEL — enters from the left ═══
+             Each image sits at the center of the Figma slot it occupied.
+             scaleX/Y set so each render ≈ Figma display size (width-match). -->
+        <Node x="50" y="100" name="TopCarousel" id="0:500">
+            <Image assetId="0:161" x="31.95"  y="151.14" scaleX="0.0336" scaleY="0.0336" name="t1" id="0:501"/>
+            <Image assetId="0:160" x="82.56"  y="151.39" scaleX="0.0518" scaleY="0.0518" name="t2" id="0:502"/>
+            <Image assetId="0:159" x="174.69" y="150.00" scaleX="0.0854" scaleY="0.0854" name="t3" id="0:503"/>
+            <Image assetId="0:158" x="331.95" y="151.39" scaleX="0.0522" scaleY="0.0522" name="t4" id="0:504"/>
+            <Image assetId="0:155" x="506.94" y="151.39" scaleX="0.2148" scaleY="0.2148" name="t5" id="0:505"/>
+            <Image assetId="0:157" x="715.27" y="151.39" scaleX="0.0902" scaleY="0.0902" name="t6" id="0:506"/>
+        </Node>
+
+        <!-- ═══ BOTTOM CAROUSEL — enters from the right ═══ -->
+        <Node x="50" y="600" name="BottomCarousel" id="0:600">
+            <Image assetId="0:161" x="31.95"  y="151.14" scaleX="0.0336" scaleY="0.0336" name="b1" id="0:601"/>
+            <Image assetId="0:160" x="82.56"  y="151.39" scaleX="0.0518" scaleY="0.0518" name="b2" id="0:602"/>
+            <Image assetId="0:159" x="174.69" y="150.00" scaleX="0.0854" scaleY="0.0854" name="b3" id="0:603"/>
+            <Image assetId="0:162" x="331.95" y="151.39" scaleX="0.2673" scaleY="0.2673" name="b4" id="0:604"/>
+            <Image assetId="0:156" x="506.94" y="151.39" scaleX="0.1375" scaleY="0.1375" name="b5" id="0:605"/>
+            <Image assetId="0:163" x="715.27" y="151.39" scaleX="0.3694" scaleY="0.3694" name="b6" id="0:606"/>
+        </Node>
+
+        <!-- ═══ STATE MACHINE ═══
+             Minimal: Entry → Entrance (one shot) → Loop (hold). Transitions
+             are time-based for v1 — swap to data-driven once the shapes look
+             right in preview and Luke's happy with the artboard. -->
+        <StateMachine name="State Machine 1" id="0:300">
+            <StateMachineLayer name="Layer 1" id="0:301">
+                <AnyState  x="400" y="-120"/>
+                <ExitState x="600" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:310"/>
+                </EntryState>
+                <AnimationState x="200" y="0" animationId="0:320" id="0:310">
+                    <StateTransition stateToId="0:311"
+                                     enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"
+                                     duration="0"/>
+                </AnimationState>
+                <AnimationState x="400" y="0" animationId="0:321" id="0:311"/>
+            </StateMachineLayer>
+        </StateMachine>
+
+        <!-- Entrance (70 frames ≈ 1.17s @ 60fps). Each image gets a 30-frame
+             slide-in from off-screen + pop-scale, staggered 5 frames apart
+             (t1/b1 lead, t6/b6 last). Top row slides from the LEFT (x
+             starts 400 to the left of final); bottom row slides from the
+             RIGHT (x starts 400 to the right). Text fades in last.
+
+             propertyKey:  13 = x, 16 = scaleX, 17 = scaleY, 18 = opacity.
+             Ease: cubic (0,0,0.58,1) = ease-out — snappy arrival. -->
+        <LinearAnimation duration="70" fps="60" name="Entrance" id="0:320">
+
+            <!-- ─── TOP ROW — slide from LEFT (initial x = final − 400) ─── -->
+            <!-- t1: final x 31.95, scale 0.0336, frames 0–30 -->
+            <KeyedObject objectId="0:501">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="-368.05" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="31.95" frame="30" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0336" frame="30" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0336" frame="30" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- t2: final x 82.56, scale 0.0518, frames 5–35 -->
+            <KeyedObject objectId="0:502">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="-317.44" frame="5" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="82.56" frame="35" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="5" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0518" frame="35" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="5" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0518" frame="35" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- t3: final x 174.69, scale 0.0854, frames 10–40 -->
+            <KeyedObject objectId="0:503">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="-225.31" frame="10" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="174.69" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="10" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0854" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="10" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0854" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- t4: final x 331.95, scale 0.0522, frames 15–45 -->
+            <KeyedObject objectId="0:504">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="-68.05" frame="15" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="331.95" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="15" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0522" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="15" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0522" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- t5: final x 506.94, scale 0.2148, frames 20–50 -->
+            <KeyedObject objectId="0:505">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="106.94" frame="20" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="506.94" frame="50" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="20" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.2148" frame="50" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="20" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.2148" frame="50" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- t6: final x 715.27, scale 0.0902, frames 25–55 -->
+            <KeyedObject objectId="0:506">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="315.27" frame="25" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="715.27" frame="55" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="25" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0902" frame="55" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="25" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0902" frame="55" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- ─── BOTTOM ROW — slide from RIGHT (initial x = final + 400) ─── -->
+            <!-- b1: final x 31.95, scale 0.0336, frames 0–30 -->
+            <KeyedObject objectId="0:601">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="431.95" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="31.95" frame="30" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0336" frame="30" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0336" frame="30" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- b2: final x 82.56, scale 0.0518, frames 5–35 -->
+            <KeyedObject objectId="0:602">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="482.56" frame="5" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="82.56" frame="35" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="5" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0518" frame="35" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="5" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0518" frame="35" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- b3: final x 174.69, scale 0.0854, frames 10–40 -->
+            <KeyedObject objectId="0:603">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="574.69" frame="10" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="174.69" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="10" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0854" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="10" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.0854" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- b4: final x 331.95, scale 0.2673, frames 15–45 -->
+            <KeyedObject objectId="0:604">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="731.95" frame="15" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="331.95" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="15" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.2673" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="15" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.2673" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- b5: final x 506.94, scale 0.1375, frames 20–50 -->
+            <KeyedObject objectId="0:605">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="906.94" frame="20" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="506.94" frame="50" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="20" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.1375" frame="50" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="20" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.1375" frame="50" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- b6: final x 715.27, scale 0.3694, frames 25–55 -->
+            <KeyedObject objectId="0:606">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="1115.27" frame="25" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="715.27" frame="55" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0" frame="25" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.3694" frame="55" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0" frame="25" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.3694" frame="55" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- ─── TEXT — fades in once images have mostly landed ─── -->
+            <KeyedObject objectId="0:400">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0" frame="30" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1" frame="65" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+        </LinearAnimation>
+
+        <!-- Loop state: no keyframes, so everything holds at its authored
+             (final) value. Gives the SM a stable place to settle after entrance. -->
+        <LinearAnimation duration="60" fps="60" loopValue="loop" name="Loop" id="0:321"/>
+
+    </Artboard>
+
+</Rive>

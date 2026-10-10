@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Studio — Cottrell Vermeulen Tucker Architecture</title>
+  <style>
+    @font-face {
+      font-family: 'Rag Narrow';
+      src: url('fonts/Rag-NarrowRegular.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --side-pad: clamp(24px, calc(24px + (100vw - 768px) * 210 / 980), 234px);
+      --heading-size: clamp(64px, calc(64px + (100vw - 768px) * 32 / 980), 96px);
+    }
+
+    body {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      overflow-x: hidden;
+      background: #f283b4;
+    }
+
+    /* ── OVERLAY (menu backdrop) ─────────────────────────── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 150;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+
+    /* ── NAV DRAWER (same as index.html) ─────────────────── */
+    .nav-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 734px;
+      height: 100vh;
+      background: #a4c8ed;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 180;
+    }
+    .nav-drawer.open { transform: translateX(0); }
+
+    .nav-drawer__top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    .nav-drawer__logo-box {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      width: 80px;
+      height: 80px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .nav-drawer__logo-box img {
+      position: absolute;
+      top: -58%;
+      left: -58%;
+      width: 216%;
+      height: 216%;
+      display: block;
+      max-width: none;
+    }
+
+    .nav-drawer__menu {
+      list-style: none;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .nav-drawer__menu li {
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-drawer__menu a {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 48px;
+      letter-spacing: 1.44px;
+      color: #000;
+      text-decoration: none;
+      line-height: 1;
+      transition: opacity 0.2s;
+    }
+    .nav-drawer__menu a:hover { opacity: 0.5; }
+    .nav-arrow {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      display: block;
+    }
+    .nav-arrow img {
+      width: 40px;
+      height: 40px;
+      display: block;
+      transform-origin: 50% 50%;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-drawer__menu li:hover .nav-arrow img { transform: rotate(-45deg); }
+
+    .nav-drawer__footer {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #000;
+      flex-shrink: 0;
+      margin-top: 40px;
+    }
+
+    /* ── STUDIO TEAM PAGE ────────────────────────────────── */
+    /* Figma: pink #f283b4, px-234 pt-24 pb-88, inner Content gap-24 */
+    .s-studio-team {
+      background: #f283b4;
+      padding: 24px var(--side-pad) 88px;
+      min-height: 100vh;
+    }
+    .s-studio-team__content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .s-studio-team__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .s-studio-team__heading {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: var(--heading-size);
+      letter-spacing: 2.88px;
+      color: #000;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    /* Fixed Rive-driven menu arrow — shared across every page.
+       maskproperty stays at 0 on this page (no hero). */
+    #nav-rive-canvas {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      z-index: 200;
+      cursor: pointer;
+      display: block;
+    }
+
+    /* Responsive grid: 3 cols wide → 2 cols (<900px) → 1 col (<580px).
+       Cols cap at 400px per person; space-between distributes extra width. */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 400px));
+      justify-content: space-between;
+      gap: 48px 24px;
+      width: 100%;
+    }
+    @media (max-width: 900px) {
+      .team-grid { grid-template-columns: repeat(2, minmax(0, 400px)); }
+    }
+    @media (max-width: 580px) {
+      .team-grid { grid-template-columns: minmax(0, 400px); justify-content: center; }
+    }
+
+    .person {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+      min-width: 0;
+    }
+    /* Square crop box — scales with its column via aspect-ratio */
+    .person__img-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .person__img-box img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 150%;
+      object-fit: cover;
+      display: block;
+      max-width: none;
+      pointer-events: none;
+    }
+    /* Modifiers: --full = centered cover at natural height; --stretch = fill box exactly (matches Figma for Maria) */
+    .person__img-box--full img { height: 100%; }
+    .person__img-box--stretch img { height: 100%; object-fit: fill; }
+
+    .person__info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+      color: #000;
+    }
+    .person__name {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 36px;
+      letter-spacing: 1.44px;
+      line-height: normal;
+    }
+    .person__role {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      line-height: normal;
+    }
+
+    /* ── PAGE LOADER (Rive) ───────────────────────────────── */
+    #cvta-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 450ms cubic-bezier(.4, 0, .2, 1);
+    }
+    #cvta-loader.is-done { opacity: 0; pointer-events: none; }
+    #cvta-loader-canvas {
+      width:  min(30vw, 30vh, 240px);
+      height: min(30vw, 30vh, 240px);
+      display: block;
+    }
+
+    /* ═════════ MOBILE VIEW (≤ 500px) — Figma iPhone Studio Team 1453-1164 ═════════ */
+    .mobile-view { display: none; }
+
+    @media (max-width: 500px) {
+      .s-studio-team, .overlay, .nav-drawer, #cvta-loader { display: none !important; }
+      html, body { background: #f283b4; }
+
+      .mobile-view {
+        display: block;
+        width: 100%;
+        background: #f283b4;
+        padding: 24px 12px;
+        min-height: 100vh;
+        color: #000;
+      }
+
+      /* Header: Studio title + rule */
+      .m-studio-header { margin-top: 60px; }
+      .m-studio-header__title {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 96px;
+        line-height: 103px;
+        letter-spacing: 2.88px;
+        color: #000;
+        word-break: break-word;
+      }
+      .m-studio-header__rule {
+        width: 100%;
+        height: 2px;
+        background: #000;
+        margin-top: 6px;
+      }
+
+      /* Team list — same card pattern as projects */
+      .m-team-list { list-style: none; padding: 0; margin: 12px 0 0; }
+      .m-team-item { padding: 12px 0; border-bottom: 2px solid #000; }
+      .m-team-item__row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .m-team-item__text {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 120px;
+        min-width: 0;
+      }
+      .m-team-item__name {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 32px;
+        line-height: 36px;
+        letter-spacing: 0.96px;
+        color: #000;
+        word-break: break-word;
+      }
+      .m-team-item__role {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 16px;
+        line-height: 18px;
+        letter-spacing: 0.48px;
+        color: #000;
+      }
+      .m-team-item__img {
+        flex-shrink: 0;
+        width: 99px;
+        height: 120px;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* Mobile nav drawer — same spec as index/projects */
+      .m-nav-drawer {
+        position: fixed;
+        inset: 0;
+        z-index: 190;
+        background: #a4c8ed;
+        padding: 24px 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: #000;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+      }
+      .m-nav-drawer.is-open { transform: translateX(0); }
+      .m-nav-drawer__top { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; }
+      .m-nav-drawer__logo { width: 80px; height: 80px; overflow: hidden; }
+      .m-nav-drawer__logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .m-nav-drawer__menu { list-style: none; padding: 0; margin: 0; width: 100%; display: flex; flex-direction: column; }
+      .m-nav-drawer__menu li { height: 88px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+      .m-nav-drawer__menu a {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 48px;
+        line-height: normal;
+        letter-spacing: 1.44px;
+        color: #000;
+        text-decoration: none;
+        padding: 8px;
+      }
+      .m-nav-drawer__menu a:hover { opacity: 0.5; }
+      .m-nav-arrow { width: 40px; height: 40px; display: block; flex-shrink: 0; }
+      .m-nav-arrow img { width: 100%; height: 100%; display: block; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+      .m-nav-drawer__menu li:hover .m-nav-arrow img { transform: rotate(-45deg); }
+      .m-nav-drawer__footer {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 24px;
+        line-height: normal;
+        letter-spacing: 0.72px;
+        color: #000;
+        width: 357px;
+        max-width: 100%;
+        word-break: break-word;
+      }
+    }
+  </style>
+
+  <script defer src="https://unpkg.com/@rive-app/canvas@latest"></script>
+  <script defer src="Rive/loader.js"></script>
+  <script defer src="Rive/menubar.js"></script>
+</head>
+<body>
+
+  <!-- Page loader overlay — removed from DOM once loadEnd fires. -->
+  <div id="cvta-loader" aria-hidden="true">
+    <canvas id="cvta-loader-canvas" width="960" height="960"></canvas>
+  </div>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- NAV DRAWER -->
+  <nav class="nav-drawer" id="navDrawer">
+    <div class="nav-drawer__logo-box" aria-hidden="true">
+      <img src="images/menu-logo-cvta.png" alt="">
+    </div>
+
+    <!-- Close is handled by the fixed Rive canvas (#nav-rive-canvas). -->
+    <div class="nav-drawer__top"></div>
+
+    <ul class="nav-drawer__menu">
+      <li>
+        <a href="index.html" class="nav-link">Home</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+      <li>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+      <li>
+        <a href="studio.html" class="nav-link">Studio</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+      <li>
+        <a href="index.html#awards" class="nav-link">Awards</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+      <li>
+        <a href="index.html#contact" class="nav-link">Contact</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+    </ul>
+
+    <p class="nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+  </nav>
+
+  <main>
+    <section class="s-studio-team" id="studio">
+      <div class="s-studio-team__content">
+
+        <div class="s-studio-team__header">
+          <h1 class="s-studio-team__heading">Studio</h1>
+        </div>
+
+        <!-- 12 people — responsive grid: 3 cols → 2 (<900px) → 1 (<580px) -->
+        <div class="team-grid">
+          <article class="person">
+            <div class="person__img-box">
+              <img src="images/team-cottrell.png" alt="Richard Cottrell" style="top: -7.56%;">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Richard Cottrell</h2>
+              <p class="person__role">Director</p>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person__img-box">
+              <img src="images/team-vermeulen.png" alt="Brian Vermuelen" style="top: -9.49%;">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Brian Vermuelen</h2>
+              <p class="person__role">Director</p>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person__img-box person__img-box--full">
+              <img src="images/team-tucker.png" alt="Simon Tucker">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Simon Tucker</h2>
+              <p class="person__role">Director</p>
+            </div>
+          </article>
+
+          <article class="person">
+            <div class="person__img-box person__img-box--full">
+              <img src="images/team-dawes.png" alt="Johnahtan Dawes">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Johnahtan Dawes</h2>
+              <p class="person__role">Associate</p>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person__img-box person__img-box--stretch">
+              <img src="images/team-westerstahl.png" alt="Maria Westerstahl">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Maria Westerstahl</h2>
+              <p class="person__role">Associate</p>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person__img-box">
+              <img src="images/team-spyrides.png" alt="Markos Spyrides" style="top: -2.67%;">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Markos Spyrides</h2>
+              <p class="person__role">Architect</p>
+            </div>
+          </article>
+
+          <article class="person">
+            <div class="person__img-box">
+              <img src="images/team-harrisson.png" alt="Samantha Harrisson" style="top: -14.26%;">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Samantha Harrisson</h2>
+              <p class="person__role">Architect</p>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person__img-box">
+              <img src="images/team-rihouet.png" alt="Romain Rihouet" style="top: -10.98%;">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Romain Rihouet</h2>
+              <p class="person__role">Architect</p>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person__img-box">
+              <img src="images/team-guo.png" alt="Lucy Guo" style="top: -14.41%;">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Lucy Guo</h2>
+              <p class="person__role">Architect</p>
+            </div>
+          </article>
+
+          <article class="person">
+            <div class="person__img-box">
+              <img src="images/team-heath.png" alt="Anya Heath" style="top: -9.52%;">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Anya Heath</h2>
+              <p class="person__role">Architect</p>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person__img-box">
+              <img src="images/team-dahim.png" alt="Yasmin Dahim" style="top: -10.56%;">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Yasmin Dahim</h2>
+              <p class="person__role">Architect</p>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person__img-box person__img-box--full">
+              <img src="images/team-guo.png" alt="Lucy Guo">
+            </div>
+            <div class="person__info">
+              <h2 class="person__name">Lucy Guo</h2>
+              <p class="person__role">Architect</p>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Drawer — open/close driven by the Rive canvas via `cvta:drawer-toggle` events.
+    const drawer   = document.getElementById('navDrawer');
+    const overlay  = document.getElementById('overlay');
+    const closeBtn = document.getElementById('navClose');
+    const isMobile = () => window.innerWidth <= 500;
+    function openDrawer()  {
+      if (isMobile()) {
+        const m = document.getElementById('mNavDrawer');
+        if (m) { m.classList.add('is-open'); m.setAttribute('aria-hidden','false'); }
+      } else {
+        drawer.classList.add('open'); overlay.classList.add('open');
+      }
+    }
+    function closeDrawer() {
+      drawer.classList.remove('open'); overlay.classList.remove('open');
+      const m = document.getElementById('mNavDrawer');
+      if (m) { m.classList.remove('is-open'); m.setAttribute('aria-hidden','true'); }
+    }
+    document.addEventListener('cvta:drawer-toggle', (e) => {
+      e.detail && e.detail.open ? openDrawer() : closeDrawer();
+    });
+    const closeViaRive = () => (window.CVTANav ? window.CVTANav.close() : closeDrawer());
+    if (closeBtn) closeBtn.addEventListener('click', closeViaRive);
+    overlay.addEventListener('click', closeViaRive);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.nav-link, .m-nav-link').forEach(l => l.addEventListener('click', closeViaRive));
+    });
+  </script>
+
+  <!-- Fixed Rive-driven nav arrow (shared across desktop + mobile).
+       Mounted by Rive/menubar.js. -->
+  <canvas id="nav-rive-canvas" width="80" height="80" aria-label="Open menu"></canvas>
+
+  <!-- ═════════ MOBILE VIEW — Figma iPhone Studio Team 1453-1164 ═════════ -->
+
+  <div class="mobile-view">
+    <header class="m-studio-header">
+      <h1 class="m-studio-header__title">Studio.</h1>
+      <div class="m-studio-header__rule"></div>
+    </header>
+
+    <ul class="m-team-list">
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Richard Cottrell</span>
+          <span class="m-team-item__role">Director</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-cottrell.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Brian Vermuelen</span>
+          <span class="m-team-item__role">Director</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-vermeulen.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Simon Tucker</span>
+          <span class="m-team-item__role">Director</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-tucker.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Johnathan Dawes</span>
+          <span class="m-team-item__role">Associate</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-dawes.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Maria Westerstahl</span>
+          <span class="m-team-item__role">Associate</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-westerstahl.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Markos Spyrides</span>
+          <span class="m-team-item__role">Architect</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-spyrides.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Lucy Guo</span>
+          <span class="m-team-item__role">Architect</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-guo.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Anya Heath</span>
+          <span class="m-team-item__role">Architect</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-heath.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Romain Rihouet</span>
+          <span class="m-team-item__role">Architect</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-rihouet.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Samantha Harrison</span>
+          <span class="m-team-item__role">Architect</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-harrisson.png" alt="">
+      </div></li>
+      <li class="m-team-item"><div class="m-team-item__row">
+        <div class="m-team-item__text">
+          <span class="m-team-item__name">Yasmin Dahim</span>
+          <span class="m-team-item__role">Architect</span>
+        </div>
+        <img class="m-team-item__img" src="images/team-dahim.png" alt="">
+      </div></li>
+    </ul>
+
+    <nav class="m-nav-drawer" id="mNavDrawer" aria-hidden="true">
+      <div class="m-nav-drawer__top">
+        <div class="m-nav-drawer__logo" aria-hidden="true"><img src="images/menu-logo-cvta.png" alt=""></div>
+        <!-- Rive canvas (#nav-rive-canvas) handles the close via arrowClicked=false. -->
+      </div>
+      <ul class="m-nav-drawer__menu">
+        <li><a href="index.html" class="m-nav-link">Home</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
+        <li><a href="projects.html" class="m-nav-link">Projects</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
+        <li><a href="studio.html" class="m-nav-link">Studio</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
+        <li><a href="index.html#awards" class="m-nav-link">Awards</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
+        <li><a href="index.html#contact" class="m-nav-link">Contact</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
+      </ul>
+      <p class="m-nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+    </nav>
+  </div>
+
+</body>
+</html>

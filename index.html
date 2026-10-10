@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Cottrell Vermeulen Tucker Architecture</title>
+  <style>
+    @font-face {
+      font-family: 'Rag Narrow';
+      src: url('fonts/Rag-NarrowRegular.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    /* Responsive scaling vars — linear interpolation across 768–1748px viewport.
+       At 1748vw: full Figma design sizes. At 768vw: UX-friendly compressed sizes.
+       Same mapping range so everything scales together. */
+    :root {
+      --side-pad:           clamp(24px, calc(24px  + (100vw - 768px) * 210 / 980), 234px);
+      --section-y-pad:      clamp(100px, calc(100px + (100vw - 768px) * 50 / 980), 150px);
+      --heading-size:       clamp(64px, calc(64px  + (100vw - 768px) * 32  / 980), 96px);
+      --project-card-img-h: clamp(300px, calc(300px + (100vw - 768px) * 150 / 980), 450px);
+      --project-name-size:  clamp(28px, calc(28px  + (100vw - 768px) * 8   / 980), 36px);
+    }
+
+    body {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV TRIGGER ─────────────────────────────────────── */
+    /* Fixed Rive-driven menu arrow — shared across every page.
+       The .riv (loaded via Rive/menubar.js) owns:
+         - the arrow glyph and its hover animation
+         - the "track-matte" transition (driven by VM number `maskproperty`)
+         - the arrow → X swap when the drawer is open (`arrowClicked` bool)
+       z-index sits above both desktop (180) and mobile (190) drawers so the
+       canvas stays clickable to toggle the X back to the arrow. */
+    #nav-rive-canvas {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      z-index: 200;
+      cursor: pointer;
+      display: block;
+      /* TEMP debug outline — remove once Rive is confirmed painting */
+      outline: 2px solid magenta;
+    }
+
+    /* ── OVERLAY ─────────────────────────────────────────── */
+    /* Dulls the landing page to white 50% when drawer is open (matches Figma) */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 150;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+
+    /* ── NAV DRAWER ──────────────────────────────────────── */
+    .nav-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 734px;
+      height: 100vh;
+      background: #a4c8ed;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 180;
+    }
+    .nav-drawer.open { transform: translateX(0); }
+
+    .nav-drawer__top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    /* CVTA logo — absolute top-left per Figma (80×80, zoomed-in crop of larger logo) */
+    .nav-drawer__logo-box {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      width: 80px;
+      height: 80px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .nav-drawer__logo-box img {
+      position: absolute;
+      top: -58%;
+      left: -58%;
+      width: 216%;
+      height: 216%;
+      display: block;
+      max-width: none;
+    }
+
+    .nav-drawer__menu {
+      list-style: none;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .nav-drawer__menu li {
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-drawer__menu a {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 48px;
+      letter-spacing: 1.44px;
+      color: #000;
+      text-decoration: none;
+      line-height: 1;
+      transition: opacity 0.2s;
+    }
+    .nav-drawer__menu a:hover { opacity: 0.5; }
+    .nav-arrow {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      display: block;
+    }
+    .nav-arrow img {
+      width: 40px;
+      height: 40px;
+      display: block;
+      transform-origin: 50% 50%;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-drawer__menu li:hover .nav-arrow img { transform: rotate(-45deg); }
+
+    .nav-drawer__footer {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #000;
+      flex-shrink: 0;
+      margin-top: 40px;
+    }
+
+    /* ── SCROLL REVEAL ───────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── CTA LINK ────────────────────────────────────────── */
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+      text-decoration: none;
+    }
+    .cta__text {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 36px;
+      letter-spacing: 1.44px;
+      color: #000;
+      line-height: 1;
+    }
+    .cta__circle {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      transform-origin: 50% 50%;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .cta:hover .cta__circle { transform: rotate(-45deg); }
+
+    /* ── HERO ────────────────────────────────────────────── */
+    .s-hero {
+      height: 100vh;
+      background: url('images/hero-bg.png') center / cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    /* Header row: 67px tall (matches Figma arrow node height) — spacer for fixed nav trigger */
+    .hero-header {
+      height: 67px;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    /* CVTA letter fill — flex:1 takes remaining space.
+       Gap scales with viewport height: 212px on tall screens (Figma spec),
+       shrinks on shorter viewports so the four letters always fit. */
+    .hero-cvta {
+      flex: 1 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(60px, 22vh, 212px);
+      width: 100%;
+    }
+
+    /* Each letter row: flex-1 within cvta, py-24px from Figma (also scales) */
+    .hero-row {
+      flex: 1 0 0;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: clamp(12px, 2.5vh, 24px) 0;
+    }
+    .hero-row--top { align-items: flex-start; }
+    .hero-row--bottom { align-items: flex-end; }
+
+    /* Letter size scales 90px → 150px between viewport heights ~560vh → 937vh */
+    .hero-letter { width: clamp(90px, 16vh, 150px); height: auto; }
+
+    /* ── INTRO / TAGLINE ─────────────────────────────────── */
+    /* Figma: px-[24px] py-[200px], 24px gap, content-driven height */
+    .s-intro {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 200px 24px;
+      overflow: hidden;
+    }
+
+    /* Each carousel: stacked images with pixel offsets from Figma */
+    .carousel-wrap {
+      position: relative;
+      /* total width = last image left (530.56) + last image width (369.44) */
+      width: 900px;
+      /* height = tallest stack = image 6 height (302.78) */
+      height: 303px;
+      flex-shrink: 0;
+    }
+    /* Carousel 2 (top): horizontally mirror the same fan */
+    .carousel-wrap--flip { transform: scaleX(-1); }
+
+    .carousel-wrap img {
+      position: absolute;
+      object-fit: cover;
+    }
+    /* Image positions from Figma (ml = left, mt = top) */
+    .ci1 { left: 0;      top: 125px; width: 64px;  height: 52px;  }
+    .ci2 { left: 33px;   top: 111px; width: 98px;  height: 81px;  }
+    .ci3 { left: 100px;  top: 89px;  width: 149px; height: 122px; }
+    .ci4 { left: 225px;  top: 64px;  width: 214px; height: 175px; }
+    .ci5 { left: 369px;  top: 39px;  width: 275px; height: 225px; }
+    .ci6 { left: 531px;  top: 0;     width: 369px; height: 303px; }
+
+    .s-intro__tagline {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 36px;
+      letter-spacing: 1.08px;
+      line-height: normal;
+      text-align: center;
+      color: #000;
+      width: 728px;
+      max-width: calc(100% - 48px);
+    }
+
+    /* ── PROJECTS + AWARDS ───────────────────────────────────
+       Shared layout: py-200 px-234, gap-36 (main vs CTA), inner Main gap-24 */
+    .s-projects,
+    .s-awards {
+      padding: var(--section-y-pad) var(--side-pad);
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+    .s-projects { background: #d0481b; }
+    .s-awards { background: #fff; }
+
+    .s-projects__main,
+    .s-awards__main {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .s-projects__heading,
+    .s-awards__heading {
+      font-size: var(--heading-size);
+      letter-spacing: 2.88px;
+      color: #000;
+      line-height: 1;
+    }
+
+    /* Projects grid */
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .project-card { display: flex; flex-direction: column; gap: 6px; }
+    .project-card__img { width: 100%; height: var(--project-card-img-h); object-fit: cover; display: block; }
+    .project-card__info { display: flex; flex-direction: column; gap: 4px; }
+    .project-card__name { font-size: var(--project-name-size); letter-spacing: 1.08px; color: #000; line-height: 1.1; }
+    .project-card__year { font-size: 24px; letter-spacing: 0.72px; color: #000; }
+
+    /* Awards list */
+    .award-list { display: flex; flex-direction: column; gap: 12px; }
+    .award-item { display: flex; flex-direction: column; gap: 6px; }
+    .award-item__content { display: flex; flex-direction: column; }
+    .award-item__name { font-size: 36px; letter-spacing: 1.44px; color: #1a1a1a; line-height: 1.3; }
+    .award-item__year { font-size: 24px; letter-spacing: 0.72px; color: #000; line-height: normal; }
+    .award-item__year--small { font-size: 12px; letter-spacing: 0.36px; }
+    .award-item__divider { width: 100%; height: 2px; background: #000; }
+
+    /* ── STUDIO ──────────────────────────────────────────── */
+    /* Figma: py-200 px-234, gap-36 (content vs CTA). Content wrapper h-809 holds
+       heading + image (image fills remaining space, object-cover). */
+    .s-studio {
+      background: #d0481b;
+      padding: var(--section-y-pad) var(--side-pad);
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+    .s-studio__content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      height: 809px;
+      width: 100%;
+    }
+    .s-studio__heading {
+      font-size: 96px;
+      letter-spacing: 2.88px;
+      color: #000;
+      line-height: 1;
+    }
+    .s-studio__photo-box {
+      flex: 1 0 0;
+      min-height: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+    .s-studio__photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── CONTACT ─────────────────────────────────────────── */
+    .s-contact { background: #000; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+    .s-contact__heading { font-size: 96px; letter-spacing: 2.88px; color: #fff; line-height: 1; }
+    .s-contact__divider { width: 100%; height: 2px; background: #fff; flex-shrink: 0; }
+    .s-contact__body { display: flex; flex-direction: column; gap: 24px; }
+    .s-contact__col { display: flex; flex-direction: column; gap: 12px; }
+    .s-contact__col--email { width: 311px; }
+    .s-contact__col--phone,
+    .s-contact__col--address { width: 161px; }
+    .s-contact__label { font-size: 24px; letter-spacing: 0.72px; color: #fff; line-height: normal; }
+    .s-contact__label--email { letter-spacing: 0.48px; } /* Figma: Email label is uniquely tighter */
+    .s-contact__value { font-size: 24px; letter-spacing: 0.72px; color: #fff; text-decoration: none; line-height: normal; }
+    .s-contact__value:hover { opacity: 0.7; }
+    .s-contact__follow { display: flex; flex-direction: column; gap: 24px; }
+    .s-contact__follow-label { font-size: 24px; letter-spacing: 0.72px; color: #fff; white-space: nowrap; }
+    .s-contact__social { display: flex; }
+    .s-contact__social img { width: 120px; height: 48px; }
+    .s-contact__footer { font-size: 24px; letter-spacing: 0.72px; color: #fff; }
+
+    /* ── PAGE LOADER (Rive) ───────────────────────────────── */
+    /* Full-screen overlay that covers the page on first paint and holds until
+       every image + font has loaded. Removed from DOM when the Rive state
+       machine fires its loadEnd trigger (after the exit animation plays). */
+    #cvta-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 450ms cubic-bezier(.4, 0, .2, 1);
+    }
+    #cvta-loader.is-done { opacity: 0; pointer-events: none; }
+    #cvta-loader-canvas {
+      width:  min(30vw, 30vh, 240px);
+      height: min(30vw, 30vh, 240px);
+      display: block;
+    }
+
+    /* ── MOBILE VIEW ───────────────────────────────────────
+       Activates ONLY on phone-sized screens (≤ 500px wide). Desktop,
+       tablet, and any wider window — portrait or landscape — stays on
+       the desktop layout. Figma 1453-655 is designed @ 393px; the
+       --m-s factor scales down to iPhone SE (320) and up to iPhone
+       Pro Max (430) cleanly. */
+    .mobile-view { display: none; }
+
+    @media (max-width: 500px) {
+      /* Hide desktop layout. Keep .nav-trigger — it's the fixed track-matte
+         arrow that works on both desktop and mobile. */
+      .overlay, .nav-drawer,
+      .s-hero, .s-intro, .s-projects, .s-awards, .s-studio, .s-contact {
+        display: none !important;
+      }
+
+      /* The mobile hero's inline arrow is redundant now that the fixed
+         .nav-trigger shows on mobile too — hide it. */
+      .m-hero__header { display: none !important; }
+
+      html, body { overflow-x: hidden; }
+
+      .mobile-view {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+      .mobile-view img { display: block; max-width: 100%; }
+      .mobile-view a   { text-decoration: none; color: inherit; }
+
+      .m-screen {
+        width: 100%;
+        min-height: 100vh;    /* fallback for older browsers */
+        min-height: 100dvh;   /* dynamic viewport — accounts for mobile URL bar */
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+      }
+
+      /* ── 1 · HERO ── Figma node 1473-1213 (393×853 phone screen) */
+      .m-hero {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        padding: 24px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        color: #fff;
+      }
+      .m-hero__bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+      }
+      .m-hero__header {
+        position: relative;
+        z-index: 1;
+        width: 369px;
+        max-width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+      }
+      .m-hero__nav {
+        /* Figma Header node 1473-1221 → arrow glyph is 53×57 SF Symbol */
+        width: 53px;
+        height: 57px;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        color: #fff;
+        padding: 0;
+        display: grid;
+        place-items: center;
+      }
+      .m-hero__nav svg { width: 100%; height: auto; display: block; }
+      .m-hero__logo {
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 263px;
+        height: 263px;
+        object-fit: cover;
+      }
+
+      /* ── MOBILE NAV DRAWER ── Figma node 1461-1625
+         Full-screen blue drawer. Slides in from the right (translateX)
+         when .is-open is applied by the shared nav-trigger click handler.
+         CVTA logo top-left, X top-right, 5 big menu items, address at bottom. */
+      .m-nav-drawer {
+        position: fixed;
+        inset: 0;
+        z-index: 190;
+        background: #a4c8ed;
+        padding: 24px 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: #000;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+      }
+      .m-nav-drawer.is-open { transform: translateX(0); }
+
+      .m-nav-drawer__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .m-nav-drawer__logo {
+        width: 80px;
+        height: 80px;
+        overflow: hidden;
+      }
+      .m-nav-drawer__logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .m-nav-drawer__menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .m-nav-drawer__menu li {
+        height: 88px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .m-nav-drawer__menu a {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 48px;
+        line-height: normal;
+        letter-spacing: 1.44px;
+        color: #000;
+        text-decoration: none;
+        padding: 8px;
+      }
+      .m-nav-drawer__menu a:hover { opacity: 0.5; }
+      .m-nav-arrow {
+        width: 40px;
+        height: 40px;
+        display: block;
+        flex-shrink: 0;
+      }
+      .m-nav-arrow img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .m-nav-drawer__menu li:hover .m-nav-arrow img { transform: rotate(-45deg); }
+
+      .m-nav-drawer__footer {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 24px;
+        line-height: normal;
+        letter-spacing: 0.72px;
+        color: #000;
+        width: 357px;
+        max-width: 100%;
+        word-break: break-word;
+      }
+
+      /* ── 2 · DESCRIPTION ───────────────────────────────────
+         Figma: white bg, items centred vertically, gap 10, two
+         cascading carousels (6 images each) with tagline between. */
+      .m-desc {
+        padding: 24px 12px;
+        background: #fff;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .m-desc__text {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 24px;
+        letter-spacing: 0.48px;
+        line-height: 1.1;
+        color: #000;
+        text-align: center;
+        max-width: 369px;
+      }
+      /* Carousel reference box: 324 × 109. Images at Figma % positions. */
+      .m-carousel {
+        position: relative;
+        width: 100%;
+        max-width: 324px;
+        aspect-ratio: 324 / 109;
+      }
+      .m-carousel__img { position: absolute; object-fit: cover; }
+      .m-carousel__img--1 { left: 0%;     top: 41.28%; width: 7.10%;  height: 17.26%; }
+      .m-carousel__img--2 { left: 3.70%;  top: 36.70%; width: 10.94%; height: 26.61%; }
+      .m-carousel__img--3 { left: 11.11%; top: 29.36%; width: 16.60%; height: 40.37%; }
+      .m-carousel__img--4 { left: 25.00%; top: 21.10%; width: 23.77%; height: 57.80%; }
+      .m-carousel__img--5 { left: 41.05%; top: 12.84%; width: 30.56%; height: 74.31%; }
+      .m-carousel__img--6 { left: 58.95%; top: 0%;     width: 41.05%; height: 100%; }
+      .m-carousel--mirror { transform: scaleX(-1); }
+
+      /* ── 3 · FEATURED PROJECTS ─────────────────────────────
+         Figma: #d0481b bg, padding 48 vert / 12 horiz, gap 12. */
+      .m-featured {
+        padding: 48px 12px;
+        background: #d0481b;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .m-featured__title {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 68px;
+        letter-spacing: 2.04px;
+        line-height: 1;
+        color: #000;
+      }
+      .m-proj-list { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+      .m-proj      { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+      .m-proj__row { display: flex; gap: 6px; align-items: stretch; width: 100%; }
+      .m-proj__text {
+        flex: 1 1 0; min-width: 0;
+        display: flex; flex-direction: column; justify-content: space-between;
+        font-family: 'Rag Narrow', Arial, sans-serif; color: #000;
+      }
+      .m-proj__name { font-size: 24px; letter-spacing: 0.72px; line-height: 1.1; }
+      .m-proj__year { font-size: 12px; letter-spacing: 0.36px; }
+      .m-proj__img  { width: 99px; height: 120px; object-fit: cover; flex-shrink: 0; }
+      .m-proj__rule { height: 2px; background: #000; width: 100%; }
+
+      /* link row pinned to bottom of its section via margin-top:auto. */
+      .m-link {
+        width: 100%;
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .m-link__label {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 24px;
+        letter-spacing: 0.72px;
+        color: #000;
+        white-space: nowrap;
+      }
+      .m-link__arrow { width: 40px; height: 40px; flex-shrink: 0; }
+
+      /* ── 4 · AWARDS ────────────────────────────────────────
+         Figma: white bg, padding 48/12, gap 12. */
+      .m-awards {
+        padding: 48px 12px;
+        background: #fff;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .m-awards__title {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 68px;
+        letter-spacing: 2.04px;
+        line-height: 1;
+        color: #000;
+      }
+      .m-award-list { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+      .m-award      { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+      .m-award__text {
+        display: flex; flex-direction: column; justify-content: space-between;
+        font-family: 'Rag Narrow', Arial, sans-serif;
+      }
+      .m-award__name { font-size: 24px; letter-spacing: 0.72px; line-height: 1.5; color: #1a1a1a; }
+      .m-award__year { font-size: 12px; letter-spacing: 0.36px; color: #000; }
+      .m-award__rule { height: 2px; background: #000; width: 100%; }
+
+      /* ── 5 · STUDIO ────────────────────────────────────────
+         Figma: #d0481b bg, padding 48/12, gap 24, big team photo. */
+      .m-studio {
+        padding: 48px 12px;
+        background: #d0481b;
+        gap: 24px;
+        align-items: flex-start;
+      }
+      .m-studio__title {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 68px;
+        line-height: 1;
+        color: #000;
+      }
+      .m-studio__photo {
+        width: 100%;
+        aspect-ratio: 369 / 410;
+        object-fit: cover;
+      }
+
+      /* ── 6 · CONTACT ───────────────────────────────────────
+         Figma: black bg, padding 24/12, gap 12, white text. */
+      .m-contact {
+        padding: 24px 12px;
+        background: #000;
+        gap: 12px;
+        align-items: flex-start;
+        color: #fff;
+      }
+      .m-contact__title-block {
+        width: 100%; display: flex; flex-direction: column; gap: 6px;
+      }
+      .m-contact__title {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 68px;
+        letter-spacing: 2.04px;
+        line-height: 1;
+        color: #fff;
+      }
+      .m-contact__rule { height: 2px; background: #fff; width: 100%; }
+      .m-contact__body {
+        width: 100%; display: flex; flex-direction: column; gap: 24px;
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 24px; letter-spacing: 0.72px; color: #fff;
+      }
+      .m-contact__group  { display: flex; flex-direction: column; gap: 12px; }
+      .m-contact__label  { letter-spacing: 0.48px; }
+      .m-contact__value  { color: #fff; text-decoration: none; }
+      /* Follow + footer pinned bottom. */
+      .m-contact__follow {
+        width: 100%; margin-top: auto;
+        display: flex; flex-direction: column; gap: 24px;
+      }
+      .m-contact__socials { width: 120px; height: 48px; }
+      .m-contact__footer {
+        font-family: 'Rag Narrow', Arial, sans-serif;
+        font-size: 24px; letter-spacing: 0.72px; color: #fff;
+        width: 100%;
+      }
+    }
+  </style>
+
+  <!-- Rive runtime + CVTA loader bootstrap. Deferred so parsing isn't blocked,
+       but the overlay <div> below is already in the DOM so first paint is covered. -->
+  <script defer src="https://unpkg.com/@rive-app/canvas@latest"></script>
+  <script defer src="Rive/loader.js"></script>
+  <script defer src="Rive/menubar.js?v=2"></script>
+</head>
+<body>
+
+  <!-- Page loader overlay — removed from DOM once loadComplete fires. -->
+  <div id="cvta-loader" aria-hidden="true">
+    <canvas id="cvta-loader-canvas" width="960" height="960"></canvas>
+  </div>
+
+
+  <!-- NAV — Rive-driven. Visual, hover, open/close, track-matte all live in cvta.riv.
+       Mounted by Rive/menubar.js. See styles for #nav-rive-canvas. -->
+  <canvas id="nav-rive-canvas" width="80" height="80" aria-label="Open menu"></canvas>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- NAV DRAWER -->
+  <nav class="nav-drawer" id="navDrawer">
+    <div class="nav-drawer__logo-box" aria-hidden="true">
+      <img src="images/menu-logo-cvta.png" alt="">
+    </div>
+
+    <!-- Close is handled by the fixed Rive canvas (#nav-rive-canvas) which sits on top. -->
+    <div class="nav-drawer__top"></div>
+
+    <ul class="nav-drawer__menu">
+      <li>
+        <a href="#hero" class="nav-link">Home</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+      <li>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+      <li>
+        <a href="studio.html" class="nav-link">Studio</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+      <li>
+        <a href="#awards" class="nav-link">Awards</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+      <li>
+        <a href="#contact" class="nav-link">Contact</a>
+        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+      </li>
+    </ul>
+
+    <p class="nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="s-hero" id="hero">
+      <!-- 67px header row — spacer matching Figma's arrow header height -->
+      <div class="hero-header"></div>
+      <div class="hero-cvta">
+        <div class="hero-row hero-row--top">
+          <img src="images/hero-letter-c.svg" class="hero-letter" alt="C">
+          <img src="images/hero-letter-v.svg" class="hero-letter" alt="V">
+        </div>
+        <div class="hero-row hero-row--bottom">
+          <img src="images/hero-letter-t.svg" class="hero-letter" alt="T">
+          <img src="images/hero-letter-a.svg" class="hero-letter" alt="A">
+        </div>
+      </div>
+    </section>
+
+    <!-- INTRO / TAGLINE -->
+    <section class="s-intro reveal" id="intro">
+
+      <!-- Carousel 2 — top fan, horizontally mirrored -->
+      <div class="carousel-wrap carousel-wrap--flip" aria-hidden="true">
+        <img class="ci1" src="images/carousel-1.png" alt="">
+        <img class="ci2" src="images/carousel-2.png" alt="">
+        <img class="ci3" src="images/carousel-3.png" alt="">
+        <img class="ci4" src="images/carousel-7.png" alt="">
+        <img class="ci5" src="images/carousel-8.png" alt="">
+        <img class="ci6" src="images/carousel-9.png" alt="">
+      </div>
+
+      <p class="s-intro__tagline">Designing and building spaces for communities, institutions and individuals for 30 years.</p>
+
+      <!-- Carousel 1 — bottom fan -->
+      <div class="carousel-wrap" aria-hidden="true">
+        <img class="ci1" src="images/carousel-1.png" alt="">
+        <img class="ci2" src="images/carousel-2.png" alt="">
+        <img class="ci3" src="images/carousel-3.png" alt="">
+        <img class="ci4" src="images/carousel-4.png" alt="">
+        <img class="ci5" src="images/carousel-5.png" alt="">
+        <img class="ci6" src="images/carousel-6.png" alt="">
+      </div>
+
+    </section>
+
+    <!-- FEATURED PROJECTS -->
+    <section class="s-projects reveal" id="projects">
+      <div class="s-projects__main">
+        <h2 class="s-projects__heading">Featured Projects</h2>
+        <div class="project-grid">
+
+          <div class="project-card">
+            <img class="project-card__img" src="images/proj-bellenden.png" alt="Bellenden Primary School">
+            <div class="project-card__info">
+              <p class="project-card__name">Bellenden Primary school</p>
+              <p class="project-card__year">2025</p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img class="project-card__img" src="images/proj-snyder.png" alt="Sir Michael Snyder Building">
+            <div class="project-card__info">
+              <p class="project-card__name">Sir Micheal Snyder Building</p>
+              <p class="project-card__year">2025</p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img class="project-card__img" src="images/proj-central.png" alt="Central Foundations Girls School">
+            <div class="project-card__info">
+              <p class="project-card__name">Central Foundations Girls School</p>
+              <p class="project-card__year">2025</p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img class="project-card__img" src="images/proj-notredame.png" alt="Notre Dame School">
+            <div class="project-card__info">
+              <p class="project-card__name">Notre Dame School</p>
+              <p class="project-card__year">2025</p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img class="project-card__img" src="images/proj-westborough.png" alt="Westborough Primary School">
+            <div class="project-card__info">
+              <p class="project-card__name">Westborough Primary School</p>
+              <p class="project-card__year">2025</p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img class="project-card__img" src="images/proj-churchill.png" alt="Churchill College">
+            <div class="project-card__info">
+              <p class="project-card__name">Churchill College</p>
+              <p class="project-card__year">2025</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <a class="cta" href="projects.html">
+        <span class="cta__text">See our case studies</span>
+        <img class="cta__circle" src="images/cta-arrow.svg" alt="">
+      </a>
+    </section>
+
+    <!-- AWARDS -->
+    <section class="s-awards reveal" id="awards">
+      <div class="s-awards__main">
+        <h2 class="s-awards__heading">Awards</h2>
+        <div class="award-list">
+          <div class="award-item">
+            <div class="award-item__content">
+              <p class="award-item__name">Stephen Lawrence Prize, The Cardboard building.</p>
+              <p class="award-item__year">2001</p>
+            </div>
+            <div class="award-item__divider"></div>
+          </div>
+          <div class="award-item">
+            <div class="award-item__content">
+              <p class="award-item__name">Architect of the Year</p>
+              <p class="award-item__year">2016</p>
+            </div>
+            <div class="award-item__divider"></div>
+          </div>
+          <div class="award-item">
+            <div class="award-item__content">
+              <p class="award-item__name">Education Architect of the Year</p>
+              <p class="award-item__year award-item__year--small">2011, 2016, 2018</p>
+            </div>
+            <div class="award-item__divider"></div>
+          </div>
+          <div class="award-item">
+            <div class="award-item__content">
+              <p class="award-item__name">RIBA Awards</p>
+              <p class="award-item__year">2002, 2003, 2005, 2012, 2013, 2018, 2022</p>
+            </div>
+            <div class="award-item__divider"></div>
+          </div>
+          <div class="award-item">
+            <div class="award-item__content">
+              <p class="award-item__name">Brick Awards</p>
+              <p class="award-item__year">20??</p>
+            </div>
+            <div class="award-item__divider"></div>
+          </div>
+          <div class="award-item">
+            <div class="award-item__content">
+              <p class="award-item__name">Retrofit Awards</p>
+              <p class="award-item__year">20??</p>
+            </div>
+            <div class="award-item__divider"></div>
+          </div>
+        </div>
+      </div>
+      <a class="cta" href="#">
+        <span class="cta__text">See our Awards</span>
+        <img class="cta__circle" src="images/cta-arrow.svg" alt="">
+      </a>
+    </section>
+
+    <!-- STUDIO -->
+    <section class="s-studio reveal" id="studio">
+      <div class="s-studio__content">
+        <h2 class="s-studio__heading">Studio</h2>
+        <div class="s-studio__photo-box">
+          <img class="s-studio__photo" src="images/studio-team.png" alt="CVTA Studio team">
+        </div>
+      </div>
+      <a class="cta" href="studio.html">
+        <span class="cta__text">Meet the team</span>
+        <img class="cta__circle" src="images/cta-arrow.svg" alt="">
+      </a>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="s-contact reveal" id="contact">
+      <h2 class="s-contact__heading">Contact us</h2>
+      <div class="s-contact__divider"></div>
+      <div class="s-contact__body">
+        <div class="s-contact__col s-contact__col--email">
+          <span class="s-contact__label s-contact__label--email">Email:</span>
+          <a class="s-contact__value" href="mailto:Info@cv-arch.co.uk">Info@cv-arch.co.uk</a>
+          <a class="s-contact__value" href="mailto:recruitment@cv-arch.co.uk">recruitment@cv-arch.co.uk</a>
+        </div>
+        <div class="s-contact__col s-contact__col--phone">
+          <span class="s-contact__label">Phone:</span>
+          <a class="s-contact__value" href="tel:02077082567">020 7708 2567</a>
+        </div>
+        <div class="s-contact__col s-contact__col--address">
+          <span class="s-contact__label">Address</span>
+          <span class="s-contact__value">1B Iliffe St<br>London<br>SE17 3LJ</span>
+        </div>
+      </div>
+      <div class="s-contact__follow">
+        <div class="s-contact__divider"></div>
+        <span class="s-contact__follow-label">Follow us</span>
+        <div class="s-contact__social">
+          <img src="images/social-icons.svg" alt="Social media icons" width="120" height="48">
+        </div>
+        <div class="s-contact__divider"></div>
+      </div>
+      <p class="s-contact__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+    </section>
+
+  </main>
+
+  <script>
+   // Wait for the full DOM so the mobile drawer (parsed after this script) exists.
+   document.addEventListener('DOMContentLoaded', () => {
+    // NAV DRAWER — opening/closing is now driven by the Rive canvas (Rive/menubar.js).
+    // That script dispatches `cvta:drawer-toggle` events; we just show/hide the right
+    // drawer (desktop vs mobile) based on viewport.
+    const drawer   = document.getElementById('navDrawer');
+    const overlay  = document.getElementById('overlay');
+    const closeBtn = document.getElementById('navClose');
+    const mDrawer  = document.getElementById('mNavDrawer');
+
+    const isMobile = () => window.innerWidth <= 500;
+
+    function openDrawer()  {
+      if (isMobile()) {
+        if (mDrawer) { mDrawer.classList.add('is-open'); mDrawer.setAttribute('aria-hidden','false'); }
+      } else {
+        drawer.classList.add('open');
+        overlay.classList.add('open');
+      }
+    }
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+      if (mDrawer) { mDrawer.classList.remove('is-open'); mDrawer.setAttribute('aria-hidden','true'); }
+    }
+
+    document.addEventListener('cvta:drawer-toggle', (e) => {
+      e.detail && e.detail.open ? openDrawer() : closeDrawer();
+    });
+
+    // Desktop drawer's internal X and the dulled overlay also close the menu.
+    // Route through CVTANav.close() so the Rive VM state stays in sync.
+    const closeViaRive = () => (window.CVTANav ? window.CVTANav.close() : closeDrawer());
+    if (closeBtn) closeBtn.addEventListener('click', closeViaRive);
+    overlay.addEventListener('click', closeViaRive);
+    document.querySelectorAll('.nav-link, .m-nav-link').forEach(l => l.addEventListener('click', closeViaRive));
+
+    // SCROLL REVEAL
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+   });
+  </script>
+
+  <!-- ═════════ MOBILE VIEW ═════════════════════════════════
+       Renders only below 500px. Six phone-screen sections stacked to match
+       the Figma 'Flow_V1' (node 1453-655). Hidden on desktop. -->
+  <div class="mobile-view">
+
+    <section class="m-screen m-hero">
+      <img decoding="async" class="m-hero__bg" src="images/mobile/hero-bg.png" alt="">
+      <header class="m-hero__header">
+        <button class="m-hero__nav" aria-label="Menu">
+          <!-- SF Symbol arrow.forward — filled glyph proportions -->
+          <svg viewBox="0 0 53 57" fill="currentColor" aria-hidden="true">
+            <path d="M31.3 15.1a2.6 2.6 0 0 1 3.68-.03l12.4 12.1a2.6 2.6 0 0 1 0 3.72l-12.4 12.1a2.6 2.6 0 1 1-3.65-3.71l7.84-7.68H5.5a2.6 2.6 0 1 1 0-5.2h33.67l-7.87-7.68a2.6 2.6 0 0 1-.03-3.62z"/>
+          </svg>
+        </button>
+      </header>
+      <img decoding="async" class="m-hero__logo" src="images/mobile/hero-logo.png" alt="CVTA">
+    </section>
+
+    <section class="m-screen m-desc">
+      <div class="m-carousel" aria-hidden="true">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--1" src="images/mobile/img-161.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--2" src="images/mobile/img-160.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--3" src="images/mobile/img-159.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--4" src="images/mobile/img-158.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--5" src="images/mobile/img-155.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--6" src="images/mobile/img-157.png" alt="">
+      </div>
+      <p class="m-desc__text">Designing and building spaces for communities, institutions and individuals for 30 years.</p>
+      <div class="m-carousel m-carousel--mirror" aria-hidden="true">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--1" src="images/mobile/img-161.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--2" src="images/mobile/img-160.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--3" src="images/mobile/img-159.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--4" src="images/mobile/img-162.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--5" src="images/mobile/img-156.png" alt="">
+        <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--6" src="images/mobile/img-163.png" alt="">
+      </div>
+    </section>
+
+    <section class="m-screen m-featured">
+      <h2 class="m-featured__title">Featured<br>Projects</h2>
+      <div class="m-proj-list">
+        <article class="m-proj">
+          <div class="m-proj__row">
+            <div class="m-proj__text">
+              <p class="m-proj__name">Bellenden Primary school</p>
+              <p class="m-proj__year">2025</p>
+            </div>
+            <img loading="lazy" decoding="async" class="m-proj__img" src="images/mobile/proj-bellenden.png" alt="Bellenden Primary school">
+          </div>
+          <div class="m-proj__rule"></div>
+        </article>
+        <article class="m-proj">
+          <div class="m-proj__row">
+            <div class="m-proj__text">
+              <p class="m-proj__name">Sir Michael Snyder Building</p>
+              <p class="m-proj__year">2025</p>
+            </div>
+            <img loading="lazy" decoding="async" class="m-proj__img" src="images/mobile/proj-snyder.png" alt="Sir Michael Snyder Building">
+          </div>
+          <div class="m-proj__rule"></div>
+        </article>
+        <article class="m-proj">
+          <div class="m-proj__row">
+            <div class="m-proj__text">
+              <p class="m-proj__name">Central Foundation Girls School</p>
+              <p class="m-proj__year">2025</p>
+            </div>
+            <img loading="lazy" decoding="async" class="m-proj__img" src="images/mobile/proj-central.png" alt="Central Foundation Girls School">
+          </div>
+          <div class="m-proj__rule"></div>
+        </article>
+        <article class="m-proj">
+          <div class="m-proj__row">
+            <div class="m-proj__text">
+              <p class="m-proj__name">Notre Dame School</p>
+              <p class="m-proj__year">2025</p>
+            </div>
+            <img loading="lazy" decoding="async" class="m-proj__img" src="images/mobile/proj-notre.png" alt="Notre Dame School">
+          </div>
+          <div class="m-proj__rule"></div>
+        </article>
+      </div>
+      <a class="m-link" href="projects.html">
+        <span class="m-link__label">See our case studies</span>
+        <img loading="lazy" decoding="async" class="m-link__arrow" src="images/mobile/arrow-link.svg" alt="">
+      </a>
+    </section>
+
+    <section class="m-screen m-awards">
+      <h2 class="m-awards__title">Awards</h2>
+      <div class="m-award-list">
+        <article class="m-award">
+          <div class="m-award__text">
+            <p class="m-award__name">Stephen Lawrence Prize, The Cardboard building.</p>
+            <p class="m-award__year">2001</p>
+          </div>
+          <div class="m-award__rule"></div>
+        </article>
+        <article class="m-award">
+          <div class="m-award__text">
+            <p class="m-award__name">Architect of the Year</p>
+            <p class="m-award__year">2016</p>
+          </div>
+          <div class="m-award__rule"></div>
+        </article>
+        <article class="m-award">
+          <div class="m-award__text">
+            <p class="m-award__name">Education Architect of the Year</p>
+            <p class="m-award__year">2011, 2016, 2018</p>
+          </div>
+          <div class="m-award__rule"></div>
+        </article>
+        <article class="m-award">
+          <div class="m-award__text">
+            <p class="m-award__name">RIBA Awards</p>
+            <p class="m-award__year">2002, 2003, 2005, 2012, 2013, 2018, 2022</p>
+          </div>
+          <div class="m-award__rule"></div>
+        </article>
+        <article class="m-award">
+          <div class="m-award__text">
+            <p class="m-award__name">Brick Awards</p>
+            <p class="m-award__year">20??</p>
+          </div>
+          <div class="m-award__rule"></div>
+        </article>
+        <article class="m-award">
+          <div class="m-award__text">
+            <p class="m-award__name">Retrofit Awards</p>
+            <p class="m-award__year">20??</p>
+          </div>
+          <div class="m-award__rule"></div>
+        </article>
+      </div>
+      <a class="m-link" href="#awards">
+        <span class="m-link__label">See our Awards</span>
+        <img loading="lazy" decoding="async" class="m-link__arrow" src="images/mobile/arrow-link.svg" alt="">
+      </a>
+    </section>
+
+    <section class="m-screen m-studio">
+      <h2 class="m-studio__title">Studio</h2>
+      <img loading="lazy" decoding="async" class="m-studio__photo" src="images/mobile/studio-team.png" alt="CVTA Studio team">
+      <a class="m-link" href="studio.html">
+        <span class="m-link__label">Meet the team</span>
+        <img loading="lazy" decoding="async" class="m-link__arrow" src="images/mobile/arrow-link.svg" alt="">
+      </a>
+    </section>
+
+    <section class="m-screen m-contact">
+      <div class="m-contact__title-block">
+        <h2 class="m-contact__title">Contact us</h2>
+        <div class="m-contact__rule"></div>
+      </div>
+      <div class="m-contact__body">
+        <div class="m-contact__group">
+          <p class="m-contact__label">Email:</p>
+          <a class="m-contact__value" href="mailto:Info@cv-arch.co.uk">Info@cv-arch.co.uk</a>
+          <a class="m-contact__value" href="mailto:recruitment@cv-arch.co.uk">recruitment@cv-arch.co.uk</a>
+        </div>
+        <div class="m-contact__group">
+          <p class="m-contact__label">Phone:</p>
+          <a class="m-contact__value" href="tel:02077082567">020 7708 2567</a>
+        </div>
+        <div class="m-contact__group">
+          <p class="m-contact__label">Address</p>
+          <p class="m-contact__value">1B Iliffe St<br>London<br>SE17 3LJ</p>
+        </div>
+      </div>
+      <div class="m-contact__follow">
+        <div class="m-contact__rule"></div>
+        <p class="m-contact__label">Follow us</p>
+        <img loading="lazy" decoding="async" class="m-contact__socials" src="images/mobile/socials.svg" alt="LinkedIn and Instagram">
+        <div class="m-contact__rule"></div>
+      </div>
+      <p class="m-contact__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+    </section>
+
+    <!-- Mobile nav drawer — Figma 1461-1625. Full-screen blue drawer
+         opened by the fixed .nav-trigger (shared with desktop). -->
+    <nav class="m-nav-drawer" id="mNavDrawer" aria-hidden="true">
+      <div class="m-nav-drawer__top">
+        <div class="m-nav-drawer__logo" aria-hidden="true">
+          <img src="images/menu-logo-cvta.png" alt="">
+        </div>
+        <!-- The Rive canvas (#nav-rive-canvas) sits in this slot via position:fixed
+             and shows an X when arrowClicked=true, so no inline close button needed. -->
+      </div>
+
+      <ul class="m-nav-drawer__menu">
+        <li>
+          <a href="#hero" class="m-nav-link">Home</a>
+          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+        </li>
+        <li>
+          <a href="projects.html" class="m-nav-link">Projects</a>
+          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+        </li>
+        <li>
+          <a href="studio.html" class="m-nav-link">Studio</a>
+          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+        </li>
+        <li>
+          <a href="#awards" class="m-nav-link">Awards</a>
+          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+        </li>
+        <li>
+          <a href="#contact" class="m-nav-link">Contact</a>
+          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+        </li>
+      </ul>
+
+      <p class="m-nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+    </nav>
+
+  </div>
+
+</body>
+</html>

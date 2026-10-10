@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CVTA</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @font-face {
+      font-family: 'Rag';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Rag Narrow Regular'), local('RagNarrow-Regular'), local('Rag-NarrowRegular');
+    }
+
+    body {
+      font-family: 'Rag', 'Rag Narrow', sans-serif;
+      background: #000;
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       SECTION 1 — HERO (blue)
+    ============================================================ */
+    .s-hero {
+      background: #a4c8ed;
+      height: 100dvh;
+      padding: 24px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .s-hero__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .s-hero__logo-box {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .s-hero__logo-img {
+      position: absolute;
+      width: 216%;
+      height: 216%;
+      left: -58%;
+      top: -58%;
+      object-fit: cover;
+    }
+
+    .s-hero__menu-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      flex-shrink: 0;
+    }
+
+    .s-hero__image {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+    }
+
+    .s-hero__image img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ============================================================
+       SECTION 2 — TAGLINE (orange-red)
+    ============================================================ */
+    .s-tagline {
+      background: #d0481b;
+      height: 100dvh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .s-tagline__carousel {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .s-tagline__img {
+      position: absolute;
+      object-fit: cover;
+    }
+
+    /* Carousel 1 — top fan, small (left) → large (right)
+       Horizontal positions are % of 390px viewport width.
+       Vertical positions are % of viewport height (based on 852px design). */
+    .c1-1 { width: 23px;  height: 19px;  left: 8.9%;  top: 28.9%; }
+    .c1-2 { width: 35px;  height: 29px;  left: 12.0%; top: 28.3%; }
+    .c1-3 { width: 54px;  height: 44px;  left: 18.1%; top: 27.3%; }
+    .c1-4 { width: 77px;  height: 63px;  left: 29.5%; top: 26.3%; }
+    .c1-5 { width: 99px;  height: 81px;  left: 42.7%; top: 25.2%; }
+    .c1-6 { width: 133px; height: 109px; left: 57.5%; top: 23.6%; }
+
+    /* Carousel 2 — bottom fan, horizontally mirrored */
+    .c2-1 { width: 23px;  height: 19px;  left: 85.5%; top: 68.9%; transform: rotate(180deg) scaleY(-1); }
+    .c2-2 { width: 35px;  height: 29px;  left: 79.3%; top: 68.3%; transform: rotate(180deg) scaleY(-1); }
+    .c2-3 { width: 54px;  height: 44px;  left: 68.5%; top: 67.4%; transform: rotate(180deg) scaleY(-1); }
+    .c2-4 { width: 77px;  height: 63px;  left: 51.1%; top: 66.3%; transform: rotate(180deg) scaleY(-1); }
+    .c2-5 { width: 99px;  height: 81px;  left: 32.3%; top: 65.3%; transform: rotate(180deg) scaleY(-1); }
+    .c2-6 { width: 133px; height: 109px; left: 8.9%;  top: 63.6%; transform: rotate(180deg) scaleY(-1); }
+
+    .s-tagline__text {
+      font-size: 24px;
+      letter-spacing: 0.48px;
+      color: #000;
+      text-align: center;
+      width: 369px;
+      max-width: calc(100% - 24px);
+      line-height: 1.4;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ============================================================
+       SECTION 3 — NOTABLE PROJECTS (green)
+    ============================================================ */
+    .s-projects {
+      background: #2f9351;
+      padding: 48px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-heading {
+      font-size: 68px;
+      letter-spacing: 2.04px;
+      color: #000;
+      line-height: 1;
+      font-weight: normal;
+    }
+
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .project-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .project-item__content {
+      display: flex;
+      gap: 6px;
+      align-items: stretch;
+    }
+
+    .project-item__text {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #000;
+    }
+
+    .project-item__name {
+      font-size: 24px;
+      letter-spacing: 0.72px;
+    }
+
+    .project-item__year {
+      font-size: 12px;
+      letter-spacing: 0.36px;
+    }
+
+    .project-item__img {
+      width: 99px;
+      height: 120px;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .divider {
+      height: 2px;
+      background: #000;
+      width: 100%;
+    }
+
+    .divider--white {
+      background: #fff;
+    }
+
+    /* CTA button — filled yellow circle */
+    .btn-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      width: fit-content;
+      text-decoration: none;
+    }
+
+    .btn-cta__text {
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #000;
+      white-space: nowrap;
+    }
+
+    .btn-cta__circle {
+      background: #fadd39;
+      width: 40px;
+      height: 40px;
+      border-radius: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* CTA button — outlined border */
+    .btn-border {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border: 2px solid #000;
+      width: fit-content;
+      text-decoration: none;
+    }
+
+    .btn-border__text {
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #000;
+      white-space: nowrap;
+    }
+
+    .arrow-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       SECTION 4 — AWARDS (yellow)
+    ============================================================ */
+    .s-awards {
+      background: #fadd39;
+      min-height: 100dvh;
+      padding: 48px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .award-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .award-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .award-item__name {
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #1a1a1a;
+      line-height: 1.5;
+    }
+
+    .award-item__year {
+      font-size: 12px;
+      letter-spacing: 0.36px;
+      color: #000;
+    }
+
+    /* ============================================================
+       SECTION 5 — STUDIO (pink)
+    ============================================================ */
+    .s-studio {
+      background: #f283b4;
+      min-height: 100dvh;
+      padding: 48px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .s-studio__photo {
+      width: 100%;
+      height: 410px;
+      object-fit: cover;
+    }
+
+    /* ============================================================
+       SECTION 6 — CONTACT (black)
+    ============================================================ */
+    .s-contact {
+      background: #000;
+      min-height: 100dvh;
+      padding: 24px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .s-contact__title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .s-contact__heading {
+      font-size: 68px;
+      letter-spacing: 2.04px;
+      color: #fff;
+      font-weight: normal;
+    }
+
+    .s-contact__details {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      color: #fff;
+      font-size: 24px;
+      letter-spacing: 0.72px;
+    }
+
+    .s-contact__group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .s-contact__value {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .s-contact__follow {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .s-contact__follow-label {
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .s-contact__social {
+      height: 48px;
+      width: 120px;
+    }
+
+    .s-contact__company {
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #fff;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       SECTION 1 — HERO
+  ============================================================ -->
+  <section class="s-hero">
+    <header class="s-hero__header">
+      <div class="s-hero__logo-box">
+        <img class="s-hero__logo-img" src="images/mobile-logo.png" alt="CVTA">
+      </div>
+      <button class="s-hero__menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">
+        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <polyline points="13 5 20 12 13 19"/>
+        </svg>
+      </button>
+    </header>
+    <div class="s-hero__image">
+      <img src="images/edu-bellenden.jpg" alt="CVTA project">
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 2 — TAGLINE
+  ============================================================ -->
+  <section class="s-tagline">
+    <div class="s-tagline__carousel" aria-hidden="true">
+      <!-- Fan top: left=small → right=large -->
+      <img class="s-tagline__img c1-1" src="images/carousel-1.png" alt="">
+      <img class="s-tagline__img c1-2" src="images/carousel-2.png" alt="">
+      <img class="s-tagline__img c1-3" src="images/carousel-3.png" alt="">
+      <img class="s-tagline__img c1-4" src="images/carousel-4.png" alt="">
+      <img class="s-tagline__img c1-5" src="images/carousel-5.png" alt="">
+      <img class="s-tagline__img c1-6" src="images/carousel-6.png" alt="">
+      <!-- Fan bottom: right=small → left=large, mirrored -->
+      <img class="s-tagline__img c2-1" src="images/carousel-1.png" alt="">
+      <img class="s-tagline__img c2-2" src="images/carousel-2.png" alt="">
+      <img class="s-tagline__img c2-3" src="images/carousel-3.png" alt="">
+      <img class="s-tagline__img c2-4" src="images/carousel-7.png" alt="">
+      <img class="s-tagline__img c2-5" src="images/carousel-8.png" alt="">
+      <img class="s-tagline__img c2-6" src="images/carousel-9.png" alt="">
+    </div>
+    <p class="s-tagline__text">Designing and building spaces for communities, institutions and individuals for 30 years.</p>
+  </section>
+
+  <!-- ============================================================
+       SECTION 3 — NOTABLE PROJECTS
+  ============================================================ -->
+  <section class="s-projects">
+    <h2 class="section-heading">Notable<br>Projects</h2>
+    <div class="project-list">
+
+      <div class="project-item">
+        <div class="project-item__content">
+          <div class="project-item__text">
+            <span class="project-item__name">Bellenden Primary school</span>
+            <span class="project-item__year">2025</span>
+          </div>
+          <img class="project-item__img" src="images/edu-bellenden.jpg" alt="Bellenden Primary School">
+        </div>
+        <div class="divider"></div>
+      </div>
+
+      <div class="project-item">
+        <div class="project-item__content">
+          <div class="project-item__text">
+            <span class="project-item__name">Sir Michael Snyder Building</span>
+            <span class="project-item__year">2025</span>
+          </div>
+          <img class="project-item__img" src="images/edu-sir-michael.jpeg" alt="Sir Michael Snyder Building">
+        </div>
+        <div class="divider"></div>
+      </div>
+
+      <div class="project-item">
+        <div class="project-item__content">
+          <div class="project-item__text">
+            <span class="project-item__name">Central Foundation Girls School</span>
+            <span class="project-item__year">2025</span>
+          </div>
+          <img class="project-item__img" src="images/notable-central.png" alt="Central Foundation Girls School">
+        </div>
+        <div class="divider"></div>
+      </div>
+
+      <div class="project-item">
+        <div class="project-item__content">
+          <div class="project-item__text">
+            <span class="project-item__name">Notre Dame School</span>
+            <span class="project-item__year">2025</span>
+          </div>
+          <img class="project-item__img" src="images/notable-notredame.png" alt="Notre Dame School">
+        </div>
+        <div class="divider"></div>
+      </div>
+
+    </div>
+    <a class="btn-cta" href="projects.html">
+      <span class="btn-cta__text">See our case studies</span>
+      <div class="btn-cta__circle">
+        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <polyline points="13 5 20 12 13 19"/>
+        </svg>
+      </div>
+    </a>
+  </section>
+
+  <!-- ============================================================
+       SECTION 4 — AWARDS
+  ============================================================ -->
+  <section class="s-awards">
+    <h2 class="section-heading">Awards</h2>
+    <div class="award-list">
+
+      <div class="award-item">
+        <p class="award-item__name">Stephen Lawrence Prize, The Cardboard Building.</p>
+        <p class="award-item__year">2001</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Architect of the Year</p>
+        <p class="award-item__year">2016</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Education Architect of the Year</p>
+        <p class="award-item__year">2011, 2016, 2018, 2024</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">RIBA Awards</p>
+        <p class="award-item__year">2002, 2003, 2005, 2010, 2012, 2013, 2018, 2022</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">RIBA East Awards</p>
+        <p class="award-item__year">2013, 2022, 2024, 2025</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Brick Awards</p>
+        <p class="award-item__year">2011, 2013, 2015, 2016, 2021, 2022, 2025</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Retrofit Awards</p>
+        <p class="award-item__year">2011, 2014, 2015, 2018</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Civic Trust Awards</p>
+        <p class="award-item__year">1999, 2003, 2005, 2015, 2019, 2023</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">CIBSE Building Performance Awards</p>
+        <p class="award-item__year">2015, 2021</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">RICS Awards</p>
+        <p class="award-item__year">2010, 2012, 2016</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">New London Awards</p>
+        <p class="award-item__year">2018</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Architects' Journal Awards</p>
+        <p class="award-item__year">2019</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Peckham Society Architecture Award</p>
+        <p class="award-item__year">2019</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Creative Review Award</p>
+        <p class="award-item__year">2014</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Wood Awards</p>
+        <p class="award-item__year">2018</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Green Apple Awards</p>
+        <p class="award-item__year">2012</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">RIBA Journal Sustainability Award</p>
+        <p class="award-item__year">2002</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">National Federation of Roofing Contractors Award</p>
+        <p class="award-item__year">2008</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Harrow Heritage Trust Architectural Awards</p>
+        <p class="award-item__year">2010</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">David Urwin Awards</p>
+        <p class="award-item__year">2003</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">BBC Tomorrow's World Awards</p>
+        <p class="award-item__year">2001</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Millennium Products Award</p>
+        <p class="award-item__year">1998</p>
+        <div class="divider"></div>
+      </div>
+
+      <div class="award-item">
+        <p class="award-item__name">Southend-on-Sea Design Award</p>
+        <p class="award-item__year">1997</p>
+        <div class="divider"></div>
+      </div>
+
+    </div>
+    <a class="btn-border" href="#">
+      <span class="btn-border__text">See our Awards</span>
+      <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <polyline points="13 5 20 12 13 19"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ============================================================
+       SECTION 5 — STUDIO
+  ============================================================ -->
+  <section class="s-studio">
+    <h2 class="section-heading">Studio</h2>
+    <img class="s-studio__photo" src="images/studio-team.png" alt="CVTA Studio team">
+    <a class="btn-border" href="#">
+      <span class="btn-border__text">Meet the team</span>
+      <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <polyline points="13 5 20 12 13 19"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ============================================================
+       SECTION 6 — CONTACT
+  ============================================================ -->
+  <section class="s-contact">
+    <div class="s-contact__title-block">
+      <h2 class="s-contact__heading">Contact us</h2>
+      <div class="divider divider--white"></div>
+    </div>
+
+    <div class="s-contact__details">
+      <div class="s-contact__group">
+        <span>Email:</span>
+        <a class="s-contact__value" href="mailto:Info@cv-arch.co.uk">Info@cv-arch.co.uk</a>
+        <a class="s-contact__value" href="mailto:recruitment@cv-arch.co.uk">recruitment@cv-arch.co.uk</a>
+      </div>
+      <div class="s-contact__group">
+        <span>Phone:</span>
+        <a class="s-contact__value" href="tel:02077082567">020 7708 2567</a>
+      </div>
+      <div class="s-contact__group">
+        <span>Address</span>
+        <span class="s-contact__value">1B Iliffe St<br>London<br>SE17 3LJ</span>
+      </div>
+    </div>
+
+    <div class="s-contact__follow">
+      <div class="divider divider--white"></div>
+      <span class="s-contact__follow-label">Follow us</span>
+      <img class="s-contact__social" src="images/social-icons.svg" alt="LinkedIn and Instagram">
+      <div class="divider divider--white"></div>
+    </div>
+
+    <p class="s-contact__company">Cottrell, Vermeulen, Tucker Architecture</p>
+  </section>
+
+</body>
+</html>
