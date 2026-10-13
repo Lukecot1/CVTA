@@ -12,9 +12,11 @@
        internally shows an arrow when false, X when true). Observing
        this drives the drawer open/close.
 
-   Scroll behaviour: scrolling down carries the canvas up and out of view
-   with the page; any scroll up (even 1px) springs it straight back. It
-   always shows at the top of the page and while the menu is open.
+   Hide on scroll (separate from the mask): scrolling down carries the
+   canvas up and out of view with the page; any scroll up (even 1px)
+   springs it straight back. It always shows at the top of the page, while
+   the menu is open, and on landing pages until the mask sweep has finished
+   (the canvas has fully cleared the hero) so the sweep is always seen.
 
    Property names mirror the ones embedded in the .riv binary exactly
    (note lowercase 'p' in `maskproperty`). */
@@ -45,6 +47,13 @@
     return document.getElementById('hero') || document.querySelector('.m-hero');
   };
 
+  // The canvas's resting slot from its CSS (top: 24px; height: 40px). Both the
+  // mask and the hide logic read this, so the hide transform never moves it.
+  function restingSlot() {
+    const top = parseFloat(getComputedStyle(canvas).top) || 0;
+    return { top, bottom: top + canvas.offsetHeight };
+  }
+
   // mask = how much of the Rive canvas has left the landing (hero) section.
   //   0   = every pixel of the canvas still sits over the hero
   //   100 = the canvas has fully left the hero (or the page has no hero)
@@ -56,11 +65,11 @@
     if (!h) return 100;
     const hero = h.getBoundingClientRect();
     if (hero.height <= 0) return 100;
-    // Resting position (offsetTop/Height ignore the hide-on-scroll transform).
-    const cTop = canvas.offsetTop, cH = canvas.offsetHeight;
+    const slot = restingSlot();
+    const cH = slot.bottom - slot.top;
     if (cH <= 0) return 0;
-    const outside = cTop + cH - hero.bottom; // px of canvas below the hero's bottom edge
-    return Math.max(0, Math.min(1, outside / c.height)) * 100;
+    const outside = slot.bottom - hero.bottom; // px of canvas below the hero's bottom edge
+    return Math.max(0, Math.min(1, outside / cH)) * 100;
   }
 
   let scrollTicking = false;
@@ -84,14 +93,22 @@
     canvas.style.transition = animate ? SPRING : 'none';
     canvas.style.transform = px ? `translateY(${-px}px)` : '';
   }
+  // True while any part of the canvas slot is still over the landing hero,
+  // i.e. the mask sweep hasn't finished — keep the arrow in view for it.
+  function overHero() {
+    const h = heroEl();
+    if (!h) return false;
+    const hero = h.getBoundingClientRect();
+    return hero.height > 0 && hero.bottom > restingSlot().top;
+  }
   function onScrollHide() {
     const y = Math.max(0, window.scrollY);   // ignore iOS top bounce
     const dy = y - lastY;
     lastY = y;
-    if (menuOpen || y <= 0) { if (hiddenBy) placeCanvas(0, true); return; }
+    if (menuOpen || y <= 0 || overHero()) { if (hiddenBy) placeCanvas(0, true); return; }
     if (dy > 0) {
       // Move up with the page until fully off-screen.
-      const max = canvas.offsetTop + canvas.offsetHeight + 8;
+      const max = restingSlot().bottom + 8;
       const next = Math.min(max, hiddenBy + dy);
       if (next !== hiddenBy) placeCanvas(next, false);
     } else if (dy < 0 && hiddenBy) {
