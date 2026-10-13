@@ -31,7 +31,7 @@
   visibility: hidden;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.4s;
 }
-.nav-drawer   { z-index: 180; width: min(478px, 100%); }
+.nav-drawer   { z-index: 180; width: min(478px, 100%); }  /* sized per Figma below */
 .m-nav-drawer { z-index: 190; left: 0; }
 /* Top row — empty 40px slot under the fixed Rive canvas. */
 .nav-drawer__top,
@@ -200,5 +200,42 @@
   .m-nav-drawer .menu-blocks__row i {
     width: calc(25 * var(--u));
     height: calc(25 * var(--u));
+  }
+}
+
+/* Desktop menu — Figma "LandingPage" 1539-2586 (1748×1117): 478 panel,
+   36px links in 70px rows, arrows centred. Scales with the window so the
+   panel keeps the Figma proportions; --d = 1px at 1748 wide, held between
+   0.7× and 1.5× so text stays readable on small laptops / ultrawides. */
+@media (min-width: 501px) {
+  .nav-drawer {
+    --d: clamp(0.7px, calc(100vw / 1748), 1.5px);
+    width: min(calc(478 * var(--d)), 100%);
+    padding: calc(24 * var(--d));
+  }
+  .nav-drawer__top { height: calc(40 * var(--d)); }
+  .nav-drawer__logo-box {
+    top: calc(24 * var(--d));
+    left: calc(24 * var(--d));
+    width: calc(80 * var(--d));
+    height: calc(80 * var(--d));
+  }
+  .nav-drawer__menu li { height: calc(70 * var(--d)); }
+  .nav-drawer__menu .nav-link:not(.nav-arrow) {
+    font-size: calc(36 * var(--d));
+    line-height: calc(54 * var(--d)); /* Figma text box 54 → 8 + 54 + 8 = 70 row */
+    letter-spacing: calc(1.08 * var(--d));
+    padding: calc(8 * var(--d));
+  }
+  .nav-arrow,
+  .nav-arrow img {
+    width: calc(40 * var(--d));
+    height: calc(40 * var(--d));
+  }
+  .nav-drawer .menu-blocks,
+  .nav-drawer .menu-blocks__row { gap: calc(4 * var(--d)); }
+  .nav-drawer .menu-blocks__row i {
+    width: calc(25 * var(--d));
+    height: calc(25 * var(--d));
   }
 }
