@@ -590,13 +590,13 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="menu.css?v=10">
+  <link rel="stylesheet" href="menu.css?v=11">
 
   <!-- Rive runtime + CVTA loader bootstrap. Deferred so parsing isn't blocked,
        but the overlay <div> below is already in the DOM so first paint is covered. -->
   <script defer src="https://unpkg.com/@rive-app/canvas@latest"></script>
   <script defer src="Rive/loader.js"></script>
-  <script defer src="Rive/menubar.js?v=3"></script>
+  <script defer src="Rive/menubar.js?v=4"></script>
 </head>
 <body>
 
@@ -615,9 +615,9 @@
 
   <!-- NAV DRAWER -->
   <nav class="nav-drawer" id="navDrawer">
-    <div class="nav-drawer__logo-box" aria-hidden="true">
+    <a href="index.html" class="nav-drawer__logo-box nav-link" aria-label="CVTA — home">
       <img src="images/menu-logo-cvta.png" alt="">
-    </div>
+    </a>
 
     <!-- Close is handled by the fixed Rive canvas (#nav-rive-canvas) which sits on top. -->
     <div class="nav-drawer__top"></div>
@@ -1088,9 +1088,9 @@
          opened by the fixed .nav-trigger (shared with desktop). -->
     <nav class="m-nav-drawer" id="mNavDrawer" aria-hidden="true">
       <div class="m-nav-drawer__top">
-        <div class="m-nav-drawer__logo" aria-hidden="true">
+        <a href="index.html" class="m-nav-drawer__logo m-nav-link" aria-label="CVTA — home">
           <img src="images/menu-logo-cvta.png" alt="">
-        </div>
+        </a>
         <!-- The Rive canvas (#nav-rive-canvas) sits in this slot via position:fixed
              and shows an X when arrowClicked=true, so no inline close button needed. -->
       </div>

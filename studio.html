@@ -251,11 +251,11 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="menu.css?v=10">
+  <link rel="stylesheet" href="menu.css?v=11">
 
   <script defer src="https://unpkg.com/@rive-app/canvas@latest"></script>
   <script defer src="Rive/loader.js"></script>
-  <script defer src="Rive/menubar.js?v=3"></script>
+  <script defer src="Rive/menubar.js?v=4"></script>
 </head>
 <body>
 
@@ -269,9 +269,9 @@
 
   <!-- NAV DRAWER -->
   <nav class="nav-drawer" id="navDrawer">
-    <div class="nav-drawer__logo-box" aria-hidden="true">
+    <a href="index.html" class="nav-drawer__logo-box nav-link" aria-label="CVTA — home">
       <img src="images/menu-logo-cvta.png" alt="">
-    </div>
+    </a>
 
     <!-- Close is handled by the fixed Rive canvas (#nav-rive-canvas). -->
     <div class="nav-drawer__top"></div>
@@ -550,7 +550,7 @@
 
     <nav class="m-nav-drawer" id="mNavDrawer" aria-hidden="true">
       <div class="m-nav-drawer__top">
-        <div class="m-nav-drawer__logo" aria-hidden="true"><img src="images/menu-logo-cvta.png" alt=""></div>
+        <a href="index.html" class="m-nav-drawer__logo m-nav-link" aria-label="CVTA — home"><img src="images/menu-logo-cvta.png" alt=""></a>
         <!-- Rive canvas (#nav-rive-canvas) handles the close via arrowClicked=false. -->
       </div>
       <ul class="m-nav-drawer__menu">

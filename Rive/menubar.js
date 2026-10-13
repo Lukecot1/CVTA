@@ -12,6 +12,10 @@
        internally shows an arrow when false, X when true). Observing
        this drives the drawer open/close.
 
+   Scroll behaviour: scrolling down carries the canvas up and out of view
+   with the page; any scroll up (even 1px) springs it straight back. It
+   always shows at the top of the page and while the menu is open.
+
    Property names mirror the ones embedded in the .riv binary exactly
    (note lowercase 'p' in `maskproperty`). */
 (function () {
@@ -52,9 +56,10 @@
     if (!h) return 100;
     const hero = h.getBoundingClientRect();
     if (hero.height <= 0) return 100;
-    const c = canvas.getBoundingClientRect();
-    if (c.height <= 0) return 0;
-    const outside = c.bottom - hero.bottom; // px of canvas below the hero's bottom edge
+    // Resting position (offsetTop/Height ignore the hide-on-scroll transform).
+    const cTop = canvas.offsetTop, cH = canvas.offsetHeight;
+    if (cH <= 0) return 0;
+    const outside = cTop + cH - hero.bottom; // px of canvas below the hero's bottom edge
     return Math.max(0, Math.min(1, outside / c.height)) * 100;
   }
 
@@ -67,6 +72,37 @@
       scrollTicking = false;
     });
   }
+
+  // ── Hide on scroll down, spring back on scroll up ─────────────────────
+  let menuOpen = false;
+  let lastY = Math.max(0, window.scrollY);
+  let hiddenBy = 0; // px the canvas is pushed up (0 = fully shown)
+  const SPRING = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+  function placeCanvas(px, animate) {
+    hiddenBy = px;
+    canvas.style.transition = animate ? SPRING : 'none';
+    canvas.style.transform = px ? `translateY(${-px}px)` : '';
+  }
+  function onScrollHide() {
+    const y = Math.max(0, window.scrollY);   // ignore iOS top bounce
+    const dy = y - lastY;
+    lastY = y;
+    if (menuOpen || y <= 0) { if (hiddenBy) placeCanvas(0, true); return; }
+    if (dy > 0) {
+      // Move up with the page until fully off-screen.
+      const max = canvas.offsetTop + canvas.offsetHeight + 8;
+      const next = Math.min(max, hiddenBy + dy);
+      if (next !== hiddenBy) placeCanvas(next, false);
+    } else if (dy < 0 && hiddenBy) {
+      placeCanvas(0, true);
+    }
+  }
+  window.addEventListener('scroll', onScrollHide, { passive: true });
+  document.addEventListener('cvta:drawer-toggle', (e) => {
+    menuOpen = !!(e.detail && e.detail.open);
+    if (menuOpen && hiddenBy) placeCanvas(0, true);
+  });
 
   const riveInstance = new rive.Rive({
     src: rivUrl,

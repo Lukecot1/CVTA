@@ -7,7 +7,7 @@
      top row (40px — the fixed Rive canvas sits here as the X)
      menu list (centred)
      colour-block stack (bottom-right)
-   CVTA logo 80×80 absolute top-left. */
+   CVTA logo 80×80 absolute top-left, links to the home page. */
 
 .nav-drawer,
 .m-nav-drawer {
@@ -50,7 +50,8 @@
   width: 80px;
   height: 80px;
   overflow: hidden;
-  pointer-events: none;
+  display: block;
+  z-index: 1; /* tappable — links back to the home page */
 }
 .nav-drawer__logo-box img,
 .m-nav-drawer__logo img {
