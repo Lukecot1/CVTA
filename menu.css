@@ -168,9 +168,10 @@
   .m-nav-drawer__logo { left: 12px; }
 }
 
-/* Mobile menu scales with the screen so it keeps the Figma proportions
-   (designed on a 393pt-wide iPhone) on wider phones such as the 430pt
-   Plus / Pro Max. --u = 1px on a 393-wide screen. */
+/* Mobile menu — Figma "iPhone Menu" 1567-231 (393×852): 36px links in
+   70px rows, arrows centred in the row. Scales with the screen so it keeps
+   the Figma proportions on wider phones (Plus / Pro Max).
+   --u = 1px on a 393-wide screen. */
 @media (max-width: 500px) {
   .m-nav-drawer {
     --u: calc(100vw / 393);
@@ -183,10 +184,11 @@
     width: calc(80 * var(--u));
     height: calc(80 * var(--u));
   }
-  .m-nav-drawer__menu li { height: calc(88 * var(--u)); }
+  .m-nav-drawer__menu li { height: calc(70 * var(--u)); }
   .m-nav-drawer__menu .m-nav-link:not(.m-nav-arrow) {
-    font-size: calc(48 * var(--u));
-    letter-spacing: calc(1.44 * var(--u));
+    font-size: calc(36 * var(--u));
+    line-height: calc(54 * var(--u)); /* Figma text box: 54 → 8 + 54 + 8 = 70 row */
+    letter-spacing: calc(1.08 * var(--u));
     padding: calc(8 * var(--u));
   }
   .m-nav-arrow,
