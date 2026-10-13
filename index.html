@@ -330,9 +330,11 @@
 
       html, body { overflow-x: hidden; }
       /* Safari fills the areas behind its status bar / toolbar (and the
-         overscroll bounce) with the page colour: sky blue at the top to
-         continue the hero image, black at the bottom under the contact card. */
-      html { background: linear-gradient(to bottom, #4498d0 50%, #000 50%); }
+         overscroll bounce) with the page's solid background colour. Sky blue
+         continues the hero image at the top; the script below swaps it to
+         black once the hero has scrolled away, to match the contact card. */
+      html { background-color: #4498d0; }
+      html.past-hero { background-color: #000; }
 
       .mobile-view {
         display: flex;
@@ -870,6 +872,18 @@
     if (closeBtn) closeBtn.addEventListener('click', closeViaRive);
     overlay.addEventListener('click', closeViaRive);
     document.querySelectorAll('.nav-link, .m-nav-link').forEach(l => l.addEventListener('click', closeViaRive));
+
+    // Mobile page colour behind Safari's bars: sky over the hero, black after.
+    const mHero = document.querySelector('.m-hero');
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    function syncPageColour() {
+      const past = !!mHero && mHero.getBoundingClientRect().bottom <= 0;
+      document.documentElement.classList.toggle('past-hero', past);
+      if (themeMeta) themeMeta.content = past ? '#000000' : '#4498d0';
+    }
+    syncPageColour();
+    window.addEventListener('scroll', syncPageColour, { passive: true });
+    window.addEventListener('resize', syncPageColour);
 
     // SCROLL REVEAL
     const observer = new IntersectionObserver(entries => {
