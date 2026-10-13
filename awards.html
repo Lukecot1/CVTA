@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Awards — Cottrell Vermeulen Tucker Architecture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Rag Narrow';
+      src: url('fonts/Rag-NarrowRegular.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      overflow-x: hidden;
+      background: #fff;
+    }
+
+    /* ── OVERLAY (menu backdrop) ─────────────────────────── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 150;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+
+    /* Fixed Rive-driven menu arrow — shared across every page.
+       maskproperty sits at 100 on this page (no hero). */
+    #nav-rive-canvas {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      z-index: 200;
+      cursor: pointer;
+      display: block;
+    }
+
+    /* ── AWARDS PAGE — Figma Awards 1474-1845 (filter shut) / 1474-1894 (open) ──
+       White page, py-24 px-12 (24 on desktop to line up with the arrow),
+       every block 12px apart:
+         40px arrow slot · title 68px · 2px rule
+         filter row (shut: label + icon · open: pills, then up-arrow) · 2px rule
+         award sections (name 24px/1.5 + year 12px · 6 · 2px rule) */
+    .s-awards {
+      min-height: 100vh;
+      background: #fff;
+      color: #000;
+      padding: 76px 24px 24px; /* 24 + 40px arrow slot + 12 */
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .s-awards__title {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 68px;
+      font-weight: normal;
+      line-height: 103px; /* Figma text box height */
+      letter-spacing: 2.04px;
+      word-break: break-word;
+    }
+    .s-awards__rule {
+      width: 100%;
+      height: 2px;
+      background: #000;
+    }
+
+    /* Round 40px yellow icon buttons (filter / up-arrow) */
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+    .icon-btn img {
+      width: 40px;
+      height: 40px;
+      display: block;
+      transform-origin: 50% 50%;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .icon-btn:hover img { transform: rotate(-45deg); }
+
+    /* ── FILTER ROW ──────────────────────────────────────────
+       SHUT (default): "Filter Awards" + filter icon.
+       OPEN: pills (wrap, 10px gaps) then the up-arrow on its own row, 12px apart.
+       Pills + up-arrow slide up with an L→R stagger (same motion as Projects). */
+    .filter-view--closed {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .filter-label {
+      font-size: 24px;
+      line-height: normal;
+      letter-spacing: 0.72px;
+      white-space: nowrap;
+    }
+    .filter-view--open { display: none; flex-direction: column; gap: 12px; }
+    .filter-row.open .filter-view--closed,
+    .filter-row.is-closing .filter-view--closed { display: none; }
+    .filter-row.open .filter-view--open,
+    .filter-row.is-closing .filter-view--open { display: flex; }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 10px;
+    }
+    .filter-pill {
+      background: #efefef;
+      color: #000;
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 19px; /* Figma text box height → 39px pill */
+      padding: 10px 16px;
+      border-radius: 24px;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .filter-pill:hover:not(.is-selected) { background: #e2e2e2; }
+    .filter-pill.is-selected { background: #fadd39; }
+    .filter-close-btn { align-self: flex-end; }
+
+    @keyframes filterSlideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .filter-row.open .filter-pill,
+    .filter-row.open .filter-close-btn {
+      animation: filterSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+      animation-delay: calc(var(--i, 0) * 60ms);
+    }
+    @keyframes filterSlideDown {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(40px); }
+    }
+    .filter-row.is-closing .filter-pill,
+    .filter-row.is-closing .filter-close-btn {
+      animation: filterSlideDown 0.4s cubic-bezier(0.4, 0, 0.8, 0.2) forwards;
+      animation-delay: calc((7 - var(--i, 0)) * 50ms);
+    }
+    @keyframes filterLabelOut {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-20px); }
+    }
+    @keyframes filterLabelIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .filter-view--closed.is-exiting  { animation: filterLabelOut 0.3s ease forwards; }
+    .filter-view--closed.is-entering { animation: filterLabelIn 0.3s ease; }
+
+    /* ── AWARD LIST — sections 12px apart, each: text · 6px · 2px rule ── */
+    .award-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .award {
+      display: flex;
+      flex-direction: column;
+      word-break: break-word;
+    }
+    .award[hidden] { display: none; }
+    .award::after {
+      content: '';
+      height: 2px;
+      margin-top: 6px;
+      background: #000;
+    }
+    .award__name {
+      font-size: 24px;
+      line-height: 1.5;
+      letter-spacing: 0.72px;
+      color: #1a1a1a;
+    }
+    .award__year {
+      font-size: 12px;
+      line-height: 18px; /* Figma text box height */
+      letter-spacing: 0.36px;
+    }
+    .award-list__empty {
+      font-size: 24px;
+      line-height: 1.5;
+      letter-spacing: 0.72px;
+      color: #1a1a1a;
+    }
+
+    /* ── PAGE LOADER (Rive) ───────────────────────────────── */
+    #cvta-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 450ms cubic-bezier(.4, 0, .2, 1);
+    }
+    #cvta-loader.is-done { opacity: 0; pointer-events: none; }
+    #cvta-loader-canvas {
+      width:  min(30vw, 30vh, 240px);
+      height: min(30vw, 30vh, 240px);
+      display: block;
+    }
+
+    /* ═════════ MOBILE (≤ 500px) ═════════ */
+    .mobile-view { display: none; }
+
+    @media (max-width: 500px) {
+      .overlay, .nav-drawer, #cvta-loader { display: none !important; }
+      .mobile-view { display: block; }
+      .s-awards { padding: 76px 12px 24px; }
+    }
+  </style>
+  <link rel="stylesheet" href="menu.css?v=7">
+
+  <script defer src="https://unpkg.com/@rive-app/canvas@latest"></script>
+  <script defer src="Rive/loader.js"></script>
+  <script defer src="Rive/menubar.js?v=3"></script>
+</head>
+<body>
+
+  <!-- Page loader overlay — removed from DOM once loadEnd fires. -->
+  <div id="cvta-loader" aria-hidden="true">
+    <canvas id="cvta-loader-canvas" width="960" height="960"></canvas>
+  </div>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- NAV DRAWER -->
+  <nav class="nav-drawer" id="navDrawer">
+    <div class="nav-drawer__logo-box" aria-hidden="true">
+      <img src="images/menu-logo-cvta.png" alt="">
+    </div>
+    <!-- Close is handled by the fixed Rive canvas (#nav-rive-canvas). -->
+    <div class="nav-drawer__top"></div>
+    <ul class="nav-drawer__menu">
+      <li><a href="index.html" class="nav-link">Home</a><a href="index.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="projects.html" class="nav-link">Projects</a><a href="projects.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="studio.html" class="nav-link">Studio</a><a href="studio.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="awards.html" class="nav-link">Awards</a><a href="awards.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="contact.html" class="nav-link">Contact</a><a href="contact.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+    </ul>
+    <div class="menu-blocks" aria-hidden="true">
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </nav>
+
+  <main class="s-awards">
+    <h1 class="s-awards__title">Awards</h1>
+    <div class="s-awards__rule"></div>
+
+    <div class="filter-row" id="filterRow">
+      <div class="filter-view--closed">
+        <p class="filter-label">Filter Awards</p>
+        <button class="icon-btn" id="filterOpenBtn" aria-label="Open filter">
+          <img src="images/mobile/filter-icon.svg" alt="">
+        </button>
+      </div>
+      <div class="filter-view--open" aria-hidden="true">
+        <div class="filter-pills">
+          <button class="filter-pill is-selected" type="button" style="--i:0" data-filter="all">All</button>
+          <button class="filter-pill" type="button" style="--i:1" data-filter="won">Won</button>
+          <button class="filter-pill" type="button" style="--i:2" data-filter="shortlisted">Shortlisted</button>
+          <button class="filter-pill" type="button" style="--i:3" data-filter="1990s">1990s</button>
+          <button class="filter-pill" type="button" style="--i:4" data-filter="2000s">2000s</button>
+          <button class="filter-pill" type="button" style="--i:5" data-filter="2010s">2010s</button>
+          <button class="filter-pill" type="button" style="--i:6" data-filter="2020s">2020s</button>
+        </div>
+        <button class="icon-btn filter-close-btn" id="filterCloseBtn" style="--i:7" aria-label="Close filter">
+          <img src="images/mobile/filter-up-arrow.svg" alt="">
+        </button>
+      </div>
+    </div>
+
+    <div class="s-awards__rule"></div>
+
+    <!-- data-status / data-years drive the filter. Brick + Retrofit show "20??"
+         per the Figma; their filter years come from the Figma "Awards — All" list. -->
+    <ul class="award-list" id="awardList">
+      <li class="award" data-status="won" data-years="2001">
+        <p class="award__name">Stephen Lawrence Prize, The Cardboard building.</p>
+        <p class="award__year">2001</p>
+      </li>
+      <li class="award" data-status="won" data-years="2016">
+        <p class="award__name">Architect of the Year</p>
+        <p class="award__year">2016</p>
+      </li>
+      <li class="award" data-status="won" data-years="2011 2016 2018">
+        <p class="award__name">Education Architect of the Year</p>
+        <p class="award__year">2011, 2016, 2018</p>
+      </li>
+      <li class="award" data-status="won" data-years="2002 2003 2005 2012 2013 2018 2022">
+        <p class="award__name">RIBA Awards</p>
+        <p class="award__year">2002, 2003, 2005, 2012, 2013, 2018, 2022</p>
+      </li>
+      <li class="award" data-status="won shortlisted" data-years="2011 2013 2015 2016 2021 2025">
+        <p class="award__name">Brick Awards</p>
+        <p class="award__year">20??</p>
+      </li>
+      <li class="award" data-status="won shortlisted" data-years="2011 2014 2015 2016 2018">
+        <p class="award__name">Retrofit Awards</p>
+        <p class="award__year">20??</p>
+      </li>
+    </ul>
+    <p class="award-list__empty" id="awardEmpty" hidden>No awards in this selection.</p>
+  </main>
+
+  <script>
+    // Drawer — open/close driven by the Rive canvas via `cvta:drawer-toggle` events.
+    const overlay  = document.getElementById('overlay');
+    // `menu-open` on <html> mirrors the Rive `arrowClicked` boolean. CSS
+    // (menu.css) decides which menu that shows — desktop slide-in drawer or
+    // mobile full-screen page — so the menu stays up across any resize.
+    function setMenuOpen(open) {
+      document.documentElement.classList.toggle('menu-open', open);
+      const m = document.getElementById('mNavDrawer');
+      if (m) m.setAttribute('aria-hidden', String(!open));
+    }
+    const closeDrawer = () => setMenuOpen(false);
+    document.addEventListener('cvta:drawer-toggle', (e) => setMenuOpen(!!(e.detail && e.detail.open)));
+    const closeViaRive = () => (window.CVTANav ? window.CVTANav.close() : closeDrawer());
+    overlay.addEventListener('click', closeViaRive);
+
+    // Filter open/close — shut by default; icon reveals pills with staggered slide-up.
+    const filterRow = document.getElementById('filterRow');
+    const filterViewOpen = filterRow.querySelector('.filter-view--open');
+    const filterViewClosed = filterRow.querySelector('.filter-view--closed');
+
+    document.getElementById('filterOpenBtn').addEventListener('click', () => {
+      if (filterRow.classList.contains('open')) return;
+      filterViewClosed.classList.add('is-exiting');
+      setTimeout(() => {
+        filterRow.classList.add('open');
+        filterViewClosed.classList.remove('is-exiting');
+        filterViewOpen.removeAttribute('aria-hidden');
+        filterViewClosed.setAttribute('aria-hidden', 'true');
+      }, 300);
+    });
+    document.getElementById('filterCloseBtn').addEventListener('click', () => {
+      if (filterRow.classList.contains('is-closing')) return;
+      filterRow.classList.add('is-closing');
+      setTimeout(() => {
+        filterRow.classList.remove('open', 'is-closing');
+        filterViewOpen.setAttribute('aria-hidden', 'true');
+        filterViewClosed.removeAttribute('aria-hidden');
+        filterViewClosed.classList.add('is-entering');
+        setTimeout(() => filterViewClosed.classList.remove('is-entering'), 300);
+      }, 750);
+    });
+
+    // Filter pills — single selection; Won/Shortlisted match status, decades match years.
+    const awards = [...document.querySelectorAll('.award')];
+    const awardEmpty = document.getElementById('awardEmpty');
+    function matches(award, filter) {
+      if (filter === 'all') return true;
+      if (/^\d{4}s$/.test(filter)) {
+        const decade = filter.slice(0, 3);
+        return award.dataset.years.split(' ').some(y => y.startsWith(decade));
+      }
+      return award.dataset.status.split(' ').includes(filter);
+    }
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('is-selected'));
+        pill.classList.add('is-selected');
+        let shown = 0;
+        awards.forEach(a => { a.hidden = !matches(a, pill.dataset.filter); if (!a.hidden) shown++; });
+        awardEmpty.hidden = shown > 0;
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.nav-link, .m-nav-link').forEach(l => l.addEventListener('click', closeViaRive));
+    });
+  </script>
+
+  <!-- Fixed Rive-driven nav arrow (shared across desktop + mobile).
+       Mounted by Rive/menubar.js. -->
+  <canvas id="nav-rive-canvas" width="80" height="80" aria-label="Open menu"></canvas>
+
+  <div class="mobile-view">
+    <nav class="m-nav-drawer" id="mNavDrawer" aria-hidden="true">
+      <div class="m-nav-drawer__top">
+        <div class="m-nav-drawer__logo" aria-hidden="true"><img src="images/menu-logo-cvta.png" alt=""></div>
+        <!-- Rive canvas (#nav-rive-canvas) handles the close via arrowClicked=false. -->
+      </div>
+      <ul class="m-nav-drawer__menu">
+        <li><a href="index.html" class="m-nav-link">Home</a><a href="index.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="projects.html" class="m-nav-link">Projects</a><a href="projects.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="studio.html" class="m-nav-link">Studio</a><a href="studio.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="awards.html" class="m-nav-link">Awards</a><a href="awards.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="contact.html" class="m-nav-link">Contact</a><a href="contact.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      </ul>
+      <div class="menu-blocks" aria-hidden="true">
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </nav>
+  </div>
+
+</body>
+</html>

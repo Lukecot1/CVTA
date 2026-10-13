@@ -39,30 +39,6 @@
     }
     .overlay.open { opacity: 1; pointer-events: auto; }
 
-    /* ── NAV DRAWER (shared pattern) ─────────────────────── */
-    .nav-drawer {
-      position: fixed; top: 0; right: 0;
-      width: 734px; height: 100vh;
-      background: #a4c8ed;
-      padding: 24px;
-      display: flex; flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 180;
-    }
-    .nav-drawer.open { transform: translateX(0); }
-    .nav-drawer__top { display: flex; align-items: flex-start; justify-content: flex-end; flex-shrink: 0; width: 100%; }
-    .nav-drawer__logo-box { position: absolute; top: 24px; left: 24px; width: 80px; height: 80px; overflow: hidden; pointer-events: none; }
-    .nav-drawer__logo-box img { position: absolute; top: -58%; left: -58%; width: 216%; height: 216%; display: block; max-width: none; }
-    .nav-drawer__menu { list-style: none; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-    .nav-drawer__menu li { height: 88px; display: flex; align-items: center; justify-content: space-between; }
-    .nav-drawer__menu a { font-family: 'Rag Narrow', Arial, sans-serif; font-size: 48px; letter-spacing: 1.44px; color: #000; text-decoration: none; line-height: 1; transition: opacity 0.2s; }
-    .nav-drawer__menu a:hover { opacity: 0.5; }
-    .nav-arrow { width: 40px; height: 40px; flex-shrink: 0; display: block; }
-    .nav-arrow img { width: 40px; height: 40px; display: block; transform-origin: 50% 50%; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-    .nav-drawer__menu li:hover .nav-arrow img { transform: rotate(-45deg); }
-    .nav-drawer__footer { font-family: 'Rag Narrow', Arial, sans-serif; font-size: 24px; letter-spacing: 0.72px; color: #000; flex-shrink: 0; margin-top: 40px; }
-
     /* ── PROJECTS PAGE ───────────────────────────────────── */
     /* Figma: bg #2f9351 (green), pt-24 pb-88 px-234, inner Main gap-24 */
     .s-projects-page {
@@ -218,7 +194,7 @@
     }
 
     /* Fixed Rive-driven menu arrow — shared across every page. See index.html for
-       the full comment block. maskproperty stays at 0 on this page (no hero). */
+       the full comment block. maskproperty sits at 100 on this page (no hero). */
     #nav-rive-canvas {
       position: fixed;
       top: 24px;
@@ -230,7 +206,11 @@
       display: block;
     }
 
-    /* ═════════ MOBILE VIEW (≤ 500px) — Figma iPhone Projects 1453-1033 ═════════ */
+    /* ═════════ MOBILE VIEW (≤ 500px) — Figma iPhone Projects 1474-1551 ═════════
+       Green page, px-12 py-24, every block 12px apart:
+         header (40px arrow slot · 4 · title 68px · 6 · 2px rule)
+         filter row (label 24px + 40px icon) · 2px rule
+         project sections (text + 99×120 image · 6 · 2px rule) */
     .mobile-view { display: none; }
 
     @media (max-width: 500px) {
@@ -239,9 +219,10 @@
 
       html, body { background: #2f9351; }
 
-      /* Mobile view container — vertical scroll, green bg. */
       .mobile-view {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
         width: 100%;
         background: #2f9351;
         padding: 24px 12px;
@@ -249,15 +230,15 @@
         color: #000;
       }
 
-      /* ── HEADER (Projects title + rule) ────────────────── */
-      .m-projects-header { margin-top: 60px; /* clear fixed arrow */ }
+      /* ── HEADER — 40px slot for the fixed Rive arrow, 4px gap, then title ── */
+      .m-projects-header { padding-top: 44px; }
       .m-projects-header__title {
         font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 96px;
-        line-height: 103px;
-        letter-spacing: 2.88px;
+        font-size: 68px;
+        line-height: 103px; /* Figma text box height */
+        letter-spacing: 2.04px;
         color: #000;
-        word-break: break-word;
+        white-space: nowrap;
       }
       .m-projects-header__rule {
         width: 100%;
@@ -268,16 +249,20 @@
 
       /* ── FILTER ROW — reuses shared .filter-row / .filter-view / .filter-pill
          styles from the main stylesheet (open/close + stagger animations come for free).
-         Mobile tweaks: stack pills then arrow vertically (Figma 1453-781 puts the
-         close arrow on its own row below the pills), nudge label + pill sizing down. */
-      .mobile-view .filter-row { margin-top: 12px; }
+         Closed (Figma): "Filter Projects" 24px left, 40px yellow icon right.
+         Open: pills then the close arrow on its own row (Figma 1453-781). */
       .mobile-view .filter-view { gap: 12px; }
+      .mobile-view .filter-view--closed { align-items: flex-start; }
       .mobile-view .filter-view--open {
         flex-direction: column;
         align-items: stretch;
       }
       .mobile-view .filter-close-btn { align-self: flex-end; }
-      .mobile-view .filter-label { font-size: 28px; letter-spacing: 0.84px; }
+      .mobile-view .filter-label {
+        font-size: 24px;
+        line-height: normal;
+        letter-spacing: 0.72px;
+      }
       .mobile-view .filter-pill { font-size: 18px; padding: 8px 14px; }
 
       /* Rule under filter row */
@@ -285,48 +270,49 @@
         width: 100%;
         height: 2px;
         background: #000;
-        margin-top: 12px;
       }
 
-      /* ── PROJECT LIST ────────────────────────────────── */
+      /* ── PROJECT LIST — sections 12px apart, each: content · 6px · 2px rule ── */
       .m-projects-list {
         list-style: none;
         padding: 0;
         margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
       }
       .m-projects-item {
-        padding: 12px 0;
+        padding-bottom: 6px;
         border-bottom: 2px solid #000;
       }
       .m-projects-item a {
         display: flex;
         align-items: flex-start;
-        justify-content: space-between;
         gap: 6px;
         text-decoration: none;
         color: #000;
       }
       .m-projects-item__text {
-        flex: 1;
+        flex: 1 0 0;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 120px;
+        align-self: stretch;
         min-width: 0;
+        word-break: break-word;
       }
       .m-projects-item__name {
         font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 32px;
-        line-height: 36px;
-        letter-spacing: 0.96px;
+        font-size: 24px;
+        line-height: normal;
+        letter-spacing: 0.72px;
         color: #000;
-        word-break: break-word;
       }
       .m-projects-item__year {
         font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 16px;
-        line-height: 18px;
-        letter-spacing: 0.48px;
+        font-size: 12px;
+        line-height: normal;
+        letter-spacing: 0.36px;
         color: #000;
       }
       .m-projects-item__img {
@@ -336,65 +322,13 @@
         object-fit: cover;
         display: block;
       }
-
-      /* ── MOBILE NAV DRAWER (same spec as index.html mobile drawer) ── */
-      .m-nav-drawer {
-        position: fixed;
-        inset: 0;
-        z-index: 190;
-        background: #a4c8ed;
-        padding: 24px 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        color: #000;
-        transform: translateX(100%);
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow-y: auto;
-      }
-      .m-nav-drawer.is-open { transform: translateX(0); }
-
-      .m-nav-drawer__top {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        width: 100%;
-      }
-      .m-nav-drawer__logo { width: 80px; height: 80px; overflow: hidden; }
-      .m-nav-drawer__logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-      .m-nav-drawer__menu { list-style: none; padding: 0; margin: 0; width: 100%; display: flex; flex-direction: column; }
-      .m-nav-drawer__menu li { height: 88px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
-      .m-nav-drawer__menu a {
-        font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 48px;
-        line-height: normal;
-        letter-spacing: 1.44px;
-        color: #000;
-        text-decoration: none;
-        padding: 8px;
-      }
-      .m-nav-drawer__menu a:hover { opacity: 0.5; }
-      .m-nav-arrow { width: 40px; height: 40px; display: block; flex-shrink: 0; }
-      .m-nav-arrow img { width: 100%; height: 100%; display: block; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-      .m-nav-drawer__menu li:hover .m-nav-arrow img { transform: rotate(-45deg); }
-
-      .m-nav-drawer__footer {
-        font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 24px;
-        line-height: normal;
-        letter-spacing: 0.72px;
-        color: #000;
-        width: 357px;
-        max-width: 100%;
-        word-break: break-word;
-      }
     }
   </style>
+  <link rel="stylesheet" href="menu.css?v=7">
 
   <script defer src="https://unpkg.com/@rive-app/canvas@latest"></script>
   <script defer src="Rive/loader.js"></script>
-  <script defer src="Rive/menubar.js"></script>
+  <script defer src="Rive/menubar.js?v=3"></script>
 </head>
 <body>
 
@@ -414,13 +348,17 @@
     <!-- Close is handled by the fixed Rive canvas (#nav-rive-canvas). -->
     <div class="nav-drawer__top"></div>
     <ul class="nav-drawer__menu">
-      <li><a href="index.html" class="nav-link">Home</a><span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-      <li><a href="projects.html" class="nav-link">Projects</a><span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-      <li><a href="studio.html" class="nav-link">Studio</a><span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-      <li><a href="index.html#awards" class="nav-link">Awards</a><span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-      <li><a href="index.html#contact" class="nav-link">Contact</a><span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
+      <li><a href="index.html" class="nav-link">Home</a><a href="index.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="projects.html" class="nav-link">Projects</a><a href="projects.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="studio.html" class="nav-link">Studio</a><a href="studio.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="awards.html" class="nav-link">Awards</a><a href="awards.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="contact.html" class="nav-link">Contact</a><a href="contact.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
     </ul>
-    <p class="nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+    <div class="menu-blocks" aria-hidden="true">
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
   </nav>
 
   <main>
@@ -533,26 +471,18 @@
 
   <script>
     // Drawer — open/close driven by the Rive canvas via `cvta:drawer-toggle` events.
-    const drawer   = document.getElementById('navDrawer');
     const overlay  = document.getElementById('overlay');
     const closeBtn = document.getElementById('navClose');
-    const isMobile = () => window.innerWidth <= 500;
-    function openDrawer()  {
-      if (isMobile()) {
-        const m = document.getElementById('mNavDrawer');
-        if (m) { m.classList.add('is-open'); m.setAttribute('aria-hidden','false'); }
-      } else {
-        drawer.classList.add('open'); overlay.classList.add('open');
-      }
-    }
-    function closeDrawer() {
-      drawer.classList.remove('open'); overlay.classList.remove('open');
+    // `menu-open` on <html> mirrors the Rive `arrowClicked` boolean. CSS
+    // (menu.css) decides which menu that shows — desktop slide-in drawer or
+    // mobile full-screen page — so the menu stays up across any resize.
+    function setMenuOpen(open) {
+      document.documentElement.classList.toggle('menu-open', open);
       const m = document.getElementById('mNavDrawer');
-      if (m) { m.classList.remove('is-open'); m.setAttribute('aria-hidden','true'); }
+      if (m) m.setAttribute('aria-hidden', String(!open));
     }
-    document.addEventListener('cvta:drawer-toggle', (e) => {
-      e.detail && e.detail.open ? openDrawer() : closeDrawer();
-    });
+    const closeDrawer = () => setMenuOpen(false);
+    document.addEventListener('cvta:drawer-toggle', (e) => setMenuOpen(!!(e.detail && e.detail.open)));
     const closeViaRive = () => (window.CVTANav ? window.CVTANav.close() : closeDrawer());
     if (closeBtn) closeBtn.addEventListener('click', closeViaRive);
     overlay.addEventListener('click', closeViaRive);
@@ -647,7 +577,7 @@
 
   <div class="mobile-view">
     <header class="m-projects-header">
-      <h1 class="m-projects-header__title">Projects.</h1>
+      <h1 class="m-projects-header__title">Projects</h1>
       <div class="m-projects-header__rule"></div>
     </header>
 
@@ -656,7 +586,7 @@
       <div class="filter-view filter-view--closed">
         <p class="filter-label">Filter Projects</p>
         <button class="page-arrow-btn filter-open-btn" id="mFilterOpenBtn" aria-label="Open filter">
-          <img src="images/filter-icon.svg" alt="">
+          <img src="images/mobile/filter-icon.svg" alt="">
         </button>
       </div>
       <div class="filter-view filter-view--open" aria-hidden="true">
@@ -685,42 +615,42 @@
           <span class="m-projects-item__name">Bellenden Primary school</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/proj-bellenden.png" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-bellenden.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Sir Michael Snyder Building</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/proj-snyder.png" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-snyder.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Central Foundation Girls School</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/proj-central.png" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-central.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Notre Dame School</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/proj-notredame.png" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-notre.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Lyndhurst Primary School</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/proj-lyndhurst.png" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-lyndhurst.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Krishna Avanti Primary School</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/proj-krishna.png" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-krishna.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
@@ -734,21 +664,21 @@
           <span class="m-projects-item__name">Sacred Heart Roman Catholic</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/edu-sacred-heart.jpg" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-sacred-heart.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Westborough Cardboard Building</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/proj-westborough.png" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-westborough.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Streatham and Clapham High School</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/edu-streatham-1.jpg" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-streatham.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
@@ -762,21 +692,21 @@
           <span class="m-projects-item__name">Lilliput</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/proj-lilliput.png" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-lilliput.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Broadway School</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/edu-broadway.jpg" alt="">
+        <img class="m-projects-item__img" src="images/mobile/proj-broadway.png" alt="">
       </a></li>
       <li class="m-projects-item"><a href="snyder.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Brentwood School Reception</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/edu-brentwood-rec.jpg" alt="">
+        <img class="m-projects-item__img" src="images/project-4.png" alt="">
       </a></li>
     </ul>
 
@@ -787,13 +717,17 @@
         <!-- Rive canvas (#nav-rive-canvas) handles the close via arrowClicked=false. -->
       </div>
       <ul class="m-nav-drawer__menu">
-        <li><a href="index.html" class="m-nav-link">Home</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-        <li><a href="projects.html" class="m-nav-link">Projects</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-        <li><a href="studio.html" class="m-nav-link">Studio</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-        <li><a href="index.html#awards" class="m-nav-link">Awards</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-        <li><a href="index.html#contact" class="m-nav-link">Contact</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
+        <li><a href="index.html" class="m-nav-link">Home</a><a href="index.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="projects.html" class="m-nav-link">Projects</a><a href="projects.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="studio.html" class="m-nav-link">Studio</a><a href="studio.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="awards.html" class="m-nav-link">Awards</a><a href="awards.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="contact.html" class="m-nav-link">Contact</a><a href="contact.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
       </ul>
-      <p class="m-nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+      <div class="menu-blocks" aria-hidden="true">
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
     </nav>
   </div>
 

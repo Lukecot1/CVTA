@@ -49,8 +49,6 @@
       z-index: 200;
       cursor: pointer;
       display: block;
-      /* TEMP debug outline — remove once Rive is confirmed painting */
-      outline: 2px solid magenta;
     }
 
     /* ── OVERLAY ─────────────────────────────────────────── */
@@ -65,98 +63,6 @@
       z-index: 150;
     }
     .overlay.open { opacity: 1; pointer-events: auto; }
-
-    /* ── NAV DRAWER ──────────────────────────────────────── */
-    .nav-drawer {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 734px;
-      height: 100vh;
-      background: #a4c8ed;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 180;
-    }
-    .nav-drawer.open { transform: translateX(0); }
-
-    .nav-drawer__top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-end;
-      flex-shrink: 0;
-      width: 100%;
-    }
-
-    /* CVTA logo — absolute top-left per Figma (80×80, zoomed-in crop of larger logo) */
-    .nav-drawer__logo-box {
-      position: absolute;
-      top: 24px;
-      left: 24px;
-      width: 80px;
-      height: 80px;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .nav-drawer__logo-box img {
-      position: absolute;
-      top: -58%;
-      left: -58%;
-      width: 216%;
-      height: 216%;
-      display: block;
-      max-width: none;
-    }
-
-    .nav-drawer__menu {
-      list-style: none;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .nav-drawer__menu li {
-      height: 88px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .nav-drawer__menu a {
-      font-family: 'Rag Narrow', Arial, sans-serif;
-      font-size: 48px;
-      letter-spacing: 1.44px;
-      color: #000;
-      text-decoration: none;
-      line-height: 1;
-      transition: opacity 0.2s;
-    }
-    .nav-drawer__menu a:hover { opacity: 0.5; }
-    .nav-arrow {
-      width: 40px;
-      height: 40px;
-      flex-shrink: 0;
-      display: block;
-    }
-    .nav-arrow img {
-      width: 40px;
-      height: 40px;
-      display: block;
-      transform-origin: 50% 50%;
-      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .nav-drawer__menu li:hover .nav-arrow img { transform: rotate(-45deg); }
-
-    .nav-drawer__footer {
-      font-family: 'Rag Narrow', Arial, sans-serif;
-      font-size: 24px;
-      letter-spacing: 0.72px;
-      color: #000;
-      flex-shrink: 0;
-      margin-top: 40px;
-    }
 
     /* ── SCROLL REVEAL ───────────────────────────────────── */
     .reveal {
@@ -482,6 +388,8 @@
         place-items: center;
       }
       .m-hero__nav svg { width: 100%; height: auto; display: block; }
+      /* CVTA letters — the PNG is used as a mask so they paint in the CVTA
+         pink (#f283b4) instead of the orange baked into the image. */
       .m-hero__logo {
         position: absolute;
         z-index: 1;
@@ -490,94 +398,10 @@
         transform: translate(-50%, -50%);
         width: 263px;
         height: 263px;
-        object-fit: cover;
-      }
-
-      /* ── MOBILE NAV DRAWER ── Figma node 1461-1625
-         Full-screen blue drawer. Slides in from the right (translateX)
-         when .is-open is applied by the shared nav-trigger click handler.
-         CVTA logo top-left, X top-right, 5 big menu items, address at bottom. */
-      .m-nav-drawer {
-        position: fixed;
-        inset: 0;
-        z-index: 190;
-        background: #a4c8ed;
-        padding: 24px 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        color: #000;
-        transform: translateX(100%);
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow-y: auto;
-      }
-      .m-nav-drawer.is-open { transform: translateX(0); }
-
-      .m-nav-drawer__top {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        width: 100%;
-      }
-      .m-nav-drawer__logo {
-        width: 80px;
-        height: 80px;
-        overflow: hidden;
-      }
-      .m-nav-drawer__logo img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
         display: block;
-      }
-      .m-nav-drawer__menu {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-      .m-nav-drawer__menu li {
-        height: 88px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-      }
-      .m-nav-drawer__menu a {
-        font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 48px;
-        line-height: normal;
-        letter-spacing: 1.44px;
-        color: #000;
-        text-decoration: none;
-        padding: 8px;
-      }
-      .m-nav-drawer__menu a:hover { opacity: 0.5; }
-      .m-nav-arrow {
-        width: 40px;
-        height: 40px;
-        display: block;
-        flex-shrink: 0;
-      }
-      .m-nav-arrow img {
-        width: 100%;
-        height: 100%;
-        display: block;
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .m-nav-drawer__menu li:hover .m-nav-arrow img { transform: rotate(-45deg); }
-
-      .m-nav-drawer__footer {
-        font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 24px;
-        line-height: normal;
-        letter-spacing: 0.72px;
-        color: #000;
-        width: 357px;
-        max-width: 100%;
-        word-break: break-word;
+        background: #f283b4;
+        -webkit-mask: url('images/mobile/hero-logo.png') center / cover no-repeat;
+                mask: url('images/mobile/hero-logo.png') center / cover no-repeat;
       }
 
       /* ── 2 · DESCRIPTION ───────────────────────────────────
@@ -746,12 +570,13 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="menu.css?v=7">
 
   <!-- Rive runtime + CVTA loader bootstrap. Deferred so parsing isn't blocked,
        but the overlay <div> below is already in the DOM so first paint is covered. -->
   <script defer src="https://unpkg.com/@rive-app/canvas@latest"></script>
   <script defer src="Rive/loader.js"></script>
-  <script defer src="Rive/menubar.js?v=2"></script>
+  <script defer src="Rive/menubar.js?v=3"></script>
 </head>
 <body>
 
@@ -780,27 +605,31 @@
     <ul class="nav-drawer__menu">
       <li>
         <a href="#hero" class="nav-link">Home</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="#hero" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
       <li>
         <a href="projects.html" class="nav-link">Projects</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="projects.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
       <li>
         <a href="studio.html" class="nav-link">Studio</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="studio.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
       <li>
-        <a href="#awards" class="nav-link">Awards</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="awards.html" class="nav-link">Awards</a>
+        <a href="awards.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
       <li>
-        <a href="#contact" class="nav-link">Contact</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="contact.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
     </ul>
 
-    <p class="nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+    <div class="menu-blocks" aria-hidden="true">
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
   </nav>
 
   <main>
@@ -1015,32 +844,20 @@
    // Wait for the full DOM so the mobile drawer (parsed after this script) exists.
    document.addEventListener('DOMContentLoaded', () => {
     // NAV DRAWER — opening/closing is now driven by the Rive canvas (Rive/menubar.js).
-    // That script dispatches `cvta:drawer-toggle` events; we just show/hide the right
-    // drawer (desktop vs mobile) based on viewport.
-    const drawer   = document.getElementById('navDrawer');
+    // That script dispatches `cvta:drawer-toggle` events whenever `arrowClicked` changes.
     const overlay  = document.getElementById('overlay');
     const closeBtn = document.getElementById('navClose');
-    const mDrawer  = document.getElementById('mNavDrawer');
 
-    const isMobile = () => window.innerWidth <= 500;
-
-    function openDrawer()  {
-      if (isMobile()) {
-        if (mDrawer) { mDrawer.classList.add('is-open'); mDrawer.setAttribute('aria-hidden','false'); }
-      } else {
-        drawer.classList.add('open');
-        overlay.classList.add('open');
-      }
+    // `menu-open` on <html> mirrors the Rive `arrowClicked` boolean. CSS
+    // (menu.css) decides which menu that shows — desktop slide-in drawer or
+    // mobile full-screen page — so the menu stays up across any resize.
+    function setMenuOpen(open) {
+      document.documentElement.classList.toggle('menu-open', open);
+      const m = document.getElementById('mNavDrawer');
+      if (m) m.setAttribute('aria-hidden', String(!open));
     }
-    function closeDrawer() {
-      drawer.classList.remove('open');
-      overlay.classList.remove('open');
-      if (mDrawer) { mDrawer.classList.remove('is-open'); mDrawer.setAttribute('aria-hidden','true'); }
-    }
-
-    document.addEventListener('cvta:drawer-toggle', (e) => {
-      e.detail && e.detail.open ? openDrawer() : closeDrawer();
-    });
+    const closeDrawer = () => setMenuOpen(false);
+    document.addEventListener('cvta:drawer-toggle', (e) => setMenuOpen(!!(e.detail && e.detail.open)));
 
     // Desktop drawer's internal X and the dulled overlay also close the menu.
     // Route through CVTANav.close() so the Rive VM state stays in sync.
@@ -1072,7 +889,7 @@
           </svg>
         </button>
       </header>
-      <img decoding="async" class="m-hero__logo" src="images/mobile/hero-logo.png" alt="CVTA">
+      <span class="m-hero__logo" role="img" aria-label="CVTA"></span>
     </section>
 
     <section class="m-screen m-desc">
@@ -1249,27 +1066,31 @@
       <ul class="m-nav-drawer__menu">
         <li>
           <a href="#hero" class="m-nav-link">Home</a>
-          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+          <a href="#hero" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
         </li>
         <li>
           <a href="projects.html" class="m-nav-link">Projects</a>
-          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+          <a href="projects.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
         </li>
         <li>
           <a href="studio.html" class="m-nav-link">Studio</a>
-          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+          <a href="studio.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
         </li>
         <li>
-          <a href="#awards" class="m-nav-link">Awards</a>
-          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+          <a href="awards.html" class="m-nav-link">Awards</a>
+          <a href="awards.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
         </li>
         <li>
-          <a href="#contact" class="m-nav-link">Contact</a>
-          <span class="m-nav-arrow" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></span>
+          <a href="contact.html" class="m-nav-link">Contact</a>
+          <a href="contact.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
         </li>
       </ul>
 
-      <p class="m-nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+      <div class="menu-blocks" aria-hidden="true">
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
     </nav>
 
   </div>

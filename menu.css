@@ -1,0 +1,157 @@
+/* CVTA menu page — shared by every page, desktop (.nav-drawer) and mobile
+   (.m-nav-drawer). Figma: Lukito's Playground, node 1567-231 "iPhone Menu".
+   Desktop: 478px panel (Figma 1539-2586) sliding in from the right over the dulled page; fills
+   the viewport once the window is narrower than the panel.
+   Mobile: full-screen page.
+   White, p-24, column justify-between:
+     top row (40px — the fixed Rive canvas sits here as the X)
+     menu list (centred)
+     colour-block stack (bottom-right)
+   CVTA logo 80×80 absolute top-left. */
+
+.nav-drawer,
+.m-nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  color: #000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-drawer   { z-index: 180; width: min(478px, 100%); }
+.m-nav-drawer { z-index: 190; left: 0; }
+/* Top row — empty 40px slot under the fixed Rive canvas. */
+.nav-drawer__top,
+.m-nav-drawer__top {
+  flex-shrink: 0;
+  width: 100%;
+  height: 40px;
+}
+
+/* CVTA logo — 80×80 crop of the 400×400 asset (Figma: inset -58%, size 216%). */
+.nav-drawer__logo-box,
+.m-nav-drawer__logo {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.nav-drawer__logo-box img,
+.m-nav-drawer__logo img {
+  position: absolute;
+  top: -58%;
+  left: -58%;
+  width: 216%;
+  height: 216%;
+  max-width: none;
+  display: block;
+}
+
+/* Menu list — 88px rows, label (p-8) with the yellow arrow right after it. */
+.nav-drawer__menu,
+.m-nav-drawer__menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.nav-drawer__menu li,
+.m-nav-drawer__menu li {
+  height: 88px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.nav-drawer__menu .nav-link:not(.nav-arrow),
+.m-nav-drawer__menu .m-nav-link:not(.m-nav-arrow) {
+  font-family: 'Rag Narrow', Arial, sans-serif;
+  font-size: 48px;
+  line-height: normal;
+  letter-spacing: 1.44px;
+  color: #000;
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 8px;
+  transition: opacity 0.2s;
+}
+.nav-drawer__menu .nav-link:not(.nav-arrow):hover,
+.m-nav-drawer__menu .m-nav-link:not(.m-nav-arrow):hover { opacity: 0.5; }
+
+/* Yellow arrow — links to the same place as its word. */
+.nav-arrow,
+.m-nav-arrow {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: block;
+}
+.nav-arrow img,
+.m-nav-arrow img {
+  width: 40px;
+  height: 40px;
+  display: block;
+  transform-origin: 50% 50%;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-drawer__menu li:hover .nav-arrow img,
+.m-nav-drawer__menu li:hover .m-nav-arrow img { transform: rotate(-45deg); }
+
+/* Colour-block stack — squares of 25px, right-aligned, 4px gaps.
+   Desktop (Figma 1539-2585): rows of 5 / 10 / 15.
+   Mobile  (Figma 1567-262):  rows of 5 / 10 / 12 — see below. */
+.menu-blocks {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.menu-blocks__row {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+}
+.menu-blocks__row i {
+  display: block;
+  flex-shrink: 0;
+  width: 25px;
+  height: 25px;
+}
+.menu-blocks__row i:nth-child(5n+1) { background: #d0481b; }
+.menu-blocks__row i:nth-child(5n+2) { background: #2f9351; }
+.menu-blocks__row i:nth-child(5n+3) { background: #a4c8ed; }
+.menu-blocks__row i:nth-child(5n+4) { background: #fadd39; }
+.menu-blocks__row i:nth-child(5n+5) { background: #f283b4; }
+
+/* Mobile: the bottom row drops its first three squares (red, green, blue),
+   so it starts yellow, pink and fits the phone width. */
+.m-nav-drawer .menu-blocks__row:last-child i:nth-child(-n+3) { display: none; }
+
+/* Open state — `menu-open` on <html> mirrors the Rive `arrowClicked` boolean.
+   Each drawer is display:none at the other breakpoint, so whichever one is
+   rendered at the current width shows; resizing keeps the menu up. */
+.menu-open .nav-drawer,
+.menu-open .m-nav-drawer { transform: translateX(0); }
+.menu-open .overlay { opacity: 1; pointer-events: auto; }
+
+/* Mobile: the Rive arrow / X follows the mobile pages' 24px 12px padding. */
+@media (max-width: 500px) {
+  #nav-rive-canvas { right: 12px; }
+}

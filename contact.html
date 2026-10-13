@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Contact — Cottrell Vermeulen Tucker Architecture</title>
+  <style>
+    @font-face {
+      font-family: 'Rag Narrow';
+      src: url('fonts/Rag-NarrowRegular.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      overflow-x: hidden;
+      background: #000;
+    }
+
+    /* ── OVERLAY (menu backdrop) ─────────────────────────── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 150;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+
+    /* Fixed Rive-driven menu arrow — shared across every page.
+       maskproperty sits at 100 on this page (no hero). */
+    #nav-rive-canvas {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      z-index: 200;
+      cursor: pointer;
+      display: block;
+    }
+
+    /* ── CONTACT PAGE — Figma iPhone Contact Us 1474-2042 ─────
+       Black page, py-24 px-12 (24 on desktop to line up with the arrow),
+       every block 12px apart:
+         header (40px arrow slot · 6 · title 68px · 6 · 2px rule)
+         details (Email / Phone / Address groups, 24px apart, 12px inside)
+         follow us (rule · 24 · label · 24 · icons · 24 · rule)
+         practice name */
+    .s-contact {
+      min-height: 100vh;
+      background: #000;
+      color: #fff;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 24px;
+      line-height: normal;
+      letter-spacing: 0.72px;
+      word-break: break-word;
+    }
+    .s-contact__header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 46px; /* 40px arrow slot + 6px gap */
+    }
+    .s-contact__title {
+      font-family: 'Rag Narrow', Arial, sans-serif;
+      font-size: 68px;
+      font-weight: normal;
+      line-height: 103px; /* Figma text box height */
+      letter-spacing: 2.04px;
+    }
+    .s-contact__rule {
+      width: 100%;
+      height: 2px;
+      background: #fff;
+    }
+
+    .s-contact__details {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .s-contact__group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .s-contact__label--email { letter-spacing: 0.48px; }
+    .s-contact__value {
+      color: #fff;
+      text-decoration: none;
+      font-weight: normal;
+    }
+    a.s-contact__value:hover { opacity: 0.5; }
+
+    .s-contact__follow {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .s-contact__socials {
+      width: 120px;
+      height: 48px;
+      display: block;
+    }
+    .s-contact__footer { max-width: 357px; }
+
+    /* ── PAGE LOADER (Rive) ───────────────────────────────── */
+    #cvta-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 450ms cubic-bezier(.4, 0, .2, 1);
+    }
+    #cvta-loader.is-done { opacity: 0; pointer-events: none; }
+    #cvta-loader-canvas {
+      width:  min(30vw, 30vh, 240px);
+      height: min(30vw, 30vh, 240px);
+      display: block;
+    }
+
+    /* ═════════ MOBILE (≤ 500px) ═════════ */
+    .mobile-view { display: none; }
+
+    @media (max-width: 500px) {
+      .overlay, .nav-drawer, #cvta-loader { display: none !important; }
+      .mobile-view { display: block; }
+      .s-contact { padding: 24px 12px; }
+    }
+  </style>
+  <link rel="stylesheet" href="menu.css?v=7">
+
+  <script defer src="https://unpkg.com/@rive-app/canvas@latest"></script>
+  <script defer src="Rive/loader.js"></script>
+  <script defer src="Rive/menubar.js?v=3"></script>
+</head>
+<body>
+
+  <!-- Page loader overlay — removed from DOM once loadEnd fires. -->
+  <div id="cvta-loader" aria-hidden="true">
+    <canvas id="cvta-loader-canvas" width="960" height="960"></canvas>
+  </div>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- NAV DRAWER -->
+  <nav class="nav-drawer" id="navDrawer">
+    <div class="nav-drawer__logo-box" aria-hidden="true">
+      <img src="images/menu-logo-cvta.png" alt="">
+    </div>
+    <!-- Close is handled by the fixed Rive canvas (#nav-rive-canvas). -->
+    <div class="nav-drawer__top"></div>
+    <ul class="nav-drawer__menu">
+      <li><a href="index.html" class="nav-link">Home</a><a href="index.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="projects.html" class="nav-link">Projects</a><a href="projects.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="studio.html" class="nav-link">Studio</a><a href="studio.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="awards.html" class="nav-link">Awards</a><a href="awards.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      <li><a href="contact.html" class="nav-link">Contact</a><a href="contact.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+    </ul>
+    <div class="menu-blocks" aria-hidden="true">
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </nav>
+
+  <main class="s-contact">
+    <header class="s-contact__header">
+      <h1 class="s-contact__title">Contact us</h1>
+      <div class="s-contact__rule"></div>
+    </header>
+
+    <div class="s-contact__details">
+      <div class="s-contact__group">
+        <p class="s-contact__label--email">Email:</p>
+        <a class="s-contact__value" href="mailto:Info@cv-arch.co.uk">Info@cv-arch.co.uk</a>
+        <a class="s-contact__value" href="mailto:recruitment@cv-arch.co.uk">recruitment@cv-arch.co.uk</a>
+      </div>
+      <div class="s-contact__group">
+        <p>Phone:</p>
+        <a class="s-contact__value" href="tel:02077082567">020 7708 2567</a>
+      </div>
+      <div class="s-contact__group">
+        <p>Address</p>
+        <address class="s-contact__value" style="font-style: normal;">1B Iliffe St<br>London<br>SE17 3LJ</address>
+      </div>
+    </div>
+
+    <section class="s-contact__follow">
+      <div class="s-contact__rule"></div>
+      <p>Follow us</p>
+      <img class="s-contact__socials" src="images/mobile/socials.svg" alt="LinkedIn and Instagram" width="120" height="48">
+      <div class="s-contact__rule"></div>
+    </section>
+
+    <p class="s-contact__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+  </main>
+
+  <script>
+    // Drawer — open/close driven by the Rive canvas via `cvta:drawer-toggle` events.
+    const overlay  = document.getElementById('overlay');
+    // `menu-open` on <html> mirrors the Rive `arrowClicked` boolean. CSS
+    // (menu.css) decides which menu that shows — desktop slide-in drawer or
+    // mobile full-screen page — so the menu stays up across any resize.
+    function setMenuOpen(open) {
+      document.documentElement.classList.toggle('menu-open', open);
+      const m = document.getElementById('mNavDrawer');
+      if (m) m.setAttribute('aria-hidden', String(!open));
+    }
+    const closeDrawer = () => setMenuOpen(false);
+    document.addEventListener('cvta:drawer-toggle', (e) => setMenuOpen(!!(e.detail && e.detail.open)));
+    const closeViaRive = () => (window.CVTANav ? window.CVTANav.close() : closeDrawer());
+    overlay.addEventListener('click', closeViaRive);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.nav-link, .m-nav-link').forEach(l => l.addEventListener('click', closeViaRive));
+    });
+  </script>
+
+  <!-- Fixed Rive-driven nav arrow (shared across desktop + mobile).
+       Mounted by Rive/menubar.js. -->
+  <canvas id="nav-rive-canvas" width="80" height="80" aria-label="Open menu"></canvas>
+
+  <div class="mobile-view">
+    <nav class="m-nav-drawer" id="mNavDrawer" aria-hidden="true">
+      <div class="m-nav-drawer__top">
+        <div class="m-nav-drawer__logo" aria-hidden="true"><img src="images/menu-logo-cvta.png" alt=""></div>
+        <!-- Rive canvas (#nav-rive-canvas) handles the close via arrowClicked=false. -->
+      </div>
+      <ul class="m-nav-drawer__menu">
+        <li><a href="index.html" class="m-nav-link">Home</a><a href="index.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="projects.html" class="m-nav-link">Projects</a><a href="projects.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="studio.html" class="m-nav-link">Studio</a><a href="studio.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="awards.html" class="m-nav-link">Awards</a><a href="awards.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="contact.html" class="m-nav-link">Contact</a><a href="contact.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+      </ul>
+      <div class="menu-blocks" aria-hidden="true">
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </nav>
+  </div>
+
+</body>
+</html>

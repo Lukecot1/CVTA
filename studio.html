@@ -39,97 +39,6 @@
     }
     .overlay.open { opacity: 1; pointer-events: auto; }
 
-    /* ── NAV DRAWER (same as index.html) ─────────────────── */
-    .nav-drawer {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 734px;
-      height: 100vh;
-      background: #a4c8ed;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 180;
-    }
-    .nav-drawer.open { transform: translateX(0); }
-
-    .nav-drawer__top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-end;
-      flex-shrink: 0;
-      width: 100%;
-    }
-
-    .nav-drawer__logo-box {
-      position: absolute;
-      top: 24px;
-      left: 24px;
-      width: 80px;
-      height: 80px;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .nav-drawer__logo-box img {
-      position: absolute;
-      top: -58%;
-      left: -58%;
-      width: 216%;
-      height: 216%;
-      display: block;
-      max-width: none;
-    }
-
-    .nav-drawer__menu {
-      list-style: none;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .nav-drawer__menu li {
-      height: 88px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .nav-drawer__menu a {
-      font-family: 'Rag Narrow', Arial, sans-serif;
-      font-size: 48px;
-      letter-spacing: 1.44px;
-      color: #000;
-      text-decoration: none;
-      line-height: 1;
-      transition: opacity 0.2s;
-    }
-    .nav-drawer__menu a:hover { opacity: 0.5; }
-    .nav-arrow {
-      width: 40px;
-      height: 40px;
-      flex-shrink: 0;
-      display: block;
-    }
-    .nav-arrow img {
-      width: 40px;
-      height: 40px;
-      display: block;
-      transform-origin: 50% 50%;
-      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .nav-drawer__menu li:hover .nav-arrow img { transform: rotate(-45deg); }
-
-    .nav-drawer__footer {
-      font-family: 'Rag Narrow', Arial, sans-serif;
-      font-size: 24px;
-      letter-spacing: 0.72px;
-      color: #000;
-      flex-shrink: 0;
-      margin-top: 40px;
-    }
-
     /* ── STUDIO TEAM PAGE ────────────────────────────────── */
     /* Figma: pink #f283b4, px-234 pt-24 pb-88, inner Content gap-24 */
     .s-studio-team {
@@ -159,7 +68,7 @@
       white-space: nowrap;
     }
     /* Fixed Rive-driven menu arrow — shared across every page.
-       maskproperty stays at 0 on this page (no hero). */
+       maskproperty sits at 100 on this page (no hero). */
     #nav-rive-canvas {
       position: fixed;
       top: 24px;
@@ -254,7 +163,10 @@
       display: block;
     }
 
-    /* ═════════ MOBILE VIEW (≤ 500px) — Figma iPhone Studio Team 1453-1164 ═════════ */
+    /* ═════════ MOBILE VIEW (≤ 500px) — Figma iPhone Studio Team 1474-1957 ═════════
+       Pink page, px-12 py-24, every block 12px apart:
+         header (40px arrow slot · 4 · title 68px · 6 · 2px rule)
+         team sections (name/role + 99×120 photo · 6 · 2px rule) */
     .mobile-view { display: none; }
 
     @media (max-width: 500px) {
@@ -262,7 +174,9 @@
       html, body { background: #f283b4; }
 
       .mobile-view {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
         width: 100%;
         background: #f283b4;
         padding: 24px 12px;
@@ -270,15 +184,15 @@
         color: #000;
       }
 
-      /* Header: Studio title + rule */
-      .m-studio-header { margin-top: 60px; }
+      /* Header — 40px slot for the fixed Rive arrow, 4px gap, then title */
+      .m-studio-header { padding-top: 44px; }
       .m-studio-header__title {
         font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 96px;
-        line-height: 103px;
-        letter-spacing: 2.88px;
+        font-size: 68px;
+        line-height: 103px; /* Figma text box height */
+        letter-spacing: 2.04px;
         color: #000;
-        word-break: break-word;
+        white-space: nowrap;
       }
       .m-studio-header__rule {
         width: 100%;
@@ -287,36 +201,45 @@
         margin-top: 6px;
       }
 
-      /* Team list — same card pattern as projects */
-      .m-team-list { list-style: none; padding: 0; margin: 12px 0 0; }
-      .m-team-item { padding: 12px 0; border-bottom: 2px solid #000; }
+      /* Team list — sections 12px apart, each: content · 6px · 2px rule */
+      .m-team-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .m-team-item {
+        padding-bottom: 6px;
+        border-bottom: 2px solid #000;
+      }
       .m-team-item__row {
         display: flex;
         align-items: flex-start;
-        justify-content: space-between;
         gap: 6px;
       }
       .m-team-item__text {
-        flex: 1;
+        flex: 1 0 0;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 120px;
+        align-self: stretch;
         min-width: 0;
+        word-break: break-word;
       }
       .m-team-item__name {
         font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 32px;
-        line-height: 36px;
-        letter-spacing: 0.96px;
+        font-size: 24px;
+        line-height: normal;
+        letter-spacing: 0.72px;
         color: #000;
-        word-break: break-word;
       }
       .m-team-item__role {
         font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 16px;
-        line-height: 18px;
-        letter-spacing: 0.48px;
+        font-size: 12px;
+        line-height: normal;
+        letter-spacing: 0.36px;
         color: #000;
       }
       .m-team-item__img {
@@ -326,57 +249,13 @@
         object-fit: cover;
         display: block;
       }
-
-      /* Mobile nav drawer — same spec as index/projects */
-      .m-nav-drawer {
-        position: fixed;
-        inset: 0;
-        z-index: 190;
-        background: #a4c8ed;
-        padding: 24px 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        color: #000;
-        transform: translateX(100%);
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow-y: auto;
-      }
-      .m-nav-drawer.is-open { transform: translateX(0); }
-      .m-nav-drawer__top { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; }
-      .m-nav-drawer__logo { width: 80px; height: 80px; overflow: hidden; }
-      .m-nav-drawer__logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      .m-nav-drawer__menu { list-style: none; padding: 0; margin: 0; width: 100%; display: flex; flex-direction: column; }
-      .m-nav-drawer__menu li { height: 88px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
-      .m-nav-drawer__menu a {
-        font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 48px;
-        line-height: normal;
-        letter-spacing: 1.44px;
-        color: #000;
-        text-decoration: none;
-        padding: 8px;
-      }
-      .m-nav-drawer__menu a:hover { opacity: 0.5; }
-      .m-nav-arrow { width: 40px; height: 40px; display: block; flex-shrink: 0; }
-      .m-nav-arrow img { width: 100%; height: 100%; display: block; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-      .m-nav-drawer__menu li:hover .m-nav-arrow img { transform: rotate(-45deg); }
-      .m-nav-drawer__footer {
-        font-family: 'Rag Narrow', Arial, sans-serif;
-        font-size: 24px;
-        line-height: normal;
-        letter-spacing: 0.72px;
-        color: #000;
-        width: 357px;
-        max-width: 100%;
-        word-break: break-word;
-      }
     }
   </style>
+  <link rel="stylesheet" href="menu.css?v=7">
 
   <script defer src="https://unpkg.com/@rive-app/canvas@latest"></script>
   <script defer src="Rive/loader.js"></script>
-  <script defer src="Rive/menubar.js"></script>
+  <script defer src="Rive/menubar.js?v=3"></script>
 </head>
 <body>
 
@@ -400,27 +279,31 @@
     <ul class="nav-drawer__menu">
       <li>
         <a href="index.html" class="nav-link">Home</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="index.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
       <li>
         <a href="projects.html" class="nav-link">Projects</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="projects.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
       <li>
         <a href="studio.html" class="nav-link">Studio</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="studio.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
       <li>
-        <a href="index.html#awards" class="nav-link">Awards</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="awards.html" class="nav-link">Awards</a>
+        <a href="awards.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
       <li>
-        <a href="index.html#contact" class="nav-link">Contact</a>
-        <span class="nav-arrow"><img src="images/menu-arrow.svg" alt=""></span>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="contact.html" class="nav-arrow nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a>
       </li>
     </ul>
 
-    <p class="nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+    <div class="menu-blocks" aria-hidden="true">
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
   </nav>
 
   <main>
@@ -552,26 +435,18 @@
 
   <script>
     // Drawer — open/close driven by the Rive canvas via `cvta:drawer-toggle` events.
-    const drawer   = document.getElementById('navDrawer');
     const overlay  = document.getElementById('overlay');
     const closeBtn = document.getElementById('navClose');
-    const isMobile = () => window.innerWidth <= 500;
-    function openDrawer()  {
-      if (isMobile()) {
-        const m = document.getElementById('mNavDrawer');
-        if (m) { m.classList.add('is-open'); m.setAttribute('aria-hidden','false'); }
-      } else {
-        drawer.classList.add('open'); overlay.classList.add('open');
-      }
-    }
-    function closeDrawer() {
-      drawer.classList.remove('open'); overlay.classList.remove('open');
+    // `menu-open` on <html> mirrors the Rive `arrowClicked` boolean. CSS
+    // (menu.css) decides which menu that shows — desktop slide-in drawer or
+    // mobile full-screen page — so the menu stays up across any resize.
+    function setMenuOpen(open) {
+      document.documentElement.classList.toggle('menu-open', open);
       const m = document.getElementById('mNavDrawer');
-      if (m) { m.classList.remove('is-open'); m.setAttribute('aria-hidden','true'); }
+      if (m) m.setAttribute('aria-hidden', String(!open));
     }
-    document.addEventListener('cvta:drawer-toggle', (e) => {
-      e.detail && e.detail.open ? openDrawer() : closeDrawer();
-    });
+    const closeDrawer = () => setMenuOpen(false);
+    document.addEventListener('cvta:drawer-toggle', (e) => setMenuOpen(!!(e.detail && e.detail.open)));
     const closeViaRive = () => (window.CVTANav ? window.CVTANav.close() : closeDrawer());
     if (closeBtn) closeBtn.addEventListener('click', closeViaRive);
     overlay.addEventListener('click', closeViaRive);
@@ -589,7 +464,7 @@
 
   <div class="mobile-view">
     <header class="m-studio-header">
-      <h1 class="m-studio-header__title">Studio.</h1>
+      <h1 class="m-studio-header__title">Studio</h1>
       <div class="m-studio-header__rule"></div>
     </header>
 
@@ -613,7 +488,7 @@
           <span class="m-team-item__name">Simon Tucker</span>
           <span class="m-team-item__role">Director</span>
         </div>
-        <img class="m-team-item__img" src="images/team-tucker.png" alt="">
+        <img class="m-team-item__img" src="images/mobile/team-tucker.png" alt="">
       </div></li>
       <li class="m-team-item"><div class="m-team-item__row">
         <div class="m-team-item__text">
@@ -627,7 +502,7 @@
           <span class="m-team-item__name">Maria Westerstahl</span>
           <span class="m-team-item__role">Associate</span>
         </div>
-        <img class="m-team-item__img" src="images/team-westerstahl.png" alt="">
+        <img class="m-team-item__img" src="images/mobile/team-westerstahl.png" alt="">
       </div></li>
       <li class="m-team-item"><div class="m-team-item__row">
         <div class="m-team-item__text">
@@ -679,13 +554,17 @@
         <!-- Rive canvas (#nav-rive-canvas) handles the close via arrowClicked=false. -->
       </div>
       <ul class="m-nav-drawer__menu">
-        <li><a href="index.html" class="m-nav-link">Home</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-        <li><a href="projects.html" class="m-nav-link">Projects</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-        <li><a href="studio.html" class="m-nav-link">Studio</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-        <li><a href="index.html#awards" class="m-nav-link">Awards</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
-        <li><a href="index.html#contact" class="m-nav-link">Contact</a><span class="m-nav-arrow"><img src="images/menu-arrow.svg" alt=""></span></li>
+        <li><a href="index.html" class="m-nav-link">Home</a><a href="index.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="projects.html" class="m-nav-link">Projects</a><a href="projects.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="studio.html" class="m-nav-link">Studio</a><a href="studio.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="awards.html" class="m-nav-link">Awards</a><a href="awards.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
+        <li><a href="contact.html" class="m-nav-link">Contact</a><a href="contact.html" class="m-nav-arrow m-nav-link" tabindex="-1" aria-hidden="true"><img src="images/menu-arrow.svg" alt=""></a></li>
       </ul>
-      <p class="m-nav-drawer__footer">Cottrell, Vermeulen, Tucker Architecture</p>
+      <div class="menu-blocks" aria-hidden="true">
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="menu-blocks__row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
     </nav>
   </div>
 

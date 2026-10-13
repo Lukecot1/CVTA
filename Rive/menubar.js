@@ -4,9 +4,9 @@
 
    Mounts hamburger.riv into #nav-rive-canvas with artboard "MenuBar" and
    state machine "State Machine 1". VM "MenuBar" exposes:
-     - maskproperty (number, 0..100) — track-matte sweep. On index.html
-       this is driven by the hero's bottom edge scrolling past the
-       canvas slot. On projects/studio.html it's pinned to 0 (per Luke).
+     - maskproperty (number, 0..100) — track-matte sweep. 0 while the
+       canvas is fully over the landing hero, rising to 100 as the hero's
+       bottom edge scrolls past the canvas. Pages with no hero sit at 100.
      - hover (boolean) — true while pointer is over the canvas.
      - arrowClicked (boolean) — toggles the open/close state (Rive
        internally shows an arrow when false, X when true). Observing
@@ -26,9 +26,6 @@
   const scriptSrc = (document.currentScript && document.currentScript.src) || '';
   const rivUrl = scriptSrc.replace(/menubar\.js(\?.*)?$/, 'hamburger.riv');
 
-  const ARROW_TOP = 24;
-  const ARROW_H   = 40;
-
   let vm = null;
   let maskProp = null;
   let hoverProp = null;
@@ -44,20 +41,21 @@
     return document.getElementById('hero') || document.querySelector('.m-hero');
   };
 
-  // mask = how far the hero has scrolled off the top, as a %.
-  //   0   = hero fully in view (page at the very top)
-  //   100 = hero fully scrolled above the viewport (next section fills the screen)
-  // Gradual sweep over the ENTIRE hero height, not just the 40px sliver where the
-  // hero's bottom edge physically crosses the arrow slot.
+  // mask = how much of the Rive canvas has left the landing (hero) section.
+  //   0   = every pixel of the canvas still sits over the hero
+  //   100 = the canvas has fully left the hero (or the page has no hero)
+  // The sweep runs over the canvas's own height: it starts the moment the
+  // hero's bottom edge rises past the canvas's bottom pixel and finishes when
+  // it passes the canvas's top pixel.
   function computeMask() {
     const h = heroEl();
-    if (!h) { console.log(TAG, 'no hero → mask 0'); return 0; }
-    const rect = h.getBoundingClientRect();
-    if (rect.height <= 0) { console.log(TAG, 'hero height is 0! el=', h.className||h.id, 'rect=', rect); return 0; }
-    const progress = Math.max(0, Math.min(1, -rect.top / rect.height));
-    const mask = progress * 100;
-    console.log(TAG, 'vw=', innerWidth, 'hero=', h.className||h.id, 'top=', Math.round(rect.top), 'height=', Math.round(rect.height), 'mask=', Math.round(mask));
-    return mask;
+    if (!h) return 100;
+    const hero = h.getBoundingClientRect();
+    if (hero.height <= 0) return 100;
+    const c = canvas.getBoundingClientRect();
+    if (c.height <= 0) return 0;
+    const outside = c.bottom - hero.bottom; // px of canvas below the hero's bottom edge
+    return Math.max(0, Math.min(1, outside / c.height)) * 100;
   }
 
   let scrollTicking = false;
@@ -111,20 +109,16 @@
         }
       }
 
-      // Scroll handling. Pin maskproperty to 0 at load (landing state).
+      // Landing pages start at 0 and sweep to 100 as the canvas scrolls
+      // off the hero; pages without a hero sit at 100.
       if (maskProp) {
-        console.log(TAG, 'maskproperty BEFORE pin:', maskProp.value);
-        maskProp.value = 0;
-        console.log(TAG, 'maskproperty AFTER pin:', maskProp.value, '(expect 0)');
+        maskProp.value = computeMask();
         if (heroEl()) {
-          console.log(TAG, 'hero found, attaching scroll listener. hero=', heroEl().className || heroEl().id);
           window.addEventListener('scroll', onScroll, { passive: true });
           window.addEventListener('resize', onScroll);
-        } else {
-          console.log(TAG, 'no hero on this page, maskproperty stays at 0');
         }
       } else {
-        console.error(TAG, 'maskProp lookup failed! Property name mismatch?');
+        console.error(TAG, 'maskproperty lookup failed! Property name mismatch?');
       }
     },
     onLoadError: (e) => { console.error(TAG, 'rive load error:', e); }
