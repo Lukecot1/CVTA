@@ -2,7 +2,8 @@
    -------------------------------------------------------------------
    Replaces the SVG + clip-path track-matte arrow on every page.
 
-   Mounts hamburger.riv into #nav-rive-canvas with artboard "MenuBar" and
+   Mounts hamburger.riv into #nav-rive-canvas with artboard "MenuBar" (WebGL2
+   Rive Renderer, @rive-app/webgl2, so vector feathering renders) and
    state machine "State Machine 1". VM "MenuBar" exposes:
      - maskproperty (number, 0..100) — track-matte sweep. 0 while the
        canvas is fully over the landing hero, rising to 100 as the hero's
@@ -128,6 +129,9 @@
     stateMachine: 'State Machine 1',
     autoplay: true,
     autoBind: true,
+    // WebGL2 Rive Renderer (vector feathering); one shared GL context for
+    // the menubar + loader instances.
+    useOffscreenRenderer: true,
     layout: new rive.Layout({ fit: rive.Fit.Contain, alignment: rive.Alignment.Center }),
     onLoad: () => {
       console.log(TAG, 'onLoad fired. artboards:', riveInstance.contents);

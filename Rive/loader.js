@@ -38,6 +38,7 @@
     stateMachine: 'State Machine 1',  // SINGULAR per Rive docs
     autoplay: true,
     autoBind: true,                   // binds default instance of Loader VM to artboard
+    useOffscreenRenderer: true,       // share the WebGL2 context with the menubar
     layout: new rive.Layout({ fit: rive.Fit.Contain, alignment: rive.Alignment.Center }),
     onLoad: () => {
       riveInstance.resizeDrawingSurfaceToCanvas();
