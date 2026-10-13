@@ -159,7 +159,10 @@
 }
 .menu-open .overlay { opacity: 1; pointer-events: auto; }
 
-/* Mobile: the Rive arrow / X follows the mobile pages' 24px 12px padding. */
+/* Mobile: the menu and the Rive arrow / X follow the mobile pages'
+   24px 12px padding. */
 @media (max-width: 500px) {
   #nav-rive-canvas { right: 12px; }
+  .m-nav-drawer { padding: 24px 12px; }
+  .m-nav-drawer__logo { left: 12px; }
 }
