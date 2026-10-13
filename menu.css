@@ -25,7 +25,11 @@
   overflow-x: hidden;
   overflow-y: auto;
   transform: translateX(100%);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Hidden once slid out: iOS Safari tints its status/tool bars from fixed
+     elements touching the screen edges, and a parked white drawer gave the
+     pages white bars. visibility flips after the slide-out finishes. */
+  visibility: hidden;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.4s;
 }
 .nav-drawer   { z-index: 180; width: min(478px, 100%); }
 .m-nav-drawer { z-index: 190; left: 0; }
@@ -148,7 +152,11 @@
    Each drawer is display:none at the other breakpoint, so whichever one is
    rendered at the current width shows; resizing keeps the menu up. */
 .menu-open .nav-drawer,
-.menu-open .m-nav-drawer { transform: translateX(0); }
+.menu-open .m-nav-drawer {
+  transform: translateX(0);
+  visibility: visible;
+  transition-delay: 0s;
+}
 .menu-open .overlay { opacity: 1; pointer-events: auto; }
 
 /* Mobile: the Rive arrow / X follows the mobile pages' 24px 12px padding. */
