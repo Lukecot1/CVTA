@@ -300,32 +300,324 @@
 
     <div class="s-awards__rule"></div>
 
-    <!-- data-status / data-years drive the filter. Brick + Retrofit show "20??"
-         per the Figma; their filter years come from the Figma "Awards — All" list. -->
+    <!-- Full awards list from cv-arch.co.uk/clients-awards-press (newest first).
+         data-status (won / shortlisted / commended) and data-years drive the filter. -->
     <ul class="award-list" id="awardList">
-      <li class="award" data-status="won" data-years="2001">
-        <p class="award__name">Stephen Lawrence Prize, The Cardboard building.</p>
-        <p class="award__year">2001</p>
+      <li class="award" data-status="shortlisted" data-years="2025">
+        <p class="award__name">Brick Awards Nov 2025 – STAC Library</p>
+        <p class="award__year">Finalist, 2025</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2025">
+        <p class="award__name">RIBA East Awards – Brentwood School Reception and Ashton</p>
+        <p class="award__year">Shortlisted, 2025</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2024">
+        <p class="award__name">Education Architect of the Year Award – Charter School Bermondsey, STAC Library, Cable Wharf Primary School, Brentwood School Queens</p>
+        <p class="award__year">Shortlisted, 2024</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2024">
+        <p class="award__name">RIBA East Awards, St Catharine’s College, Cambridge</p>
+        <p class="award__year">Shortlisted, 2024</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2023">
+        <p class="award__name">Architecture Today Buildings that have stood the test of time award 2022 – Brentwood School</p>
+        <p class="award__year">Shortlisted, 2023</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2023">
+        <p class="award__name">Civic Trust Awards 2023 – Sri Krishna Haveli</p>
+        <p class="award__year">Regional Finalist, 2023</p>
+      </li>
+      <li class="award" data-status="won" data-years="2022">
+        <p class="award__name">Building of the year – RIBA East Awards 2022 – Churchill College Housing</p>
+        <p class="award__year">Winner, 2022</p>
+      </li>
+      <li class="award" data-status="won" data-years="2022">
+        <p class="award__name">RIBA East Award 2022 – Brentwood Prep School</p>
+        <p class="award__year">Winner, 2022</p>
+      </li>
+      <li class="award" data-status="won" data-years="2022">
+        <p class="award__name">RIBA East Award 2022 – Churchill College Housing</p>
+        <p class="award__year">Winner, 2022</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2022">
+        <p class="award__name">RIBA East Award 2022 – Bhaktivedanta New Haveli</p>
+        <p class="award__year">Shortlisted, 2022</p>
+      </li>
+      <li class="award" data-status="won" data-years="2021">
+        <p class="award__name">Collaboration Award – CIBSE Building Performance Awards – Streatham and Clapham High School</p>
+        <p class="award__year">Winner, 2021</p>
+      </li>
+      <li class="award" data-status="commended" data-years="2021">
+        <p class="award__name">2021 Brick Awards – Brentwood Prep</p>
+        <p class="award__year">Highly Commended, 2021</p>
+      </li>
+      <li class="award" data-status="commended" data-years="2020">
+        <p class="award__name">Building Design Architect of the Year Awards – Higher Education</p>
+        <p class="award__year">Highly Commended, 2020</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2019">
+        <p class="award__name">Architects Journal Awards – Churchill College Housing</p>
+        <p class="award__year">Shortlisted, 2019</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2019">
+        <p class="award__name">Architects Journal Specification – Churchill College Housing</p>
+        <p class="award__year">Shortlisted, 2019</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2019">
+        <p class="award__name">Civic Trust Awards – Bellenden Primary School – Selwyn Goldsmith Award</p>
+        <p class="award__year">Shortlisted, 2019</p>
+      </li>
+      <li class="award" data-status="won" data-years="2019">
+        <p class="award__name">Peckham Society Architecture Award – Bellenden Primary School</p>
+        <p class="award__year">Winner, 2019</p>
+      </li>
+      <li class="award" data-status="won" data-years="2018">
+        <p class="award__name">Building Design Awards – Education Architect of the Year</p>
+        <p class="award__year">Winner, 2018</p>
+      </li>
+      <li class="award" data-status="won" data-years="2018">
+        <p class="award__name">RIBA Awards – Streatham and Clapham High School – Regional award</p>
+        <p class="award__year">Winner, 2018</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2018">
+        <p class="award__name">RIBA Awards – Bellenden Primary School</p>
+        <p class="award__year">Shortlisted, 2018</p>
+      </li>
+      <li class="award" data-status="commended" data-years="2018">
+        <p class="award__name">New London Awards (NLA) – Streatham and Clapham High School – Education category</p>
+        <p class="award__year">Commendation, 2018</p>
+      </li>
+      <li class="award" data-status="won" data-years="2018">
+        <p class="award__name">Architects’ Journal Retrofit Awards – Streatham and Clapham High School – School Project of the Year</p>
+        <p class="award__year">Winner, 2018</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2018">
+        <p class="award__name">Structural Timber Awards – Streatham and Clapham High School – Education Project of the Year</p>
+        <p class="award__year">Shortlisted, 2018</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2018">
+        <p class="award__name">Wood Awards – Streatham and Clapham High School – Education and Public Sector category</p>
+        <p class="award__year">Shortlisted, 2018</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2018">
+        <p class="award__name">Architects’ Journal Architecture Awards – Bellenden Primary School – School Project of the Year</p>
+        <p class="award__year">Shortlisted, 2018</p>
       </li>
       <li class="award" data-status="won" data-years="2016">
-        <p class="award__name">Architect of the Year</p>
-        <p class="award__year">2016</p>
+        <p class="award__name">Brick Award – Brentwood School Learning Resource Centre, Best Education Building</p>
+        <p class="award__year">Winner, 2016</p>
       </li>
-      <li class="award" data-status="won" data-years="2011 2016 2018">
-        <p class="award__name">Education Architect of the Year</p>
-        <p class="award__year">2011, 2016, 2018</p>
+      <li class="award" data-status="shortlisted" data-years="2016">
+        <p class="award__name">Architects’ Journal Retrofit Awards – Brentwood School Learning Resource Centre</p>
+        <p class="award__year">Shortlisted, 2016</p>
       </li>
-      <li class="award" data-status="won" data-years="2002 2003 2005 2012 2013 2018 2022">
-        <p class="award__name">RIBA Awards</p>
-        <p class="award__year">2002, 2003, 2005, 2012, 2013, 2018, 2022</p>
+      <li class="award" data-status="shortlisted" data-years="2016">
+        <p class="award__name">British Construction Industry Awards – Brentwood School Learning Resource Centre</p>
+        <p class="award__year">Shortlisted, 2016</p>
       </li>
-      <li class="award" data-status="won shortlisted" data-years="2011 2013 2015 2016 2021 2025">
-        <p class="award__name">Brick Awards</p>
-        <p class="award__year">20??</p>
+      <li class="award" data-status="shortlisted" data-years="2016">
+        <p class="award__name">New London Awards – Lyndhurst Primary School</p>
+        <p class="award__year">Shortlisted, 2016</p>
       </li>
-      <li class="award" data-status="won shortlisted" data-years="2011 2014 2015 2016 2018">
-        <p class="award__name">Retrofit Awards</p>
-        <p class="award__year">20??</p>
+      <li class="award" data-status="won" data-years="2016">
+        <p class="award__name">Building Design Architect of the Year Gold Award</p>
+        <p class="award__year">Winner, 2016</p>
+      </li>
+      <li class="award" data-status="won" data-years="2016">
+        <p class="award__name">Building Design Education Architect of the Year</p>
+        <p class="award__year">Winner, 2016</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2016">
+        <p class="award__name">RIBA Awards – Brentwood School Learning Resource Centre</p>
+        <p class="award__year">Shortlisted, 2016</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2016">
+        <p class="award__name">RIBA Awards – Lyndhurst Primary School</p>
+        <p class="award__year">Shortlisted, 2016</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2016">
+        <p class="award__name">RICS Awards – Sacred Heart High School, Categories: Community Benefit and Design Through Innovation</p>
+        <p class="award__year">Shortlisted, 2016</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2015">
+        <p class="award__name">Blueprint awards – Royal London Hospital Childrens Play, Best Interior Design Project or Product</p>
+        <p class="award__year">Shortlisted, 2015</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2015">
+        <p class="award__name">Civic Trust Awards, Westborough Zero Carbon</p>
+        <p class="award__year">Shortlisted, 2015</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2015">
+        <p class="award__name">Brick Awards – Sacred Heart School</p>
+        <p class="award__year">Shortlisted, 2015</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2015">
+        <p class="award__name">Brick Awards – Lyndhurst School</p>
+        <p class="award__year">Shortlisted, 2015</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2015">
+        <p class="award__name">RIBA Awards – Lyndhurst School</p>
+        <p class="award__year">Shortlisted, 2015</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2015">
+        <p class="award__name">AJ Retrofit Housing award – Clare College</p>
+        <p class="award__year">Shortlisted, 2015</p>
+      </li>
+      <li class="award" data-status="won" data-years="2015">
+        <p class="award__name">CIBSE Building Performance Awards – Westborough Primary School – refurbishment project of the year (value up to £5M)</p>
+        <p class="award__year">Winner, 2015</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2014">
+        <p class="award__name">RIBA East Awards – Clare College</p>
+        <p class="award__year">Shortlisted, 2014</p>
+      </li>
+      <li class="award" data-status="won" data-years="2014">
+        <p class="award__name">The Creative Review Annual, Best in Book – Ann Riches Healing Space</p>
+        <p class="award__year">Winner, 2014</p>
+      </li>
+      <li class="award" data-status="won" data-years="2014">
+        <p class="award__name">Creative Review Award, Best in Book – Royal London Hospital Playspace</p>
+        <p class="award__year">Winner, 2014</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2014">
+        <p class="award__name">AJ Retrofit Award – Brentwood School Sixth Form Centre</p>
+        <p class="award__year">Shortlisted, 2014</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2013">
+        <p class="award__name">Weinerberger Brick Awards – Brentwood</p>
+        <p class="award__year">Shortlisted, 2013</p>
+      </li>
+      <li class="award" data-status="won" data-years="2013">
+        <p class="award__name">RIBA East Sustainability Award – Westborough Primary School</p>
+        <p class="award__year">Winner, 2013</p>
+      </li>
+      <li class="award" data-status="won" data-years="2013">
+        <p class="award__name">RIBA East Client Award – Westborough Primary School</p>
+        <p class="award__year">Winner, 2013</p>
+      </li>
+      <li class="award" data-status="won" data-years="2013">
+        <p class="award__name">RIBA East Award – Westborough Primary School</p>
+        <p class="award__year">Winner, 2013</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2013">
+        <p class="award__name">FX International Interior Design Awards – Royal London Hospital, Public Sector category</p>
+        <p class="award__year">Shortlisted, 2013</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2013">
+        <p class="award__name">Brick Awards – Notre Dame RC School, Best Education Building</p>
+        <p class="award__year">Shortlisted, 2013</p>
+      </li>
+      <li class="award" data-status="commended" data-years="2012">
+        <p class="award__name">RICS Awards – Brentwood School Sixth Form Centre</p>
+        <p class="award__year">Honourable Mention, 2012</p>
+      </li>
+      <li class="award" data-status="won" data-years="2012">
+        <p class="award__name">RIBA Awards – Brentwood Sixth Form College</p>
+        <p class="award__year">Winner, 2012</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2012">
+        <p class="award__name">RIBA Awards – Broadway School</p>
+        <p class="award__year">Shortlisted, 2012</p>
+      </li>
+      <li class="award" data-status="won" data-years="2012">
+        <p class="award__name">Green Apple Awards – Prittlewell Priory (implementation by The Facility Architects)</p>
+        <p class="award__year">Silver, 2012</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2011">
+        <p class="award__name">Brick Awards – Brentwood School</p>
+        <p class="award__year">Shortlisted, 2011</p>
+      </li>
+      <li class="award" data-status="won" data-years="2011">
+        <p class="award__name">Refurb Rethink Retrofit Awards – Westborough Primary School, Public Sector, Education Building Categories</p>
+        <p class="award__year">Winner, 2011</p>
+      </li>
+      <li class="award" data-status="won" data-years="2011">
+        <p class="award__name">Build Design Education (Nursery to Secondary) Awards – Architect of the Year</p>
+        <p class="award__year">Winner, 2011</p>
+      </li>
+      <li class="award" data-status="won" data-years="2010">
+        <p class="award__name">Harrow Heritage Trust/Harrow Observer Architectural and Environment Awards – Krishna-Avanti Primary School</p>
+        <p class="award__year">Winner, 2010</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2010">
+        <p class="award__name">RIBA Awards – Krishna Avanti School</p>
+        <p class="award__year">Shortlisted, 2010</p>
+      </li>
+      <li class="award" data-status="commended" data-years="2010">
+        <p class="award__name">British Council for School Environments (BCSE) Awards – School Architect of the Year</p>
+        <p class="award__year">Commendation, 2010</p>
+      </li>
+      <li class="award" data-status="commended" data-years="2010">
+        <p class="award__name">Royal Institute of Chartered Surveyors (RICS) Awards – Krishna-Avanti School, Sustainability Award</p>
+        <p class="award__year">Runner-up, 2010</p>
+      </li>
+      <li class="award" data-status="won" data-years="2008">
+        <p class="award__name">National Federation of Roofing Contractors, Wooden Shingles and Shakes Award – All Saints Birmingham</p>
+        <p class="award__year">Winner, 2008</p>
+      </li>
+      <li class="award" data-status="commended" data-years="2005">
+        <p class="award__name">Civic Trust Awards – Folkestone SureStart</p>
+        <p class="award__year">Commendation, 2005</p>
+      </li>
+      <li class="award" data-status="won" data-years="2005">
+        <p class="award__name">RIBA Award – NDNA Neighbourhood Nursery Hounslow</p>
+        <p class="award__year">Winner, 2005</p>
+      </li>
+      <li class="award" data-status="commended" data-years="2005">
+        <p class="award__name">Kensington and Chelsea Environment Award Scheme – Kensal House Nursery, Restoration and Conversion</p>
+        <p class="award__year">Commendation, 2005</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2004">
+        <p class="award__name">RIBA Future House London – Re-used vicarage</p>
+        <p class="award__year">Shortlisted, 2004</p>
+      </li>
+      <li class="award" data-status="commended" data-years="2003">
+        <p class="award__name">Civic Trust Awards – Westborough Cardboard Building</p>
+        <p class="award__year">Commendation, 2003</p>
+      </li>
+      <li class="award" data-status="won" data-years="2003">
+        <p class="award__name">RIBA Awards, Churchill College Cambridge, Postgraduate Housing</p>
+        <p class="award__year">Winner, 2003</p>
+      </li>
+      <li class="award" data-status="won" data-years="2002">
+        <p class="award__name">RIBA Awards – Westborough Cardboard Building</p>
+        <p class="award__year">Winner, 2002</p>
+      </li>
+      <li class="award" data-status="won" data-years="2002">
+        <p class="award__name">David Urwin Awards – Churchill College Student Accommodation, Best New Building in Cambridge</p>
+        <p class="award__year">Joint Winner, 2002</p>
+      </li>
+      <li class="award" data-status="won" data-years="2002">
+        <p class="award__name">RIBA Stephen Lawrence Prize – Westborough Cardboard Building, best project with a construction budget under £200,000</p>
+        <p class="award__year">Winner, 2002</p>
+      </li>
+      <li class="award" data-status="won" data-years="2002">
+        <p class="award__name">RIBA Journal Sustainability Award – Westborough Cardboard Building, the building that demonstrates most elegantly and durably the principles of sustainable architecture.</p>
+        <p class="award__year">Winner, 2002</p>
+      </li>
+      <li class="award" data-status="shortlisted" data-years="2001">
+        <p class="award__name">BBC Tomorrow’s World Awards – Invention in Industry</p>
+        <p class="award__year">Shortlisted, 2001</p>
+      </li>
+      <li class="award" data-status="won" data-years="1999">
+        <p class="award__name">Civic Trust Award – Portakabin Lilliput Nursery</p>
+        <p class="award__year">Winner, 1999</p>
+      </li>
+      <li class="award" data-status="commended" data-years="1999">
+        <p class="award__name">Chelmsford Diocese DAC Award – St Martin’s Church</p>
+        <p class="award__year">Highly Commended, 1999</p>
+      </li>
+      <li class="award" data-status="won" data-years="1998">
+        <p class="award__name">Millennium Products Award – Portakabin Lilliput Nursery</p>
+        <p class="award__year">Winner, 1998</p>
+      </li>
+      <li class="award" data-status="won" data-years="1998">
+        <p class="award__name">Car Free London Competition</p>
+        <p class="award__year">Winner, 1998</p>
+      </li>
+      <li class="award" data-status="won" data-years="1997">
+        <p class="award__name">Southend-on-Sea, Design Award – 43 Leighcliff Road</p>
+        <p class="award__year">Winner, 1997</p>
       </li>
     </ul>
     <p class="award-list__empty" id="awardEmpty" hidden>No awards in this selection.</p>
