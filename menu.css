@@ -255,6 +255,10 @@
   z-index: 200;
   display: block;
   transition: opacity 0.4s ease;
+  /* Difference blend: the logo is drawn white and differenced with whatever
+     is behind it — black over white, white over black, and split cleanly
+     where it straddles a section edge (works the same on the contact page). */
+  mix-blend-mode: difference;
 }
 .site-logo img {
   position: absolute;
@@ -264,10 +268,14 @@
   height: 192.31%;
   max-width: none;
   display: block;
+  filter: invert(1);               /* black artwork → white, for the blend */
 }
 .site-logo.is-hidden,
 .menu-open .site-logo { opacity: 0; pointer-events: none; }
-.site-logo--light img { filter: invert(1); }   /* white on black sections */
+/* On coloured backgrounds (green / pink / red) a difference blend would tint
+   the logo, so it stays plain black there. */
+.site-logo--plain { mix-blend-mode: normal; }
+.site-logo--plain img { filter: none; }
 
 /* Mobile: match the 40px arrow and the pages' 12px side padding. */
 @media (max-width: 500px) {

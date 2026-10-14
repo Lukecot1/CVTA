@@ -592,7 +592,7 @@
     }
     section[data-color]:not(.s-hero):not(.m-hero) { background-color: transparent !important; }
   </style>
-  <link rel="stylesheet" href="menu.css?v=18">
+  <link rel="stylesheet" href="menu.css?v=20">
   <link rel="stylesheet" href="award-more.css?v=1">
 
   <!-- Rive runtime + CVTA loader bootstrap. Deferred so parsing isn't blocked,
@@ -908,8 +908,9 @@
       });
       if (current) {
         document.body.style.setProperty('--page-colour', current.dataset.color);
+        // Logo blends (difference) only over white / black; plain black on red.
         const logo = document.querySelector('.site-logo');
-        if (logo) logo.classList.toggle('site-logo--light', current.dataset.color === '#000');
+        if (logo) logo.classList.toggle('site-logo--plain', !['#fff', '#000'].includes(current.dataset.color));
       }
     }
     syncPageColourWash();
