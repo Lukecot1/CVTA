@@ -209,6 +209,13 @@
       display: block;
     }
 
+    /* ═════════ DESKTOP (≥ 501px) — desktop type scale, matching the home
+       page's awards section: title 64, names 24, status/year 16. ═════════ */
+    @media (min-width: 501px) {
+      .s-awards__title { font-size: 64px; line-height: normal; letter-spacing: 1.92px; }
+      .award__year { font-size: 16px; line-height: normal; letter-spacing: 0.48px; }
+    }
+
     /* ═════════ MOBILE (≤ 500px) ═════════ */
     .mobile-view { display: none; }
 
