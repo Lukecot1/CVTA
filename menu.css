@@ -313,3 +313,13 @@
 .filter-chip img { width: 22px; height: 20px; display: block; flex-shrink: 0; }
 .filter-chip:hover { filter: brightness(0.94); }
 .filter-chip:active { transform: scale(0.97); }
+
+/* iPhone: once you scroll, Safari lets the page run up behind the status bar.
+   Keep the arrow, logo and open menu 24px below it (safe-area inset is 0 on
+   desktop and at the very top of the page, so nothing moves there). */
+#nav-rive-canvas,
+.site-logo { top: calc(24px + env(safe-area-inset-top, 0px)); }
+@media (max-width: 500px) {
+  .m-nav-drawer { padding-top: calc(24 * var(--u) + env(safe-area-inset-top, 0px)); }
+  .m-nav-drawer__logo { top: calc(24 * var(--u) + env(safe-area-inset-top, 0px)); }
+}

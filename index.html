@@ -334,7 +334,6 @@
          the top; the script below swaps it to black once the hero has
          scrolled away, to match the contact card. */
       html { background-color: #fff; }
-      html.past-hero { background-color: #000; }
 
       .mobile-view {
         display: flex;
@@ -592,7 +591,7 @@
     }
     section[data-color]:not(.s-hero):not(.m-hero) { background-color: transparent !important; }
   </style>
-  <link rel="stylesheet" href="menu.css?v=21">
+  <link rel="stylesheet" href="menu.css?v=22">
   <link rel="stylesheet" href="award-more.css?v=1">
 
   <!-- Rive runtime + CVTA loader bootstrap. Deferred so parsing isn't blocked,
@@ -908,23 +907,15 @@
       });
       if (current) {
         document.body.style.setProperty('--page-colour', current.dataset.color);
+        // Safari's status / tool bars follow the same colour as the page wash.
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) themeMeta.content = current.dataset.color;
       }
     }
     syncPageColourWash();
     window.addEventListener('scroll', syncPageColourWash, { passive: true });
     window.addEventListener('resize', syncPageColourWash);
 
-    // Mobile page colour behind Safari's bars: white over the hero, black after.
-    const mHero = document.querySelector('.m-hero');
-    const themeMeta = document.querySelector('meta[name="theme-color"]');
-    function syncPageColour() {
-      const past = !!mHero && mHero.getBoundingClientRect().bottom <= 0;
-      document.documentElement.classList.toggle('past-hero', past);
-      if (themeMeta) themeMeta.content = past ? '#000000' : '#ffffff';
-    }
-    syncPageColour();
-    window.addEventListener('scroll', syncPageColour, { passive: true });
-    window.addEventListener('resize', syncPageColour);
 
     // SCROLL REVEAL
     const observer = new IntersectionObserver(entries => {
