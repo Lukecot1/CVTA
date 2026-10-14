@@ -69,7 +69,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      padding-top: 46px; /* 40px arrow slot + 6px gap */
+      padding-top: 64px; /* desktop: title at 88 = 24 + 52px logo bar + 12 */
     }
     .s-contact__title {
       font-family: 'Rag Narrow', Arial, sans-serif;
@@ -139,6 +139,7 @@
       .overlay, .nav-drawer, #cvta-loader { display: none !important; }
       .mobile-view { display: block; }
       .s-contact { padding: 24px 12px; }
+      .s-contact__header { padding-top: 46px; } /* Figma mobile: 40px arrow slot + 6 */
     }
   </style>
   <link rel="stylesheet" href="menu.css?v=16">
