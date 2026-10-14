@@ -1,0 +1,34 @@
+/* Award rows: a short description opens smoothly on hover (laptop) or tap
+   (iPhone). Shared by awards.html and the featured awards on index.html.
+   Markup: .js-award row containing .award-more > div > .award-more__text */
+.js-award { cursor: default; outline: none; }
+
+.award-more {
+  display: grid;
+  grid-template-rows: 0fr;          /* collapsed */
+  opacity: 0;
+  transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.4s ease;
+}
+.award-more > div { overflow: hidden; min-height: 0; }
+.award-more__text {
+  font-family: 'Rag Narrow', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: 0.32px;
+  color: #1a1a1a;
+  max-width: 640px;
+  padding-top: 8px;
+}
+
+/* Open: tapped / keyboard (JS adds .is-open) … */
+.js-award.is-open .award-more { grid-template-rows: 1fr; opacity: 1; }
+
+/* … or hovered, on devices with a real pointer. */
+@media (hover: hover) and (pointer: fine) {
+  .js-award:hover .award-more,
+  .js-award:focus-visible .award-more { grid-template-rows: 1fr; opacity: 1; }
+}
+
+/* White-on-black sections keep the text readable. */
+.on-dark .award-more__text { color: #fff; }
