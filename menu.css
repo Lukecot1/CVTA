@@ -273,3 +273,27 @@
 @media (max-width: 500px) {
   .site-logo { left: 12px; width: 77px; height: 40px; }
 }
+
+/* ── FILTER CHIP — closed filter button (Figma 1582-542 / 1582-653 / 1582-699)
+   Pill: 16px label + 22×20 filter icon, 10/16 padding, fully rounded.
+   Pages set --chip-bg (projects: #248043 on green; awards: #efefef). */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 126px;
+  background: var(--chip-bg, #efefef);
+  color: #000;
+  font-family: 'Rag Narrow', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.48px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+.filter-chip img { width: 22px; height: 20px; display: block; flex-shrink: 0; }
+.filter-chip:hover { filter: brightness(0.94); }
+.filter-chip:active { transform: scale(0.97); }

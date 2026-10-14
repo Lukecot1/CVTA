@@ -82,7 +82,7 @@
        Two views stacked in the same row — only one visible at a time.
        CLOSED (default): "Filter Projects" label + yellow filter icon button.
        OPEN: 9 pills (slide up from below, staggered L→R) + yellow up-arrow (also slides up). */
-    .filter-row { width: 100%; }
+    .filter-row { width: 100%; --chip-bg: #248043; }
     .filter-view {
       display: flex;
       gap: 24px;
@@ -324,7 +324,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="menu.css?v=17">
+  <link rel="stylesheet" href="menu.css?v=18">
 
   <script defer src="https://unpkg.com/@rive-app/webgl2@2.43.1/rive.js"></script>
   <script defer src="Rive/loader.js?v=2"></script>
@@ -373,12 +373,9 @@
         <!-- Filter row — CLOSED by default; filter icon reveals pills with stagger -->
         <div class="filter-row" id="filterRow">
 
-          <!-- Closed view: "Filter Projects" + yellow filter icon -->
+          <!-- Closed view: "Filter Projects" pill (Figma 1582-699) -->
           <div class="filter-view filter-view--closed">
-            <p class="filter-label">Filter Projects</p>
-            <button class="page-arrow-btn filter-open-btn" id="filterOpenBtn" aria-label="Open filter">
-              <img src="images/filter-icon.svg" alt="">
-            </button>
+            <button class="filter-chip filter-open-btn" id="filterOpenBtn" aria-label="Open filter"><span>Filter Projects</span><img src="images/filter-lines.svg" alt=""></button>
           </div>
 
           <!-- Open view: pills (staggered L→R) + yellow up-arrow -->
@@ -579,16 +576,12 @@
   <div class="mobile-view">
     <header class="m-projects-header">
       <h1 class="m-projects-header__title">Projects</h1>
-      <div class="m-projects-header__rule"></div>
     </header>
 
     <!-- Filter row: shares desktop .filter-row CSS → open/close + stagger come for free -->
     <div class="filter-row" id="mFilterRow">
       <div class="filter-view filter-view--closed">
-        <p class="filter-label">Filter Projects</p>
-        <button class="page-arrow-btn filter-open-btn" id="mFilterOpenBtn" aria-label="Open filter">
-          <img src="images/mobile/filter-icon.svg" alt="">
-        </button>
+        <button class="filter-chip filter-open-btn" id="mFilterOpenBtn" aria-label="Open filter"><span>Filter Projects</span><img src="images/filter-lines.svg" alt=""></button>
       </div>
       <div class="filter-view filter-view--open" aria-hidden="true">
         <div class="filter-pills">

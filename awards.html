@@ -231,7 +231,7 @@
       .s-awards { padding: 76px 12px 24px; }
     }
   </style>
-  <link rel="stylesheet" href="menu.css?v=17">
+  <link rel="stylesheet" href="menu.css?v=18">
   <link rel="stylesheet" href="award-more.css?v=1">
 
   <script defer src="https://unpkg.com/@rive-app/webgl2@2.43.1/rive.js"></script>
@@ -271,15 +271,11 @@
 
   <main class="s-awards">
     <h1 class="s-awards__title">Awards</h1>
-    <div class="s-awards__rule"></div>
 
     <div class="filter-row" id="filterRow">
       <div class="filter-pane filter-pane--closed"><div>
         <div class="filter-view--closed">
-          <p class="filter-label">Filter Awards</p>
-          <button class="icon-btn" id="filterOpenBtn" aria-label="Open filter" aria-expanded="false">
-            <img src="images/mobile/filter-icon.svg" alt="">
-          </button>
+          <button class="filter-chip" id="filterOpenBtn" aria-label="Open filter" aria-expanded="false"><span>Filter Awards</span><img src="images/filter-lines.svg" alt=""></button>
         </div>
       </div></div>
       <div class="filter-pane filter-pane--open" aria-hidden="true" inert><div>
