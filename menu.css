@@ -255,10 +255,6 @@
   z-index: 200;
   display: block;
   transition: opacity 0.4s ease;
-  /* Difference blend: the logo is drawn white and differenced with whatever
-     is behind it — black over white, white over black, and split cleanly
-     where it straddles a section edge (works the same on the contact page). */
-  mix-blend-mode: difference;
 }
 .site-logo img {
   position: absolute;
@@ -268,14 +264,26 @@
   height: 192.31%;
   max-width: none;
   display: block;
-  filter: invert(1);               /* black artwork → white, for the blend */
 }
 .site-logo.is-hidden,
 .menu-open .site-logo { opacity: 0; pointer-events: none; }
-/* On coloured backgrounds (green / pink / red) a difference blend would tint
-   the logo, so it stays plain black there. */
-.site-logo--plain { mix-blend-mode: normal; }
-.site-logo--plain img { filter: none; }
+/* Letters turn white only where they sit over black (text or a black
+   section); over white / red / green / pink they stay black. The letters
+   are a stencil (mask) over a filtered copy of what's behind them:
+   greyscale → hard threshold (near-black → 0, anything lighter → 1) →
+   invert. Falls back to the plain black artwork where unsupported. */
+@supports ((backdrop-filter: invert(1)) or (-webkit-backdrop-filter: invert(1))) {
+  .site-logo img { opacity: 0; }
+  .site-logo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    -webkit-backdrop-filter: grayscale(1) brightness(4) contrast(100) invert(1);
+            backdrop-filter: grayscale(1) brightness(4) contrast(100) invert(1);
+    -webkit-mask: url('images/web/cvta-logo-05.webp') 0 50% / 100% auto no-repeat;
+            mask: url('images/web/cvta-logo-05.webp') 0 50% / 100% auto no-repeat;
+  }
+}
 
 /* Mobile: match the 40px arrow and the pages' 12px side padding. */
 @media (max-width: 500px) {
