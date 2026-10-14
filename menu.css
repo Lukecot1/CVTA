@@ -86,9 +86,9 @@
 .nav-drawer__menu .nav-link:not(.nav-arrow),
 .m-nav-drawer__menu .m-nav-link:not(.m-nav-arrow) {
   font-family: 'Rag Narrow', Arial, sans-serif;
-  font-size: 48px;
+  font-size: 36px;
   line-height: normal;
-  letter-spacing: 1.44px;
+  letter-spacing: 1.08px;
   color: #000;
   text-decoration: none;
   white-space: nowrap;

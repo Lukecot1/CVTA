@@ -587,12 +587,12 @@
       inset: 0;
       z-index: -1;
       background-color: var(--page-colour, #fff);
-      transition: background-color 0.35s ease-out;
+      transition: background-color 0.8s ease-in-out;
       pointer-events: none;
     }
     section[data-color]:not(.s-hero):not(.m-hero) { background-color: transparent !important; }
   </style>
-  <link rel="stylesheet" href="menu.css?v=14">
+  <link rel="stylesheet" href="menu.css?v=15">
 
   <!-- Rive runtime + CVTA loader bootstrap. Deferred so parsing isn't blocked,
        but the overlay <div> below is already in the DOM so first paint is covered. -->
@@ -768,8 +768,8 @@
         <div class="award-list">
           <div class="award-item">
             <div class="award-item__content">
-              <p class="award-item__name">Stephen Lawrence Prize, The Cardboard building.</p>
-              <p class="award-item__year">2001</p>
+              <p class="award-item__name">RIBA Stephen Lawrence Prize, The Cardboard Building</p>
+              <p class="award-item__year">2002</p>
             </div>
             <div class="award-item__divider"></div>
           </div>
@@ -783,7 +783,7 @@
           <div class="award-item">
             <div class="award-item__content">
               <p class="award-item__name">Education Architect of the Year</p>
-              <p class="award-item__year award-item__year--small">2011, 2016, 2018</p>
+              <p class="award-item__year">2011, 2016, 2018</p>
             </div>
             <div class="award-item__divider"></div>
           </div>
@@ -797,20 +797,20 @@
           <div class="award-item">
             <div class="award-item__content">
               <p class="award-item__name">Brick Awards</p>
-              <p class="award-item__year">20??</p>
+              <p class="award-item__year">2016</p>
             </div>
             <div class="award-item__divider"></div>
           </div>
           <div class="award-item">
             <div class="award-item__content">
               <p class="award-item__name">Retrofit Awards</p>
-              <p class="award-item__year">20??</p>
+              <p class="award-item__year">2011, 2018</p>
             </div>
             <div class="award-item__divider"></div>
           </div>
         </div>
       </div>
-      <a class="cta" href="#">
+      <a class="cta" href="awards.html">
         <span class="cta__text">See our Awards</span>
         <img class="cta__circle" src="images/cta-arrow.svg" alt="">
       </a>
@@ -1017,8 +1017,8 @@
       <div class="m-award-list">
         <article class="m-award">
           <div class="m-award__text">
-            <p class="m-award__name">Stephen Lawrence Prize, The Cardboard building.</p>
-            <p class="m-award__year">2001</p>
+            <p class="m-award__name">RIBA Stephen Lawrence Prize, The Cardboard Building</p>
+            <p class="m-award__year">2002</p>
           </div>
           <div class="m-award__rule"></div>
         </article>
@@ -1046,19 +1046,19 @@
         <article class="m-award">
           <div class="m-award__text">
             <p class="m-award__name">Brick Awards</p>
-            <p class="m-award__year">20??</p>
+            <p class="m-award__year">2016</p>
           </div>
           <div class="m-award__rule"></div>
         </article>
         <article class="m-award">
           <div class="m-award__text">
             <p class="m-award__name">Retrofit Awards</p>
-            <p class="m-award__year">20??</p>
+            <p class="m-award__year">2011, 2018</p>
           </div>
           <div class="m-award__rule"></div>
         </article>
       </div>
-      <a class="m-link" href="#awards">
+      <a class="m-link" href="awards.html">
         <span class="m-link__label">See our Awards</span>
         <img loading="lazy" decoding="async" class="m-link__arrow" src="images/mobile/arrow-link.svg" alt="">
       </a>
