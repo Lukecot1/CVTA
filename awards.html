@@ -212,6 +212,12 @@
     /* ═════════ DESKTOP (≥ 501px) — desktop type scale, matching the home
        page's awards section: title 64, names 24, status/year 16. ═════════ */
     @media (min-width: 501px) {
+      /* Same padding structure as the projects and studio pages: side padding
+         grows 24 → 234 with the window (234 at the Figma's 1748 width). */
+      .s-awards {
+        --side-pad: clamp(24px, calc(24px + (100vw - 768px) * 210 / 980), 234px);
+        padding: 88px var(--side-pad) 88px;
+      }
       .s-awards__title { font-size: 64px; line-height: normal; letter-spacing: 1.92px; }
       .award__year { font-size: 16px; line-height: normal; letter-spacing: 0.48px; }
     }
