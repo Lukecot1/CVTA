@@ -13,9 +13,9 @@
        internally shows an arrow when false, X when true). Observing
        this drives the drawer open/close.
 
-   Hide on scroll (separate from the mask): scrolling down carries the
-   canvas up and out of view with the page; any scroll up (even 1px)
-   springs it straight back. It always shows at the top of the page, while
+   Hide on scroll (separate from the mask): scrolling down slides the canvas
+   (and the site logo) fully off the top and fades them to 0; a deliberate
+   scroll up brings them back. Always shown at the top of the page, while
    the menu is open, and on landing pages until the mask sweep has finished
    (the canvas has fully cleared the hero) so the sweep is always seen.
 
@@ -83,19 +83,27 @@
     });
   }
 
-  // ── Hide on scroll down, spring back on scroll up ─────────────────────
+  // ── Hide on scroll down, show on scroll up ──────────────────────────
+  // Direction-based with small travel thresholds, so Safari's own toolbar
+  // movement can't flicker it: hide after 12px of downward scroll, show
+  // after 16px of upward scroll.
   let menuOpen = false;
   let lastY = Math.max(0, window.scrollY);
-  let hiddenBy = 0; // px the canvas is pushed up (0 = fully shown)
-  const SPRING = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
+  let headerHidden = false;
+  let downTravel = 0, upTravel = 0;
+  const HIDE_AFTER = 12, SHOW_AFTER = 16;
+  const siteLogo = document.querySelector('.site-logo');
 
-  const siteLogo = document.querySelector('.site-logo');   // rides with the arrow
-  function placeCanvas(px, animate) {
-    hiddenBy = px;
+  function setHeaderHidden(hide) {
+    if (hide === headerHidden) return;
+    headerHidden = hide;
+    const lift = restingSlot().top + 8;     // slide past the top of the screen
     for (const el of [canvas, siteLogo]) {
       if (!el) continue;
-      el.style.transition = animate ? SPRING + ', opacity 0.4s ease' : 'opacity 0.4s ease';
-      el.style.transform = px ? `translateY(${-px}px)` : '';
+      el.style.transition = 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease';
+      el.style.transform = hide ? `translateY(calc(-100% - ${lift}px))` : '';
+      el.style.opacity = hide ? '0' : '';
+      el.style.pointerEvents = hide ? 'none' : '';
     }
   }
   // Logo stays hidden while the arrow is over a landing hero (its big CVTA
@@ -111,29 +119,22 @@
     const hero = h.getBoundingClientRect();
     return hero.height > 0 && hero.bottom > restingSlot().top;
   }
-  // iOS Safari resizes its bars while you scroll, which nudges scrollY by a
-  // few px without the user scrolling up — ignore those, and only spring the
-  // arrow back on a deliberate upward scroll (a few px in total).
-  let lastViewH = window.innerHeight;
-  let upTravel = 0;
-  const UP_TRIGGER = 4;
   function onScrollHide() {
-    const y = Math.max(0, window.scrollY);   // ignore iOS top bounce
+    const y = Math.max(0, window.scrollY);          // ignore iOS top bounce
     const maxY = document.documentElement.scrollHeight - window.innerHeight;
-    const dy = y - lastY;
+    const dy = Math.min(y, maxY) - Math.min(lastY, maxY); // ignore bottom bounce
     lastY = y;
-    if (window.innerHeight !== lastViewH) { lastViewH = window.innerHeight; return; }
-    if (menuOpen || y <= 0 || overHero()) { upTravel = 0; if (hiddenBy) placeCanvas(0, true); return; }
-    if (y >= maxY - 1) return;                // iOS bottom bounce
+    if (menuOpen || y <= 0 || overHero()) {
+      downTravel = upTravel = 0;
+      setHeaderHidden(false);
+      return;
+    }
     if (dy > 0) {
-      upTravel = 0;
-      // Move up with the page until fully off-screen.
-      const max = restingSlot().bottom + 8;
-      const next = Math.min(max, hiddenBy + dy);
-      if (next !== hiddenBy) placeCanvas(next, false);
-    } else if (dy < 0 && hiddenBy) {
-      upTravel += -dy;
-      if (upTravel >= UP_TRIGGER) { upTravel = 0; placeCanvas(0, true); }
+      downTravel += dy; upTravel = 0;
+      if (downTravel >= HIDE_AFTER) setHeaderHidden(true);
+    } else if (dy < 0) {
+      upTravel += -dy; downTravel = 0;
+      if (upTravel >= SHOW_AFTER) setHeaderHidden(false);
     }
   }
   window.addEventListener('scroll', onScrollHide, { passive: true });
@@ -142,7 +143,7 @@
   syncLogo();
   document.addEventListener('cvta:drawer-toggle', (e) => {
     menuOpen = !!(e.detail && e.detail.open);
-    if (menuOpen && hiddenBy) placeCanvas(0, true);
+    if (menuOpen) setHeaderHidden(false);
   });
 
   const riveInstance = new rive.Rive({

@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#4499d2" media="(max-width: 500px)">
   <title>Cottrell Vermeulen Tucker Architecture</title>
   <style>
     @font-face {
@@ -329,12 +328,6 @@
       .m-hero__header { display: none !important; }
 
       html, body { overflow-x: hidden; }
-      /* Safari fills the areas behind its status bar / toolbar (and the
-         overscroll bounce) with the page's solid background colour: white at
-         the top; the script below swaps it to black once the hero has
-         scrolled away, to match the contact card. */
-      html { background-color: #fff; }
-
       .mobile-view {
         display: flex;
         flex-direction: column;
@@ -357,6 +350,9 @@
         position: relative;
         width: 100%;
         height: 100vh;
+        height: 100lvh;      /* full screen height with Safari's bars collapsed —
+                                the photo always fills the screen and runs
+                                behind the toolbar */
         padding: 24px 12px;
         display: flex;
         flex-direction: column;
@@ -591,17 +587,14 @@
     }
 
     /* ── PAGE COLOUR (scroll colour wash, à la studio-gaufrettes.fr) ──
-       One fixed layer behind the page holds the current colour; sections
-       are transparent and each declares its colour in data-color. As a
-       section crosses the middle of the screen the layer fades to it. */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: -1;
+       The page's own background holds the current colour (no fixed layer —
+       on iPhone a fixed full-screen layer makes Safari paint solid bars
+       behind the status bar and toolbar). Sections are transparent and each
+       declares its colour in data-color; as a section crosses the middle of
+       the screen the page background fades to it. */
+    body {
       background-color: var(--page-colour, #4499d2);
       transition: background-color 0.8s ease-in-out;
-      pointer-events: none;
     }
     /* The intro keeps its own solid white so the hero's sky colour can never
        show through it while the wash catches up. */
@@ -614,7 +607,7 @@
        but the overlay <div> below is already in the DOM so first paint is covered. -->
   <script defer src="https://unpkg.com/@rive-app/webgl2@2.43.1/rive.js"></script>
   <script defer src="Rive/loader.js?v=2"></script>
-  <script defer src="Rive/menubar.js?v=8"></script>
+  <script defer src="Rive/menubar.js?v=9"></script>
 </head>
 <body>
 
@@ -923,9 +916,6 @@
       });
       if (current) {
         document.body.style.setProperty('--page-colour', current.dataset.color);
-        // Safari's status / tool bars follow the same colour as the page wash.
-        const themeMeta = document.querySelector('meta[name="theme-color"]');
-        if (themeMeta) themeMeta.content = current.dataset.color;
       }
     }
     syncPageColourWash();
