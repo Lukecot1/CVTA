@@ -596,9 +596,7 @@
       background-color: var(--page-colour, #4499d2);
       transition: background-color 0.8s ease-in-out;
     }
-    /* The intro keeps its own solid white so the hero's sky colour can never
-       show through it while the wash catches up. */
-    section[data-color]:not(.s-hero):not(.m-hero):not(.s-intro):not(.m-desc) { background-color: transparent !important; }
+    section[data-color]:not(.s-hero):not(.m-hero) { background-color: transparent !important; }
   </style>
   <link rel="stylesheet" href="menu.css?v=22">
   <link rel="stylesheet" href="award-more.css?v=1">
@@ -667,7 +665,7 @@
   <main>
 
     <!-- HERO -->
-    <section class="s-hero" id="hero" data-color="#4499d2">
+    <section class="s-hero" id="hero" data-color="#fff">
       <!-- 67px header row — spacer matching Figma's arrow header height -->
       <div class="hero-header"></div>
       <div class="hero-cvta">
@@ -907,16 +905,36 @@
     // PAGE COLOUR — fade the fixed colour layer to the section in the middle
     // of the screen (only sections that are actually rendered at this width).
     const colourSections = [...document.querySelectorAll('section[data-color]')];
+    // At the very top (photo filling the screen) the page colour is the sky
+    // #4499d2, so iPhone Safari's status-bar strip continues the photo. The
+    // moment you scroll it switches straight to the section colours — no fade,
+    // so the sky can never show over the intro.
+    const SKY = '#4499d2';
+    let atTop = null;
     function syncPageColourWash() {
-      const mid = window.innerHeight / 2;
-      const current = colourSections.find(sec => {
-        if (!sec.offsetParent && getComputedStyle(sec).position !== 'fixed') return false;
-        const r = sec.getBoundingClientRect();
-        return r.height > 0 && r.top <= mid && r.bottom > mid;
-      });
-      if (current) {
-        document.body.style.setProperty('--page-colour', current.dataset.color);
+      const top = window.scrollY <= 0;
+      let colour;
+      if (top) {
+        colour = SKY;
+      } else {
+        const mid = window.innerHeight / 2;
+        const current = colourSections.find(sec => {
+          if (!sec.offsetParent && getComputedStyle(sec).position !== 'fixed') return false;
+          const r = sec.getBoundingClientRect();
+          return r.height > 0 && r.top <= mid && r.bottom > mid;
+        });
+        if (!current) return;
+        colour = current.dataset.color;
       }
+      if (top !== atTop) {              // entering / leaving the top: switch instantly
+        atTop = top;
+        document.body.style.transition = 'none';
+        document.body.style.setProperty('--page-colour', colour);
+        void document.body.offsetHeight;
+        document.body.style.transition = '';
+        return;
+      }
+      document.body.style.setProperty('--page-colour', colour);
     }
     syncPageColourWash();
     window.addEventListener('scroll', syncPageColourWash, { passive: true });
@@ -936,7 +954,7 @@
        the Figma 'Flow_V1' (node 1453-655). Hidden on desktop. -->
   <div class="mobile-view">
 
-    <section class="m-screen m-hero" data-color="#4499d2">
+    <section class="m-screen m-hero" data-color="#fff">
       <img decoding="async" class="m-hero__bg" src="images/web/mobile/hero-bg.webp" alt="">
       <header class="m-hero__header">
         <button class="m-hero__nav" aria-label="Menu">
