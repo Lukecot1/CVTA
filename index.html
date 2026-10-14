@@ -23,9 +23,9 @@
     :root {
       --side-pad:           clamp(24px, calc(24px  + (100vw - 768px) * 210 / 980), 234px);
       --section-y-pad:      clamp(100px, calc(100px + (100vw - 768px) * 50 / 980), 150px);
-      --heading-size:       clamp(64px, calc(64px  + (100vw - 768px) * 32  / 980), 96px);
+      --heading-size: clamp(43px, calc(43px + (100vw - 768px) * 21 / 980), 64px);
       --project-card-img-h: clamp(300px, calc(300px + (100vw - 768px) * 150 / 980), 450px);
-      --project-name-size:  clamp(28px, calc(28px  + (100vw - 768px) * 8   / 980), 36px);
+      --project-name-size: clamp(19px, calc(19px + (100vw - 768px) * 5 / 980), 24px);
     }
 
     body {
@@ -82,8 +82,8 @@
     }
     .cta__text {
       font-family: 'Rag Narrow', Arial, sans-serif;
-      font-size: 36px;
-      letter-spacing: 1.44px;
+      font-size: 24px;
+      letter-spacing: 0.96px;
       color: #000;
       line-height: 1;
     }
@@ -176,8 +176,8 @@
 
     .s-intro__tagline {
       font-family: 'Rag Narrow', Arial, sans-serif;
-      font-size: 36px;
-      letter-spacing: 1.08px;
+      font-size: 24px;
+      letter-spacing: 0.72px;
       line-height: normal;
       text-align: center;
       color: #000;
@@ -221,14 +221,14 @@
     .project-card__img { width: 100%; height: var(--project-card-img-h); object-fit: cover; display: block; }
     .project-card__info { display: flex; flex-direction: column; gap: 4px; }
     .project-card__name { font-size: var(--project-name-size); letter-spacing: 1.08px; color: #000; line-height: 1.1; }
-    .project-card__year { font-size: 24px; letter-spacing: 0.72px; color: #000; }
+    .project-card__year { font-size: 16px; letter-spacing: 0.48px; color: #000; }
 
     /* Awards list */
     .award-list { display: flex; flex-direction: column; gap: 12px; }
     .award-item { display: flex; flex-direction: column; gap: 6px; }
     .award-item__content { display: flex; flex-direction: column; }
-    .award-item__name { font-size: 36px; letter-spacing: 1.44px; color: #1a1a1a; line-height: 1.3; }
-    .award-item__year { font-size: 24px; letter-spacing: 0.72px; color: #000; line-height: normal; }
+    .award-item__name { font-size: 24px; letter-spacing: 0.96px; color: #1a1a1a; line-height: 1.3; }
+    .award-item__year { font-size: 16px; letter-spacing: 0.48px; color: #000; line-height: normal; }
     .award-item__year--small { font-size: 12px; letter-spacing: 0.36px; }
     .award-item__divider { width: 100%; height: 2px; background: #000; }
 
@@ -250,8 +250,8 @@
       width: 100%;
     }
     .s-studio__heading {
-      font-size: 96px;
-      letter-spacing: 2.88px;
+      font-size: 64px;
+      letter-spacing: 1.92px;
       color: #000;
       line-height: 1;
     }
@@ -270,22 +270,22 @@
 
     /* ── CONTACT ─────────────────────────────────────────── */
     .s-contact { background: #000; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
-    .s-contact__heading { font-size: 96px; letter-spacing: 2.88px; color: #fff; line-height: 1; }
+    .s-contact__heading { font-size: 64px; letter-spacing: 1.92px; color: #fff; line-height: 1; }
     .s-contact__divider { width: 100%; height: 2px; background: #fff; flex-shrink: 0; }
     .s-contact__body { display: flex; flex-direction: column; gap: 24px; }
     .s-contact__col { display: flex; flex-direction: column; gap: 12px; }
     .s-contact__col--email { width: 311px; }
     .s-contact__col--phone,
     .s-contact__col--address { width: 161px; }
-    .s-contact__label { font-size: 24px; letter-spacing: 0.72px; color: #fff; line-height: normal; }
+    .s-contact__label { font-size: 16px; letter-spacing: 0.48px; color: #fff; line-height: normal; }
     .s-contact__label--email { letter-spacing: 0.48px; } /* Figma: Email label is uniquely tighter */
-    .s-contact__value { font-size: 24px; letter-spacing: 0.72px; color: #fff; text-decoration: none; line-height: normal; }
+    .s-contact__value { font-size: 16px; letter-spacing: 0.48px; color: #fff; text-decoration: none; line-height: normal; }
     .s-contact__value:hover { opacity: 0.7; }
     .s-contact__follow { display: flex; flex-direction: column; gap: 24px; }
-    .s-contact__follow-label { font-size: 24px; letter-spacing: 0.72px; color: #fff; white-space: nowrap; }
+    .s-contact__follow-label { font-size: 16px; letter-spacing: 0.48px; color: #fff; white-space: nowrap; }
     .s-contact__social { display: flex; }
     .s-contact__social img { width: 120px; height: 48px; }
-    .s-contact__footer { font-size: 24px; letter-spacing: 0.72px; color: #fff; }
+    .s-contact__footer { font-size: 16px; letter-spacing: 0.48px; color: #fff; }
 
     /* ── PAGE LOADER (Rive) ───────────────────────────────── */
     /* Full-screen overlay that covers the page on first paint and holds until
@@ -592,14 +592,14 @@
     }
     section[data-color]:not(.s-hero):not(.m-hero) { background-color: transparent !important; }
   </style>
-  <link rel="stylesheet" href="menu.css?v=15">
+  <link rel="stylesheet" href="menu.css?v=16">
   <link rel="stylesheet" href="award-more.css?v=1">
 
   <!-- Rive runtime + CVTA loader bootstrap. Deferred so parsing isn't blocked,
        but the overlay <div> below is already in the DOM so first paint is covered. -->
   <script defer src="https://unpkg.com/@rive-app/webgl2@2.43.1/rive.js"></script>
   <script defer src="Rive/loader.js?v=2"></script>
-  <script defer src="Rive/menubar.js?v=6"></script>
+  <script defer src="Rive/menubar.js?v=7"></script>
 </head>
 <body>
 
@@ -611,6 +611,7 @@
 
   <!-- NAV — Rive-driven. Visual, hover, open/close, track-matte all live in cvta.riv.
        Mounted by Rive/menubar.js. See styles for #nav-rive-canvas. -->
+  <a class="site-logo" href="index.html" aria-label="CVTA — home"><img src="images/web/cvta-logo-05.webp" alt=""></a>
   <canvas id="nav-rive-canvas" width="80" height="80" aria-label="Open menu"></canvas>
 
   <!-- OVERLAY -->
@@ -905,7 +906,11 @@
         const r = sec.getBoundingClientRect();
         return r.height > 0 && r.top <= mid && r.bottom > mid;
       });
-      if (current) document.body.style.setProperty('--page-colour', current.dataset.color);
+      if (current) {
+        document.body.style.setProperty('--page-colour', current.dataset.color);
+        const logo = document.querySelector('.site-logo');
+        if (logo) logo.classList.toggle('site-logo--light', current.dataset.color === '#000');
+      }
     }
     syncPageColourWash();
     window.addEventListener('scroll', syncPageColourWash, { passive: true });

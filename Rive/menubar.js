@@ -89,10 +89,19 @@
   let hiddenBy = 0; // px the canvas is pushed up (0 = fully shown)
   const SPRING = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
 
+  const siteLogo = document.querySelector('.site-logo');   // rides with the arrow
   function placeCanvas(px, animate) {
     hiddenBy = px;
-    canvas.style.transition = animate ? SPRING : 'none';
-    canvas.style.transform = px ? `translateY(${-px}px)` : '';
+    for (const el of [canvas, siteLogo]) {
+      if (!el) continue;
+      el.style.transition = animate ? SPRING + ', opacity 0.4s ease' : 'opacity 0.4s ease';
+      el.style.transform = px ? `translateY(${-px}px)` : '';
+    }
+  }
+  // Logo stays hidden while the arrow is over a landing hero (its big CVTA
+  // letters already say who we are).
+  function syncLogo() {
+    if (siteLogo) siteLogo.classList.toggle('is-hidden', overHero());
   }
   // True while any part of the canvas slot is still over the landing hero,
   // i.e. the mask sweep hasn't finished — keep the arrow in view for it.
@@ -117,6 +126,9 @@
     }
   }
   window.addEventListener('scroll', onScrollHide, { passive: true });
+  window.addEventListener('scroll', syncLogo, { passive: true });
+  window.addEventListener('resize', syncLogo);
+  syncLogo();
   document.addEventListener('cvta:drawer-toggle', (e) => {
     menuOpen = !!(e.detail && e.detail.open);
     if (menuOpen && hiddenBy) placeCanvas(0, true);

@@ -18,9 +18,9 @@
 
     :root {
       --side-pad: clamp(24px, calc(24px + (100vw - 768px) * 210 / 980), 234px);
-      --heading-size: clamp(64px, calc(64px + (100vw - 768px) * 32 / 980), 96px);
+      --heading-size: clamp(43px, calc(43px + (100vw - 768px) * 21 / 980), 64px);
       --project-card-img-h: clamp(300px, calc(300px + (100vw - 768px) * 150 / 980), 450px);
-      --project-name-size: clamp(28px, calc(28px + (100vw - 768px) * 8 / 980), 36px);
+      --project-name-size: clamp(19px, calc(19px + (100vw - 768px) * 5 / 980), 24px);
     }
 
     body {
@@ -98,8 +98,8 @@
     .filter-row.is-closing .filter-view--open { display: flex; }
     .filter-label {
       font-family: 'Rag Narrow', Arial, sans-serif;
-      font-size: 36px;
-      letter-spacing: 1.08px;
+      font-size: 24px;
+      letter-spacing: 0.72px;
       color: #000;
       line-height: 1;
       white-space: nowrap;
@@ -115,7 +115,7 @@
       background: #248043;
       color: #000;
       font-family: Arial, sans-serif;
-      font-size: 24px;
+      font-size: 16px;
       line-height: 1;
       padding: 10px 16px;
       border-radius: 24px;
@@ -173,7 +173,7 @@
     .project-card__img { width: 100%; height: var(--project-card-img-h); object-fit: cover; display: block; }
     .project-card__info { display: flex; flex-direction: column; gap: 4px; }
     .project-card__name { font-family: 'Rag Narrow', Arial, sans-serif; font-size: var(--project-name-size); letter-spacing: 1.08px; color: #000; line-height: 1.1; }
-    .project-card__year { font-family: 'Rag Narrow', Arial, sans-serif; font-size: 24px; letter-spacing: 0.72px; color: #000; }
+    .project-card__year { font-family: 'Rag Narrow', Arial, sans-serif; font-size: 16px; letter-spacing: 0.48px; color: #000; }
 
     /* ── PAGE LOADER (Rive) ───────────────────────────────── */
     #cvta-loader {
@@ -324,11 +324,11 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="menu.css?v=15">
+  <link rel="stylesheet" href="menu.css?v=16">
 
   <script defer src="https://unpkg.com/@rive-app/webgl2@2.43.1/rive.js"></script>
   <script defer src="Rive/loader.js?v=2"></script>
-  <script defer src="Rive/menubar.js?v=6"></script>
+  <script defer src="Rive/menubar.js?v=7"></script>
 </head>
 <body>
 
@@ -573,6 +573,7 @@
 
   <!-- Fixed Rive-driven nav arrow (shared across desktop + mobile).
        Mounted by Rive/menubar.js. -->
+  <a class="site-logo" href="index.html" aria-label="CVTA — home"><img src="images/web/cvta-logo-05.webp" alt=""></a>
   <canvas id="nav-rive-canvas" width="80" height="80" aria-label="Open menu"></canvas>
 
   <div class="mobile-view">

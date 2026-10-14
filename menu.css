@@ -239,3 +239,36 @@
     height: calc(25 * var(--d));
   }
 }
+
+/* ── SITE LOGO — Figma "CVTA_05" (1579-480 / 1579-481) ──────────────────
+   Fixed top-left, level with the Rive arrow (24 from the top); 100×52 crop
+   of the 400×400 asset. Rides with the arrow on scroll (menubar.js), hides
+   over landing heroes and while the menu is open (the menu has its own). */
+.site-logo {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  width: 100px;
+  height: 52px;
+  overflow: hidden;
+  z-index: 200;
+  display: block;
+  transition: opacity 0.4s ease;
+}
+.site-logo img {
+  position: absolute;
+  left: 0;
+  top: -46.15%;
+  width: 100%;
+  height: 192.31%;
+  max-width: none;
+  display: block;
+}
+.site-logo.is-hidden,
+.menu-open .site-logo { opacity: 0; pointer-events: none; }
+.site-logo--light img { filter: invert(1); }   /* white on black sections */
+
+/* Mobile: match the 40px arrow and the pages' 12px side padding. */
+@media (max-width: 500px) {
+  .site-logo { left: 12px; width: 77px; height: 40px; }
+}
