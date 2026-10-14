@@ -220,11 +220,12 @@
     width: calc(80 * var(--d));
     height: calc(80 * var(--d));
   }
-  .nav-drawer__menu li { height: calc(70 * var(--d)); }
+  /* Links at 24 (desktop type scale 36 → 24): 36 text box → 8 + 36 + 8 = 52 row */
+  .nav-drawer__menu li { height: calc(52 * var(--d)); }
   .nav-drawer__menu .nav-link:not(.nav-arrow) {
-    font-size: calc(36 * var(--d));
-    line-height: calc(54 * var(--d)); /* Figma text box 54 → 8 + 54 + 8 = 70 row */
-    letter-spacing: calc(1.08 * var(--d));
+    font-size: calc(24 * var(--d));
+    line-height: calc(36 * var(--d));
+    letter-spacing: calc(0.72 * var(--d));
     padding: calc(8 * var(--d));
   }
   .nav-arrow,
