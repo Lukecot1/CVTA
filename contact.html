@@ -135,6 +135,13 @@
     /* ═════════ DESKTOP (≥ 501px) — desktop type scale, matching the home
        page's contact section: title 64, everything else 16. ═════════ */
     @media (min-width: 501px) {
+      /* Same padding structure as the projects, studio and awards pages: side
+         padding grows 24 → 234 with the window; the header's 64px top padding
+         puts the title at 88 (24 + 52px logo / arrow bar + 12). */
+      .s-contact {
+        --side-pad: clamp(24px, calc(24px + (100vw - 768px) * 210 / 980), 234px);
+        padding: 24px var(--side-pad) 88px;
+      }
       .s-contact__title { font-size: 64px; line-height: normal; letter-spacing: 1.92px; }
       .s-contact { font-size: 16px; letter-spacing: 0.48px; }
       .s-contact__label--email { letter-spacing: 0.32px; }
