@@ -96,10 +96,23 @@
     }
     .icon-btn:hover img { transform: rotate(-45deg); }
 
-    /* ── FILTER ROW ──────────────────────────────────────────
-       SHUT (default): "Filter Awards" + filter icon.
-       OPEN: pills (wrap, 10px gaps) then the up-arrow on its own row, 12px apart.
-       Pills + up-arrow slide up with an L→R stagger (same motion as Projects). */
+    /* ── FILTER ROW — Figma Awards 1474-1845 (shut) / 1474-1894 (open) ──
+       SHUT: "Filter Awards" + filter icon.
+       OPEN: pills wrap on the left (10px gaps); the up-arrow takes the filter
+       icon's place top-right. The two states sit in collapsible panes that
+       open/close smoothly — same height + fade motion as the award
+       descriptions (award-more.css). */
+    .filter-pane {
+      display: grid;
+      transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.4s ease;
+    }
+    .filter-pane > div { overflow: hidden; min-height: 0; }
+    .filter-pane--closed                   { grid-template-rows: 1fr; opacity: 1; }
+    .filter-pane--open                     { grid-template-rows: 0fr; opacity: 0; }
+    .filter-row.open .filter-pane--closed  { grid-template-rows: 0fr; opacity: 0; }
+    .filter-row.open .filter-pane--open    { grid-template-rows: 1fr; opacity: 1; }
+
     .filter-view--closed {
       display: flex;
       align-items: flex-start;
@@ -111,13 +124,14 @@
       letter-spacing: 0.72px;
       white-space: nowrap;
     }
-    .filter-view--open { display: none; flex-direction: column; gap: 12px; }
-    .filter-row.open .filter-view--closed,
-    .filter-row.is-closing .filter-view--closed { display: none; }
-    .filter-row.open .filter-view--open,
-    .filter-row.is-closing .filter-view--open { display: flex; }
-
+    .filter-view--open {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
     .filter-pills {
+      flex: 1 1 0;
+      min-width: 0;
       display: flex;
       flex-wrap: wrap;
       align-content: flex-start;
@@ -139,36 +153,6 @@
     }
     .filter-pill:hover:not(.is-selected) { background: #e2e2e2; }
     .filter-pill.is-selected { background: #fadd39; }
-    .filter-close-btn { align-self: flex-end; }
-
-    @keyframes filterSlideUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .filter-row.open .filter-pill,
-    .filter-row.open .filter-close-btn {
-      animation: filterSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
-      animation-delay: calc(var(--i, 0) * 60ms);
-    }
-    @keyframes filterSlideDown {
-      from { opacity: 1; transform: translateY(0); }
-      to   { opacity: 0; transform: translateY(40px); }
-    }
-    .filter-row.is-closing .filter-pill,
-    .filter-row.is-closing .filter-close-btn {
-      animation: filterSlideDown 0.4s cubic-bezier(0.4, 0, 0.8, 0.2) forwards;
-      animation-delay: calc((7 - var(--i, 0)) * 50ms);
-    }
-    @keyframes filterLabelOut {
-      from { opacity: 1; transform: translateY(0); }
-      to   { opacity: 0; transform: translateY(-20px); }
-    }
-    @keyframes filterLabelIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .filter-view--closed.is-exiting  { animation: filterLabelOut 0.3s ease forwards; }
-    .filter-view--closed.is-entering { animation: filterLabelIn 0.3s ease; }
 
     /* ── AWARD LIST — sections 12px apart, each: text · 6px · 2px rule ── */
     .award-list {
@@ -277,26 +261,30 @@
     <div class="s-awards__rule"></div>
 
     <div class="filter-row" id="filterRow">
-      <div class="filter-view--closed">
-        <p class="filter-label">Filter Awards</p>
-        <button class="icon-btn" id="filterOpenBtn" aria-label="Open filter">
-          <img src="images/mobile/filter-icon.svg" alt="">
-        </button>
-      </div>
-      <div class="filter-view--open" aria-hidden="true">
-        <div class="filter-pills">
-          <button class="filter-pill is-selected" type="button" style="--i:0" data-filter="all">All</button>
-          <button class="filter-pill" type="button" style="--i:1" data-filter="won">Won</button>
-          <button class="filter-pill" type="button" style="--i:2" data-filter="shortlisted">Shortlisted</button>
-          <button class="filter-pill" type="button" style="--i:3" data-filter="1990s">1990s</button>
-          <button class="filter-pill" type="button" style="--i:4" data-filter="2000s">2000s</button>
-          <button class="filter-pill" type="button" style="--i:5" data-filter="2010s">2010s</button>
-          <button class="filter-pill" type="button" style="--i:6" data-filter="2020s">2020s</button>
+      <div class="filter-pane filter-pane--closed"><div>
+        <div class="filter-view--closed">
+          <p class="filter-label">Filter Awards</p>
+          <button class="icon-btn" id="filterOpenBtn" aria-label="Open filter" aria-expanded="false">
+            <img src="images/mobile/filter-icon.svg" alt="">
+          </button>
         </div>
-        <button class="icon-btn filter-close-btn" id="filterCloseBtn" style="--i:7" aria-label="Close filter">
-          <img src="images/mobile/filter-up-arrow.svg" alt="">
-        </button>
-      </div>
+      </div></div>
+      <div class="filter-pane filter-pane--open" aria-hidden="true" inert><div>
+        <div class="filter-view--open">
+          <div class="filter-pills">
+            <button class="filter-pill is-selected" type="button" data-filter="all">All</button>
+            <button class="filter-pill" type="button" data-filter="won">Won</button>
+            <button class="filter-pill" type="button" data-filter="shortlisted">Shortlisted</button>
+            <button class="filter-pill" type="button" data-filter="1990s">1990s</button>
+            <button class="filter-pill" type="button" data-filter="2000s">2000s</button>
+            <button class="filter-pill" type="button" data-filter="2010s">2010s</button>
+            <button class="filter-pill" type="button" data-filter="2020s">2020s</button>
+          </div>
+          <button class="icon-btn filter-close-btn" id="filterCloseBtn" aria-label="Close filter">
+            <img src="images/mobile/filter-up-arrow.svg" alt="">
+          </button>
+        </div>
+      </div></div>
     </div>
 
     <div class="s-awards__rule"></div>
@@ -719,36 +707,27 @@
     const closeViaRive = () => (window.CVTANav ? window.CVTANav.close() : closeDrawer());
     overlay.addEventListener('click', closeViaRive);
 
-    // Filter open/close — shut by default; icon reveals pills with staggered slide-up.
+    // Filter open/close — shut by default; the panes expand/collapse smoothly.
     const filterRow = document.getElementById('filterRow');
-    const filterViewOpen = filterRow.querySelector('.filter-view--open');
-    const filterViewClosed = filterRow.querySelector('.filter-view--closed');
+    const paneOpen = filterRow.querySelector('.filter-pane--open');
+    const paneClosed = filterRow.querySelector('.filter-pane--closed');
+    const filterOpenBtn = document.getElementById('filterOpenBtn');
+    function setFilterOpen(open) {
+      filterRow.classList.toggle('open', open);
+      paneOpen.inert = !open;   paneOpen.setAttribute('aria-hidden', String(!open));
+      paneClosed.inert = open;  paneClosed.setAttribute('aria-hidden', String(open));
+      filterOpenBtn.setAttribute('aria-expanded', String(open));
+    }
+    filterOpenBtn.addEventListener('click', () => setFilterOpen(true));
+    document.getElementById('filterCloseBtn').addEventListener('click', () => setFilterOpen(false));
 
-    document.getElementById('filterOpenBtn').addEventListener('click', () => {
-      if (filterRow.classList.contains('open')) return;
-      filterViewClosed.classList.add('is-exiting');
-      setTimeout(() => {
-        filterRow.classList.add('open');
-        filterViewClosed.classList.remove('is-exiting');
-        filterViewOpen.removeAttribute('aria-hidden');
-        filterViewClosed.setAttribute('aria-hidden', 'true');
-      }, 300);
-    });
-    document.getElementById('filterCloseBtn').addEventListener('click', () => {
-      if (filterRow.classList.contains('is-closing')) return;
-      filterRow.classList.add('is-closing');
-      setTimeout(() => {
-        filterRow.classList.remove('open', 'is-closing');
-        filterViewOpen.setAttribute('aria-hidden', 'true');
-        filterViewClosed.removeAttribute('aria-hidden');
-        filterViewClosed.classList.add('is-entering');
-        setTimeout(() => filterViewClosed.classList.remove('is-entering'), 300);
-      }, 750);
-    });
-
-    // Filter pills — single selection; Won/Shortlisted match status, decades match years.
+    // Filter pills — single selection; Won/Shortlisted match status, decades
+    // match years. Rows leaving / joining the list collapse / expand with the
+    // same motion as the award descriptions.
     const awards = [...document.querySelectorAll('.award')];
     const awardEmpty = document.getElementById('awardEmpty');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)', LIST_GAP = 12;
     function matches(award, filter) {
       if (filter === 'all') return true;
       if (/^\d{4}s$/.test(filter)) {
@@ -757,12 +736,40 @@
       }
       return award.dataset.status.split(' ').includes(filter);
     }
+    function setShown(el, show) {
+      const shownNow = !el.hidden && !el._hideTimer;   // mid-collapse counts as hidden
+      if (show === shownNow) return;
+      clearTimeout(el._hideTimer);
+      el._hideTimer = 0;
+      el.getAnimations().forEach(an => an.cancel());
+      if (reduceMotion.matches) { el.hidden = !show; return; }
+      el.style.overflow = 'hidden';
+      if (show) {
+        el.hidden = false;
+        const h = el.offsetHeight;
+        el.animate([{ height: '0px', opacity: 0, marginBottom: `-${LIST_GAP}px` },
+                    { height: h + 'px', opacity: 1, marginBottom: '0px' }],
+                   { duration: 500, easing: EASE })
+          .onfinish = () => { el.style.overflow = ''; };
+      } else {
+        const h = el.offsetHeight;
+        el.animate([{ height: h + 'px', opacity: 1, marginBottom: '0px' },
+                    { height: '0px', opacity: 0, marginBottom: `-${LIST_GAP}px` }],
+                   { duration: 400, easing: EASE, fill: 'forwards' });
+        // End state on a timer so it lands even if the tab is throttled.
+        el._hideTimer = setTimeout(() => {
+          el._hideTimer = 0;
+          el.hidden = true; el.style.overflow = '';
+          el.getAnimations().forEach(an => an.cancel());
+        }, 400);
+      }
+    }
     document.querySelectorAll('.filter-pill').forEach(pill => {
       pill.addEventListener('click', () => {
         document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('is-selected'));
         pill.classList.add('is-selected');
         let shown = 0;
-        awards.forEach(a => { a.hidden = !matches(a, pill.dataset.filter); if (!a.hidden) shown++; });
+        awards.forEach(a => { const ok = matches(a, pill.dataset.filter); setShown(a, ok); if (ok) shown++; });
         awardEmpty.hidden = shown > 0;
       });
     });
