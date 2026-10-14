@@ -589,6 +589,21 @@
         width: 100%;
       }
     }
+
+    /* ── PAGE COLOUR (scroll colour wash, à la studio-gaufrettes.fr) ──
+       One fixed layer behind the page holds the current colour; sections
+       are transparent and each declares its colour in data-color. As a
+       section crosses the middle of the screen the layer fades to it. */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-color: var(--page-colour, #4499d2);
+      transition: background-color 0.35s ease-out;
+      pointer-events: none;
+    }
+    section[data-color]:not(.s-hero):not(.m-hero) { background-color: transparent !important; }
   </style>
   <link rel="stylesheet" href="menu.css?v=14">
 
@@ -655,7 +670,7 @@
   <main>
 
     <!-- HERO -->
-    <section class="s-hero" id="hero">
+    <section class="s-hero" id="hero" data-color="#4499d2">
       <!-- 67px header row — spacer matching Figma's arrow header height -->
       <div class="hero-header"></div>
       <div class="hero-cvta">
@@ -671,7 +686,7 @@
     </section>
 
     <!-- INTRO / TAGLINE -->
-    <section class="s-intro reveal" id="intro">
+    <section class="s-intro reveal" id="intro" data-color="#fff">
 
       <!-- Carousel 2 — top fan, horizontally mirrored -->
       <div class="carousel-wrap carousel-wrap--flip" aria-hidden="true">
@@ -698,7 +713,7 @@
     </section>
 
     <!-- FEATURED PROJECTS -->
-    <section class="s-projects reveal" id="projects">
+    <section class="s-projects reveal" id="projects" data-color="#d0481b">
       <div class="s-projects__main">
         <h2 class="s-projects__heading">Featured Projects</h2>
         <div class="project-grid">
@@ -760,7 +775,7 @@
     </section>
 
     <!-- AWARDS -->
-    <section class="s-awards reveal" id="awards">
+    <section class="s-awards reveal" id="awards" data-color="#fff">
       <div class="s-awards__main">
         <h2 class="s-awards__heading">Awards</h2>
         <div class="award-list">
@@ -815,7 +830,7 @@
     </section>
 
     <!-- STUDIO -->
-    <section class="s-studio reveal" id="studio">
+    <section class="s-studio reveal" id="studio" data-color="#d0481b">
       <div class="s-studio__content">
         <h2 class="s-studio__heading">Studio</h2>
         <div class="s-studio__photo-box">
@@ -829,7 +844,7 @@
     </section>
 
     <!-- CONTACT -->
-    <section class="s-contact reveal" id="contact">
+    <section class="s-contact reveal" id="contact" data-color="#000">
       <h2 class="s-contact__heading">Contact us</h2>
       <div class="s-contact__divider"></div>
       <div class="s-contact__body">
@@ -886,6 +901,22 @@
     overlay.addEventListener('click', closeViaRive);
     document.querySelectorAll('.nav-link, .m-nav-link').forEach(l => l.addEventListener('click', closeViaRive));
 
+    // PAGE COLOUR — fade the fixed colour layer to the section in the middle
+    // of the screen (only sections that are actually rendered at this width).
+    const colourSections = [...document.querySelectorAll('section[data-color]')];
+    function syncPageColourWash() {
+      const mid = window.innerHeight / 2;
+      const current = colourSections.find(sec => {
+        if (!sec.offsetParent && getComputedStyle(sec).position !== 'fixed') return false;
+        const r = sec.getBoundingClientRect();
+        return r.height > 0 && r.top <= mid && r.bottom > mid;
+      });
+      if (current) document.body.style.setProperty('--page-colour', current.dataset.color);
+    }
+    syncPageColourWash();
+    window.addEventListener('scroll', syncPageColourWash, { passive: true });
+    window.addEventListener('resize', syncPageColourWash);
+
     // Mobile page colour behind Safari's bars: sky over the hero, black after.
     const mHero = document.querySelector('.m-hero');
     const themeMeta = document.querySelector('meta[name="theme-color"]');
@@ -911,7 +942,7 @@
        the Figma 'Flow_V1' (node 1453-655). Hidden on desktop. -->
   <div class="mobile-view">
 
-    <section class="m-screen m-hero">
+    <section class="m-screen m-hero" data-color="#4499d2">
       <img decoding="async" class="m-hero__bg" src="images/web/mobile/hero-bg.webp" alt="">
       <header class="m-hero__header">
         <button class="m-hero__nav" aria-label="Menu">
@@ -924,7 +955,7 @@
       <span class="m-hero__logo" role="img" aria-label="CVTA"></span>
     </section>
 
-    <section class="m-screen m-desc">
+    <section class="m-screen m-desc" data-color="#fff">
       <div class="m-carousel" aria-hidden="true">
         <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--1" src="images/web/mobile/img-161.webp" alt="">
         <img loading="lazy" decoding="async" class="m-carousel__img m-carousel__img--2" src="images/web/mobile/img-160.webp" alt="">
@@ -944,7 +975,7 @@
       </div>
     </section>
 
-    <section class="m-screen m-featured">
+    <section class="m-screen m-featured" data-color="#d0481b">
       <h2 class="m-featured__title">Featured<br>Projects</h2>
       <div class="m-proj-list">
         <article class="m-proj">
@@ -994,7 +1025,7 @@
       </a>
     </section>
 
-    <section class="m-screen m-awards">
+    <section class="m-screen m-awards" data-color="#fff">
       <h2 class="m-awards__title">Awards</h2>
       <div class="m-award-list">
         <article class="m-award">
@@ -1046,7 +1077,7 @@
       </a>
     </section>
 
-    <section class="m-screen m-studio">
+    <section class="m-screen m-studio" data-color="#d0481b">
       <h2 class="m-studio__title">Studio</h2>
       <img loading="lazy" decoding="async" class="m-studio__photo" src="images/web/mobile/studio-team.webp" alt="CVTA Studio team">
       <a class="m-link" href="studio.html">
@@ -1055,7 +1086,7 @@
       </a>
     </section>
 
-    <section class="m-screen m-contact">
+    <section class="m-screen m-contact" data-color="#000">
       <div class="m-contact__title-block">
         <h2 class="m-contact__title">Contact us</h2>
         <div class="m-contact__rule"></div>
