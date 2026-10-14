@@ -216,7 +216,9 @@
       grid-template-columns: 1fr 1fr;
       gap: 24px;
     }
-    .project-card { display: flex; flex-direction: column; gap: 6px; }
+    .project-card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: #000; }
+    .project-card__img { transition: opacity 0.3s ease; }
+    .project-card:hover .project-card__img { opacity: 0.85; }
     .project-card__img { width: 100%; height: var(--project-card-img-h); object-fit: cover; display: block; }
     .project-card__info { display: flex; flex-direction: column; gap: 4px; }
     .project-card__name { font-size: var(--project-name-size); letter-spacing: 1.08px; color: #000; line-height: 1.1; }
@@ -472,6 +474,7 @@
       }
       .m-proj-list { width: 100%; display: flex; flex-direction: column; gap: 12px; }
       .m-proj      { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+      a.m-proj { display: block; text-decoration: none; color: inherit; }
       .m-proj__row { display: flex; gap: 6px; align-items: stretch; width: 100%; }
       .m-proj__text {
         flex: 1 1 0; min-width: 0;
@@ -713,53 +716,53 @@
         <h2 class="s-projects__heading">Featured Projects</h2>
         <div class="project-grid">
 
-          <div class="project-card">
+          <a class="project-card" href="projects/bellenden-primary-school.html">
             <img class="project-card__img" src="images/web/proj-bellenden.webp" alt="Bellenden Primary School">
             <div class="project-card__info">
-              <p class="project-card__name">Bellenden Primary school</p>
-              <p class="project-card__year">2025</p>
+              <p class="project-card__name">Bellenden Primary School</p>
+              <p class="project-card__year">Education</p>
             </div>
-          </div>
+          </a>
 
-          <div class="project-card">
+          <a class="project-card" href="projects/sir-michael-snyder-building.html">
             <img class="project-card__img" src="images/web/proj-snyder.webp" alt="Sir Michael Snyder Building">
             <div class="project-card__info">
-              <p class="project-card__name">Sir Micheal Snyder Building</p>
+              <p class="project-card__name">Sir Michael Snyder Building</p>
               <p class="project-card__year">2025</p>
             </div>
-          </div>
+          </a>
 
-          <div class="project-card">
+          <a class="project-card" href="projects/central-foundation-girls-school.html">
             <img class="project-card__img" src="images/proj-central.png" alt="Central Foundations Girls School">
             <div class="project-card__info">
-              <p class="project-card__name">Central Foundations Girls School</p>
-              <p class="project-card__year">2025</p>
+              <p class="project-card__name">Central Foundation Girls School</p>
+              <p class="project-card__year">Education</p>
             </div>
-          </div>
+          </a>
 
-          <div class="project-card">
+          <a class="project-card" href="projects/notre-dame-school.html">
             <img class="project-card__img" src="images/web/proj-notredame.webp" alt="Notre Dame School">
             <div class="project-card__info">
               <p class="project-card__name">Notre Dame School</p>
-              <p class="project-card__year">2025</p>
+              <p class="project-card__year">Education</p>
             </div>
-          </div>
+          </a>
 
-          <div class="project-card">
+          <a class="project-card" href="projects/westborough-primary-school.html">
             <img class="project-card__img" src="images/web/proj-westborough.webp" alt="Westborough Primary School">
             <div class="project-card__info">
               <p class="project-card__name">Westborough Primary School</p>
-              <p class="project-card__year">2025</p>
+              <p class="project-card__year">Education</p>
             </div>
-          </div>
+          </a>
 
-          <div class="project-card">
+          <a class="project-card" href="projects/churchill-college.html">
             <img class="project-card__img" src="images/proj-churchill.png" alt="Churchill College">
             <div class="project-card__info">
               <p class="project-card__name">Churchill College</p>
-              <p class="project-card__year">2025</p>
+              <p class="project-card__year">Residential</p>
             </div>
-          </div>
+          </a>
 
         </div>
       </div>
@@ -990,17 +993,17 @@
     <section class="m-screen m-featured" data-color="#d0481b">
       <h2 class="m-featured__title">Featured<br>Projects</h2>
       <div class="m-proj-list">
-        <article class="m-proj">
+        <a class="m-proj" href="projects/bellenden-primary-school.html">
           <div class="m-proj__row">
             <div class="m-proj__text">
-              <p class="m-proj__name">Bellenden Primary school</p>
-              <p class="m-proj__year">2025</p>
+              <p class="m-proj__name">Bellenden Primary School</p>
+              <p class="m-proj__year">Education</p>
             </div>
             <img loading="lazy" decoding="async" class="m-proj__img" src="images/web/mobile/proj-bellenden.webp" alt="Bellenden Primary school">
           </div>
           <div class="m-proj__rule"></div>
-        </article>
-        <article class="m-proj">
+        </a>
+        <a class="m-proj" href="projects/sir-michael-snyder-building.html">
           <div class="m-proj__row">
             <div class="m-proj__text">
               <p class="m-proj__name">Sir Michael Snyder Building</p>
@@ -1009,27 +1012,27 @@
             <img loading="lazy" decoding="async" class="m-proj__img" src="images/web/mobile/proj-snyder.webp" alt="Sir Michael Snyder Building">
           </div>
           <div class="m-proj__rule"></div>
-        </article>
-        <article class="m-proj">
+        </a>
+        <a class="m-proj" href="projects/central-foundation-girls-school.html">
           <div class="m-proj__row">
             <div class="m-proj__text">
               <p class="m-proj__name">Central Foundation Girls School</p>
-              <p class="m-proj__year">2025</p>
+              <p class="m-proj__year">Education</p>
             </div>
             <img loading="lazy" decoding="async" class="m-proj__img" src="images/mobile/proj-central.png" alt="Central Foundation Girls School">
           </div>
           <div class="m-proj__rule"></div>
-        </article>
-        <article class="m-proj">
+        </a>
+        <a class="m-proj" href="projects/notre-dame-school.html">
           <div class="m-proj__row">
             <div class="m-proj__text">
               <p class="m-proj__name">Notre Dame School</p>
-              <p class="m-proj__year">2025</p>
+              <p class="m-proj__year">Education</p>
             </div>
             <img loading="lazy" decoding="async" class="m-proj__img" src="images/web/mobile/proj-notre.webp" alt="Notre Dame School">
           </div>
           <div class="m-proj__rule"></div>
-        </article>
+        </a>
       </div>
       <a class="m-link" href="projects.html">
         <span class="m-link__label">See our case studies</span>

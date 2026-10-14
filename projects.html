@@ -168,8 +168,12 @@
 
     /* Project rows */
     .project-rows { display: flex; flex-direction: column; gap: 24px; width: 100%; }
-    .project-row { display: flex; gap: 24px; align-items: flex-start; width: 100%; }
-    .project-card { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    /* Two-column grid that reflows when the filter hides cards. */
+    .project-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+    .project-card { min-width: 0; display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: #000; }
+    .project-card[hidden], .m-projects-item[hidden] { display: none; }
+    .project-card__img { transition: opacity 0.3s ease; }
+    .project-card:hover .project-card__img { opacity: 0.85; }
     .project-card__img { width: 100%; height: var(--project-card-img-h); object-fit: cover; display: block; }
     .project-card__info { display: flex; flex-direction: column; gap: 4px; }
     .project-card__name { font-family: 'Rag Narrow', Arial, sans-serif; font-size: var(--project-name-size); letter-spacing: 1.08px; color: #000; line-height: 1.1; }
@@ -381,15 +385,18 @@
           <!-- Open view: pills (staggered L→R) + yellow up-arrow -->
           <div class="filter-view filter-view--open" aria-hidden="true">
             <div class="filter-pills">
-              <button class="filter-pill" type="button" data-cat="all">All</button>
-              <button class="filter-pill is-selected" type="button" style="--i:1" data-cat="education">Education</button>
+<!-- PROJECTS:pills -->
+              <button class="filter-pill is-selected" type="button" data-cat="all">All</button>
+              <button class="filter-pill" type="button" style="--i:1" data-cat="education">Education</button>
               <button class="filter-pill" type="button" style="--i:2" data-cat="residential">Residential</button>
-              <button class="filter-pill" type="button" style="--i:3" data-cat="heritage">Public and Civic Heritage</button>
-              <button class="filter-pill" type="button" style="--i:4" data-cat="worship">Places of Worship</button>
-              <button class="filter-pill" type="button" style="--i:5" data-cat="exhibition">Exhibition Design</button>
-              <button class="filter-pill" type="button" style="--i:6" data-cat="masterplan">Masterplanning</button>
-              <button class="filter-pill" type="button" style="--i:7" data-cat="landscape">Landscape</button>
-              <button class="filter-pill" type="button" style="--i:8" data-cat="southwark">Projects In Southwark</button>
+              <button class="filter-pill" type="button" style="--i:3" data-cat="public">Public and Civic</button>
+              <button class="filter-pill" type="button" style="--i:4" data-cat="heritage">Heritage</button>
+              <button class="filter-pill" type="button" style="--i:5" data-cat="worship">Places of Worship</button>
+              <button class="filter-pill" type="button" style="--i:6" data-cat="exhibition">Exhibition Design</button>
+              <button class="filter-pill" type="button" style="--i:7" data-cat="masterplanning">Masterplanning</button>
+              <button class="filter-pill" type="button" style="--i:8" data-cat="landscape">Landscape</button>
+              <button class="filter-pill" type="button" style="--i:9" data-cat="southwark">Projects in Southwark</button>
+<!-- /PROJECTS:pills -->
             </div>
             <button class="page-arrow-btn filter-close-btn" id="filterCloseBtn" style="--i:9" aria-label="Close filter">
               <img src="images/filter-arrow.svg" alt="">
@@ -398,68 +405,206 @@
 
         </div>
 
-        <!-- Project grid: 6 rows × 2 projects -->
-        <div class="project-rows">
-          <div class="project-row">
-            <article class="project-card">
-              <img class="project-card__img" src="images/web/proj-bellenden.webp" alt="Bellenden Primary school">
-              <div class="project-card__info"><p class="project-card__name">Bellenden Primary school</p><p class="project-card__year">2025</p></div>
-            </article>
-            <article class="project-card">
-              <img class="project-card__img" src="images/web/proj-snyder.webp" alt="Sir Michael Snyder Building">
-              <div class="project-card__info"><p class="project-card__name">Sir Micheal Snyder Building</p><p class="project-card__year">2025</p></div>
-            </article>
-          </div>
-          <div class="project-row">
-            <article class="project-card">
-              <img class="project-card__img" src="images/proj-central.png" alt="Central Foundations Girls School">
-              <div class="project-card__info"><p class="project-card__name">Central Foundations Girls School</p><p class="project-card__year">2025</p></div>
-            </article>
-            <article class="project-card">
-              <img class="project-card__img" src="images/web/proj-notredame.webp" alt="Notre Dame School">
-              <div class="project-card__info"><p class="project-card__name">Notre Dame School</p><p class="project-card__year">2025</p></div>
-            </article>
-          </div>
-          <div class="project-row">
-            <article class="project-card">
-              <img class="project-card__img" src="images/web/proj-westborough.webp" alt="Westborough Primary School">
-              <div class="project-card__info"><p class="project-card__name">Westborough Primary School</p><p class="project-card__year">2025</p></div>
-            </article>
-            <article class="project-card">
-              <img class="project-card__img" src="images/proj-churchill.png" alt="Churchill College">
-              <div class="project-card__info"><p class="project-card__name">Churchill College</p><p class="project-card__year">2025</p></div>
-            </article>
-          </div>
-          <div class="project-row">
-            <article class="project-card">
-              <img class="project-card__img" src="images/web/proj-claire.webp" alt="Claire College Cambridge">
-              <div class="project-card__info"><p class="project-card__name">Claire College Cambridge</p><p class="project-card__year">2025</p></div>
-            </article>
-            <article class="project-card">
-              <img class="project-card__img" src="images/web/proj-stchads.webp" alt="St Chad's Student Housing">
-              <div class="project-card__info"><p class="project-card__name">St Chad&rsquo;s Student Housing</p><p class="project-card__year">2025</p></div>
-            </article>
-          </div>
-          <div class="project-row">
-            <article class="project-card">
-              <img class="project-card__img" src="images/web/proj-lloydpark.webp" alt="Lloyd Park Children's Centre">
-              <div class="project-card__info"><p class="project-card__name">Lloyd Park Children&rsquo;s Centre</p><p class="project-card__year">2025</p></div>
-            </article>
-            <article class="project-card">
-              <img class="project-card__img" src="images/web/proj-lyndhurst.webp" alt="Lyndhurst Primary School">
-              <div class="project-card__info"><p class="project-card__name">Lyndhurst Primary School</p><p class="project-card__year">2025</p></div>
-            </article>
-          </div>
-          <div class="project-row">
-            <article class="project-card">
-              <img class="project-card__img" src="images/web/proj-krishna.webp" alt="Krishna Avanti Primary">
-              <div class="project-card__info"><p class="project-card__name">Krishna Avanti Primary</p><p class="project-card__year">2025</p></div>
-            </article>
-            <article class="project-card">
-              <img class="project-card__img" src="images/proj-lilliput.png" alt="Lilliput">
-              <div class="project-card__info"><p class="project-card__name">Lilliput</p><p class="project-card__year">2025</p></div>
-            </article>
-          </div>
+        <!-- Project grid — generated by tools/build_projects.py -->
+        <div class="project-rows" id="projectGrid">
+<!-- PROJECTS:grid -->
+          <a class="project-card" href="projects/sir-michael-snyder-building.html" data-cats="education residential">
+            <img class="project-card__img" src="images/projects/sir-michael-snyder-building/card.webp" alt="Sir Michael Snyder Building" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Sir Michael Snyder Building</p><p class="project-card__year">2025</p></div>
+          </a>
+          <a class="project-card" href="projects/bellenden-primary-school.html" data-cats="education southwark">
+            <img class="project-card__img" src="images/projects/bellenden-primary-school/card.webp" alt="Bellenden Primary School" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Bellenden Primary School</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/central-foundation-girls-school.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/central-foundation-girls-school/card.webp" alt="Central Foundation Girls School" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Central Foundation Girls School</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/notre-dame-school.html" data-cats="education southwark">
+            <img class="project-card__img" src="images/projects/notre-dame-school/card.webp" alt="Notre Dame School" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Notre Dame School</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/westborough-primary-school.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/westborough-primary-school/card.webp" alt="Westborough Primary School" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Westborough Primary School</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/churchill-college.html" data-cats="residential">
+            <img class="project-card__img" src="images/projects/churchill-college/card.webp" alt="Churchill College" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Churchill College</p><p class="project-card__year">Residential</p></div>
+          </a>
+          <a class="project-card" href="projects/charter-school-bermondsey.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/charter-school-bermondsey/card.webp" alt="Charter School Bermondsey" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Charter School Bermondsey</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/st-thomas-the-apostle-library.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/st-thomas-the-apostle-library/card.webp" alt="St Thomas the Apostle College Library" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">St Thomas the Apostle College Library</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/brentwood-preparatory-school.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/brentwood-preparatory-school/card.webp" alt="Brentwood Preparatory School" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Brentwood Preparatory School</p><p class="project-card__year">2020</p></div>
+          </a>
+          <a class="project-card" href="projects/brentwood-school-reception.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/brentwood-school-reception/card.webp" alt="Brentwood School Reception" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Brentwood School Reception</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/brentwood-school-learning-resource-centre.html" data-cats="education heritage">
+            <img class="project-card__img" src="images/projects/brentwood-school-learning-resource-centre/card.webp" alt="Brentwood School Learning Resource Centre" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Brentwood School Learning Resource Centre</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/brentwood-school-sixth-form-centre.html" data-cats="education heritage">
+            <img class="project-card__img" src="images/projects/brentwood-school-sixth-form-centre/card.webp" alt="Brentwood School Sixth Form Centre" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Brentwood School Sixth Form Centre</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/streatham-and-clapham-high-school-phase-one.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/streatham-and-clapham-high-school-phase-one/card.webp" alt="Streatham and Clapham High School: Phase One" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Streatham and Clapham High School: Phase One</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/streatham-and-clapham-high-school-phase-two.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/streatham-and-clapham-high-school-phase-two/card.webp" alt="Streatham and Clapham High School: Phase Two" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Streatham and Clapham High School: Phase Two</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/lyndhurst-primary-school.html" data-cats="education southwark">
+            <img class="project-card__img" src="images/projects/lyndhurst-primary-school/card.webp" alt="Lyndhurst Primary School" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Lyndhurst Primary School</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/sacred-heart-school.html" data-cats="education southwark landscape">
+            <img class="project-card__img" src="images/projects/sacred-heart-school/card.webp" alt="Sacred Heart Roman Catholic School" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Sacred Heart Roman Catholic School</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/krishna-avanti-primary-school-croydon.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/krishna-avanti-primary-school-croydon/card.webp" alt="Krishna Avanti Primary School, Croydon" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Krishna Avanti Primary School, Croydon</p><p class="project-card__year">2008</p></div>
+          </a>
+          <a class="project-card" href="projects/krishna-avanti-primary-school-harrow.html" data-cats="education landscape">
+            <img class="project-card__img" src="images/projects/krishna-avanti-primary-school-harrow/card.webp" alt="Krishna-Avanti Primary School, Harrow" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Krishna-Avanti Primary School, Harrow</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/broadway-school.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/broadway-school/card.webp" alt="Broadway School" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Broadway School</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/westborough-cardboard-building.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/westborough-cardboard-building/card.webp" alt="Westborough Cardboard Building" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Westborough Cardboard Building</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/lloyd-park-childrens-centre.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/lloyd-park-childrens-centre/card.webp" alt="Lloyd Park Children’s Centre" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Lloyd Park Children’s Centre</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/ndna-neighbourhood-nursery.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/ndna-neighbourhood-nursery/card.webp" alt="NDNA Neighbourhood Nursery" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">NDNA Neighbourhood Nursery</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/village-neighbourhood-nursery.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/village-neighbourhood-nursery/card.webp" alt="Village Neighbourhood Nursery" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Village Neighbourhood Nursery</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/lilliput.html" data-cats="education">
+            <img class="project-card__img" src="images/projects/lilliput/card.webp" alt="Lilliput" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Lilliput</p><p class="project-card__year">Education</p></div>
+          </a>
+          <a class="project-card" href="projects/clare-college-cambridge.html" data-cats="residential heritage">
+            <img class="project-card__img" src="images/projects/clare-college-cambridge/card.webp" alt="Clare College, Cambridge" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Clare College, Cambridge</p><p class="project-card__year">Residential</p></div>
+          </a>
+          <a class="project-card" href="projects/st-chads-student-housing.html" data-cats="residential">
+            <img class="project-card__img" src="images/projects/st-chads-student-housing/card.webp" alt="St Chad’s Student Housing" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">St Chad’s Student Housing</p><p class="project-card__year">2023</p></div>
+          </a>
+          <a class="project-card" href="projects/grove-lane.html" data-cats="residential southwark">
+            <img class="project-card__img" src="images/projects/grove-lane/card.webp" alt="Grove Lane" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Grove Lane</p><p class="project-card__year">Residential</p></div>
+          </a>
+          <a class="project-card" href="projects/north-west-cambridge.html" data-cats="residential landscape">
+            <img class="project-card__img" src="images/projects/north-west-cambridge/card.webp" alt="North West Cambridge" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">North West Cambridge</p><p class="project-card__year">Residential</p></div>
+          </a>
+          <a class="project-card" href="projects/takaungu-creek.html" data-cats="residential">
+            <img class="project-card__img" src="images/projects/takaungu-creek/card.webp" alt="Takaungu Creek" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Takaungu Creek</p><p class="project-card__year">Residential</p></div>
+          </a>
+          <a class="project-card" href="projects/leigh-on-sea.html" data-cats="residential">
+            <img class="project-card__img" src="images/projects/leigh-on-sea/card.webp" alt="Leigh-on-Sea" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Leigh-on-Sea</p><p class="project-card__year">Residential</p></div>
+          </a>
+          <a class="project-card" href="projects/cite-radieuse.html" data-cats="residential heritage">
+            <img class="project-card__img" src="images/projects/cite-radieuse/card.webp" alt="Cité Radieuse" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Cité Radieuse</p><p class="project-card__year">Residential</p></div>
+          </a>
+          <a class="project-card" href="projects/bhaktivedanta-manor.html" data-cats="public heritage worship masterplanning">
+            <img class="project-card__img" src="images/projects/bhaktivedanta-manor/card.webp" alt="Bhaktivedanta Manor" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Bhaktivedanta Manor</p><p class="project-card__year">Public and Civic</p></div>
+          </a>
+          <a class="project-card" href="projects/royal-london-hospital.html" data-cats="public">
+            <img class="project-card__img" src="images/projects/royal-london-hospital/card.webp" alt="Royal London Hospital" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Royal London Hospital</p><p class="project-card__year">Public and Civic</p></div>
+          </a>
+          <a class="project-card" href="projects/all-saints-church.html" data-cats="public heritage">
+            <img class="project-card__img" src="images/projects/all-saints-church/card.webp" alt="All Saints Church" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">All Saints Church</p><p class="project-card__year">Public and Civic</p></div>
+          </a>
+          <a class="project-card" href="projects/prittlewell-priory-museum.html" data-cats="public heritage">
+            <img class="project-card__img" src="images/projects/prittlewell-priory-museum/card.webp" alt="Prittlewell Priory Museum" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Prittlewell Priory Museum</p><p class="project-card__year">Public and Civic</p></div>
+          </a>
+          <a class="project-card" href="projects/bellingham-gateway.html" data-cats="public">
+            <img class="project-card__img" src="images/projects/bellingham-gateway/card.webp" alt="Bellingham Gateway" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Bellingham Gateway</p><p class="project-card__year">Public and Civic</p></div>
+          </a>
+          <a class="project-card" href="projects/all-souls-church.html" data-cats="heritage worship">
+            <img class="project-card__img" src="images/projects/all-souls-church/card.webp" alt="All Souls Church" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">All Souls Church</p><p class="project-card__year">Heritage</p></div>
+          </a>
+          <a class="project-card" href="projects/st-martins-church.html" data-cats="heritage worship">
+            <img class="project-card__img" src="images/projects/st-martins-church/card.webp" alt="St Martin’s Church" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">St Martin’s Church</p><p class="project-card__year">Heritage</p></div>
+          </a>
+          <a class="project-card" href="projects/edward-the-confessor.html" data-cats="heritage worship">
+            <img class="project-card__img" src="images/projects/edward-the-confessor/card.webp" alt="Edward the Confessor" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Edward the Confessor</p><p class="project-card__year">Heritage</p></div>
+          </a>
+          <a class="project-card" href="projects/kensal-house.html" data-cats="heritage">
+            <img class="project-card__img" src="images/projects/kensal-house/card.webp" alt="Kensal House" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Kensal House</p><p class="project-card__year">Heritage</p></div>
+          </a>
+          <a class="project-card" href="projects/winkleigh-airfield.html" data-cats="masterplanning">
+            <img class="project-card__img" src="images/projects/winkleigh-airfield/card.webp" alt="Winkleigh Airfield" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Winkleigh Airfield</p><p class="project-card__year">Masterplanning</p></div>
+          </a>
+          <a class="project-card" href="projects/rude-britannia.html" data-cats="exhibition">
+            <img class="project-card__img" src="images/projects/rude-britannia/card.webp" alt="Rude Britannia" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Rude Britannia</p><p class="project-card__year">Exhibition Design</p></div>
+          </a>
+          <a class="project-card" href="projects/gothic-nightmares.html" data-cats="exhibition">
+            <img class="project-card__img" src="images/projects/gothic-nightmares/card.webp" alt="Gothic Nightmares" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Gothic Nightmares</p><p class="project-card__year">Exhibition Design</p></div>
+          </a>
+          <a class="project-card" href="projects/james-gillray.html" data-cats="exhibition">
+            <img class="project-card__img" src="images/projects/james-gillray/card.webp" alt="James Gillray: The Art of Caricature" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">James Gillray: The Art of Caricature</p><p class="project-card__year">Exhibition Design</p></div>
+          </a>
+          <a class="project-card" href="projects/thomas-girtin.html" data-cats="exhibition">
+            <img class="project-card__img" src="images/projects/thomas-girtin/card.webp" alt="Thomas Girtin and the Art of Watercolours" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Thomas Girtin and the Art of Watercolours</p><p class="project-card__year">Exhibition Design</p></div>
+          </a>
+          <a class="project-card" href="projects/delaroche-and-lady-jane-grey.html" data-cats="exhibition">
+            <img class="project-card__img" src="images/projects/delaroche-and-lady-jane-grey/card.webp" alt="Delaroche and Lady Jane Grey" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Delaroche and Lady Jane Grey</p><p class="project-card__year">Exhibition Design</p></div>
+          </a>
+          <a class="project-card" href="projects/the-magic-pencil.html" data-cats="exhibition">
+            <img class="project-card__img" src="images/projects/the-magic-pencil/card.webp" alt="The Magic Pencil for the British Council" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">The Magic Pencil for the British Council</p><p class="project-card__year">Exhibition Design</p></div>
+          </a>
+          <a class="project-card" href="projects/secret-tate-habi-tate.html" data-cats="exhibition">
+            <img class="project-card__img" src="images/projects/secret-tate-habi-tate/card.webp" alt="Secret Tate: Habi Tate" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Secret Tate: Habi Tate</p><p class="project-card__year">Exhibition Design</p></div>
+          </a>
+          <a class="project-card" href="projects/southwark-design-services-framework.html" data-cats="southwark">
+            <img class="project-card__img" src="images/projects/southwark-design-services-framework/card.webp" alt="Southwark Architect Design Services Framework" loading="lazy" decoding="async">
+            <div class="project-card__info"><p class="project-card__name">Southwark Architect Design Services Framework</p><p class="project-card__year">Projects in Southwark</p></div>
+          </a>
+<!-- /PROJECTS:grid -->
         </div>
 
       </div>
@@ -513,12 +658,16 @@
       }, 850);
     });
 
-    // Filter pills — single selection, swap yellow highlight
-    document.querySelectorAll('.filter-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('is-selected'));
-        pill.classList.add('is-selected');
+    // Filter pills — single selection (kept in sync between the desktop and
+    // mobile filters); shows only projects tagged with the chosen category.
+    function applyProjectFilter(cat) {
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('is-selected', p.dataset.cat === cat));
+      document.querySelectorAll('.project-card[data-cats], .m-projects-item[data-cats]').forEach(el => {
+        el.hidden = cat !== 'all' && !el.dataset.cats.split(' ').includes(cat);
       });
+    }
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => applyProjectFilter(pill.dataset.cat));
     });
 
     // Menu links (desktop + mobile) close via CVTANav so Rive VM stays in sync.
@@ -585,15 +734,18 @@
       </div>
       <div class="filter-view filter-view--open" aria-hidden="true">
         <div class="filter-pills">
-          <button class="filter-pill" type="button" data-cat="all">All</button>
-          <button class="filter-pill is-selected" type="button" style="--i:1" data-cat="education">Education</button>
+<!-- PROJECTS:m-pills -->
+          <button class="filter-pill is-selected" type="button" data-cat="all">All</button>
+          <button class="filter-pill" type="button" style="--i:1" data-cat="education">Education</button>
           <button class="filter-pill" type="button" style="--i:2" data-cat="residential">Residential</button>
-          <button class="filter-pill" type="button" style="--i:3" data-cat="heritage">Public and Civic Heritage</button>
-          <button class="filter-pill" type="button" style="--i:4" data-cat="worship">Places of Worship</button>
-          <button class="filter-pill" type="button" style="--i:5" data-cat="exhibition">Exhibition Design</button>
-          <button class="filter-pill" type="button" style="--i:6" data-cat="masterplan">Masterplanning</button>
-          <button class="filter-pill" type="button" style="--i:7" data-cat="landscape">Landscape</button>
-          <button class="filter-pill" type="button" style="--i:8" data-cat="southwark">Projects In Southwark</button>
+          <button class="filter-pill" type="button" style="--i:3" data-cat="public">Public and Civic</button>
+          <button class="filter-pill" type="button" style="--i:4" data-cat="heritage">Heritage</button>
+          <button class="filter-pill" type="button" style="--i:5" data-cat="worship">Places of Worship</button>
+          <button class="filter-pill" type="button" style="--i:6" data-cat="exhibition">Exhibition Design</button>
+          <button class="filter-pill" type="button" style="--i:7" data-cat="masterplanning">Masterplanning</button>
+          <button class="filter-pill" type="button" style="--i:8" data-cat="landscape">Landscape</button>
+          <button class="filter-pill" type="button" style="--i:9" data-cat="southwark">Projects in Southwark</button>
+<!-- /PROJECTS:m-pills -->
         </div>
         <button class="page-arrow-btn filter-close-btn" id="mFilterCloseBtn" style="--i:9" aria-label="Close filter">
           <img src="images/filter-arrow.svg" alt="">
@@ -603,105 +755,352 @@
 
     <div class="m-projects-top-rule"></div>
 
-    <ul class="m-projects-list">
-      <li class="m-projects-item"><a href="snyder.html">
-        <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Bellenden Primary school</span>
-          <span class="m-projects-item__year">2025</span>
-        </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-bellenden.webp" alt="">
-      </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
+    <ul class="m-projects-list" id="projectList">
+<!-- PROJECTS:list -->
+      <li class="m-projects-item" data-cats="education residential"><a href="projects/sir-michael-snyder-building.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Sir Michael Snyder Building</span>
           <span class="m-projects-item__year">2025</span>
         </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-snyder.webp" alt="">
+        <img class="m-projects-item__img" src="images/projects/sir-michael-snyder-building/thumb.webp" alt="" loading="lazy" decoding="async">
       </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
+      <li class="m-projects-item" data-cats="education southwark"><a href="projects/bellenden-primary-school.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Bellenden Primary School</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/bellenden-primary-school/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/central-foundation-girls-school.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Central Foundation Girls School</span>
-          <span class="m-projects-item__year">2025</span>
+          <span class="m-projects-item__year">Education</span>
         </div>
-        <img class="m-projects-item__img" src="images/mobile/proj-central.png" alt="">
+        <img class="m-projects-item__img" src="images/projects/central-foundation-girls-school/thumb.webp" alt="" loading="lazy" decoding="async">
       </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
+      <li class="m-projects-item" data-cats="education southwark"><a href="projects/notre-dame-school.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Notre Dame School</span>
-          <span class="m-projects-item__year">2025</span>
+          <span class="m-projects-item__year">Education</span>
         </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-notre.webp" alt="">
+        <img class="m-projects-item__img" src="images/projects/notre-dame-school/thumb.webp" alt="" loading="lazy" decoding="async">
       </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
+      <li class="m-projects-item" data-cats="education"><a href="projects/westborough-primary-school.html">
         <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Lyndhurst Primary School</span>
-          <span class="m-projects-item__year">2025</span>
+          <span class="m-projects-item__name">Westborough Primary School</span>
+          <span class="m-projects-item__year">Education</span>
         </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-lyndhurst.webp" alt="">
+        <img class="m-projects-item__img" src="images/projects/westborough-primary-school/thumb.webp" alt="" loading="lazy" decoding="async">
       </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
+      <li class="m-projects-item" data-cats="residential"><a href="projects/churchill-college.html">
         <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Krishna Avanti Primary School</span>
-          <span class="m-projects-item__year">2025</span>
+          <span class="m-projects-item__name">Churchill College</span>
+          <span class="m-projects-item__year">Residential</span>
         </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-krishna.webp" alt="">
+        <img class="m-projects-item__img" src="images/projects/churchill-college/thumb.webp" alt="" loading="lazy" decoding="async">
       </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
+      <li class="m-projects-item" data-cats="education"><a href="projects/charter-school-bermondsey.html">
         <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Lloyd Park Childrens Centre</span>
-          <span class="m-projects-item__year">2025</span>
+          <span class="m-projects-item__name">Charter School Bermondsey</span>
+          <span class="m-projects-item__year">Education</span>
         </div>
-        <img class="m-projects-item__img" src="images/web/proj-lloydpark.webp" alt="">
+        <img class="m-projects-item__img" src="images/projects/charter-school-bermondsey/thumb.webp" alt="" loading="lazy" decoding="async">
       </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
+      <li class="m-projects-item" data-cats="education"><a href="projects/st-thomas-the-apostle-library.html">
         <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Sacred Heart Roman Catholic</span>
-          <span class="m-projects-item__year">2025</span>
+          <span class="m-projects-item__name">St Thomas the Apostle College Library</span>
+          <span class="m-projects-item__year">Education</span>
         </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-sacred-heart.webp" alt="">
+        <img class="m-projects-item__img" src="images/projects/st-thomas-the-apostle-library/thumb.webp" alt="" loading="lazy" decoding="async">
       </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
+      <li class="m-projects-item" data-cats="education"><a href="projects/brentwood-preparatory-school.html">
         <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Westborough Cardboard Building</span>
-          <span class="m-projects-item__year">2025</span>
+          <span class="m-projects-item__name">Brentwood Preparatory School</span>
+          <span class="m-projects-item__year">2020</span>
         </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-westborough.webp" alt="">
+        <img class="m-projects-item__img" src="images/projects/brentwood-preparatory-school/thumb.webp" alt="" loading="lazy" decoding="async">
       </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
-        <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Streatham and Clapham High School</span>
-          <span class="m-projects-item__year">2025</span>
-        </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-streatham.webp" alt="">
-      </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
-        <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Brentwood Prepatory School</span>
-          <span class="m-projects-item__year">2025</span>
-        </div>
-        <img class="m-projects-item__img" src="images/edu-brentwood-prep.jpg" alt="">
-      </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
-        <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Lilliput</span>
-          <span class="m-projects-item__year">2025</span>
-        </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-lilliput.webp" alt="">
-      </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
-        <div class="m-projects-item__text">
-          <span class="m-projects-item__name">Broadway School</span>
-          <span class="m-projects-item__year">2025</span>
-        </div>
-        <img class="m-projects-item__img" src="images/web/mobile/proj-broadway.webp" alt="">
-      </a></li>
-      <li class="m-projects-item"><a href="snyder.html">
+      <li class="m-projects-item" data-cats="education"><a href="projects/brentwood-school-reception.html">
         <div class="m-projects-item__text">
           <span class="m-projects-item__name">Brentwood School Reception</span>
-          <span class="m-projects-item__year">2025</span>
+          <span class="m-projects-item__year">Education</span>
         </div>
-        <img class="m-projects-item__img" src="images/web/project-4.webp" alt="">
+        <img class="m-projects-item__img" src="images/projects/brentwood-school-reception/thumb.webp" alt="" loading="lazy" decoding="async">
       </a></li>
+      <li class="m-projects-item" data-cats="education heritage"><a href="projects/brentwood-school-learning-resource-centre.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Brentwood School Learning Resource Centre</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/brentwood-school-learning-resource-centre/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education heritage"><a href="projects/brentwood-school-sixth-form-centre.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Brentwood School Sixth Form Centre</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/brentwood-school-sixth-form-centre/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/streatham-and-clapham-high-school-phase-one.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Streatham and Clapham High School: Phase One</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/streatham-and-clapham-high-school-phase-one/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/streatham-and-clapham-high-school-phase-two.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Streatham and Clapham High School: Phase Two</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/streatham-and-clapham-high-school-phase-two/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education southwark"><a href="projects/lyndhurst-primary-school.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Lyndhurst Primary School</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/lyndhurst-primary-school/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education southwark landscape"><a href="projects/sacred-heart-school.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Sacred Heart Roman Catholic School</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/sacred-heart-school/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/krishna-avanti-primary-school-croydon.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Krishna Avanti Primary School, Croydon</span>
+          <span class="m-projects-item__year">2008</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/krishna-avanti-primary-school-croydon/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education landscape"><a href="projects/krishna-avanti-primary-school-harrow.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Krishna-Avanti Primary School, Harrow</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/krishna-avanti-primary-school-harrow/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/broadway-school.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Broadway School</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/broadway-school/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/westborough-cardboard-building.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Westborough Cardboard Building</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/westborough-cardboard-building/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/lloyd-park-childrens-centre.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Lloyd Park Children’s Centre</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/lloyd-park-childrens-centre/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/ndna-neighbourhood-nursery.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">NDNA Neighbourhood Nursery</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/ndna-neighbourhood-nursery/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/village-neighbourhood-nursery.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Village Neighbourhood Nursery</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/village-neighbourhood-nursery/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="education"><a href="projects/lilliput.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Lilliput</span>
+          <span class="m-projects-item__year">Education</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/lilliput/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="residential heritage"><a href="projects/clare-college-cambridge.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Clare College, Cambridge</span>
+          <span class="m-projects-item__year">Residential</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/clare-college-cambridge/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="residential"><a href="projects/st-chads-student-housing.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">St Chad’s Student Housing</span>
+          <span class="m-projects-item__year">2023</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/st-chads-student-housing/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="residential southwark"><a href="projects/grove-lane.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Grove Lane</span>
+          <span class="m-projects-item__year">Residential</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/grove-lane/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="residential landscape"><a href="projects/north-west-cambridge.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">North West Cambridge</span>
+          <span class="m-projects-item__year">Residential</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/north-west-cambridge/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="residential"><a href="projects/takaungu-creek.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Takaungu Creek</span>
+          <span class="m-projects-item__year">Residential</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/takaungu-creek/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="residential"><a href="projects/leigh-on-sea.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Leigh-on-Sea</span>
+          <span class="m-projects-item__year">Residential</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/leigh-on-sea/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="residential heritage"><a href="projects/cite-radieuse.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Cité Radieuse</span>
+          <span class="m-projects-item__year">Residential</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/cite-radieuse/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="public heritage worship masterplanning"><a href="projects/bhaktivedanta-manor.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Bhaktivedanta Manor</span>
+          <span class="m-projects-item__year">Public and Civic</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/bhaktivedanta-manor/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="public"><a href="projects/royal-london-hospital.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Royal London Hospital</span>
+          <span class="m-projects-item__year">Public and Civic</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/royal-london-hospital/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="public heritage"><a href="projects/all-saints-church.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">All Saints Church</span>
+          <span class="m-projects-item__year">Public and Civic</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/all-saints-church/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="public heritage"><a href="projects/prittlewell-priory-museum.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Prittlewell Priory Museum</span>
+          <span class="m-projects-item__year">Public and Civic</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/prittlewell-priory-museum/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="public"><a href="projects/bellingham-gateway.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Bellingham Gateway</span>
+          <span class="m-projects-item__year">Public and Civic</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/bellingham-gateway/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="heritage worship"><a href="projects/all-souls-church.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">All Souls Church</span>
+          <span class="m-projects-item__year">Heritage</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/all-souls-church/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="heritage worship"><a href="projects/st-martins-church.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">St Martin’s Church</span>
+          <span class="m-projects-item__year">Heritage</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/st-martins-church/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="heritage worship"><a href="projects/edward-the-confessor.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Edward the Confessor</span>
+          <span class="m-projects-item__year">Heritage</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/edward-the-confessor/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="heritage"><a href="projects/kensal-house.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Kensal House</span>
+          <span class="m-projects-item__year">Heritage</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/kensal-house/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="masterplanning"><a href="projects/winkleigh-airfield.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Winkleigh Airfield</span>
+          <span class="m-projects-item__year">Masterplanning</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/winkleigh-airfield/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="exhibition"><a href="projects/rude-britannia.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Rude Britannia</span>
+          <span class="m-projects-item__year">Exhibition Design</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/rude-britannia/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="exhibition"><a href="projects/gothic-nightmares.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Gothic Nightmares</span>
+          <span class="m-projects-item__year">Exhibition Design</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/gothic-nightmares/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="exhibition"><a href="projects/james-gillray.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">James Gillray: The Art of Caricature</span>
+          <span class="m-projects-item__year">Exhibition Design</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/james-gillray/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="exhibition"><a href="projects/thomas-girtin.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Thomas Girtin and the Art of Watercolours</span>
+          <span class="m-projects-item__year">Exhibition Design</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/thomas-girtin/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="exhibition"><a href="projects/delaroche-and-lady-jane-grey.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Delaroche and Lady Jane Grey</span>
+          <span class="m-projects-item__year">Exhibition Design</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/delaroche-and-lady-jane-grey/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="exhibition"><a href="projects/the-magic-pencil.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">The Magic Pencil for the British Council</span>
+          <span class="m-projects-item__year">Exhibition Design</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/the-magic-pencil/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="exhibition"><a href="projects/secret-tate-habi-tate.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Secret Tate: Habi Tate</span>
+          <span class="m-projects-item__year">Exhibition Design</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/secret-tate-habi-tate/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+      <li class="m-projects-item" data-cats="southwark"><a href="projects/southwark-design-services-framework.html">
+        <div class="m-projects-item__text">
+          <span class="m-projects-item__name">Southwark Architect Design Services Framework</span>
+          <span class="m-projects-item__year">Projects in Southwark</span>
+        </div>
+        <img class="m-projects-item__img" src="images/projects/southwark-design-services-framework/thumb.webp" alt="" loading="lazy" decoding="async">
+      </a></li>
+<!-- /PROJECTS:list -->
     </ul>
 
     <!-- Mobile nav drawer — same as index.html mobile. -->
