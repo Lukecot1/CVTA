@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff" media="(max-width: 500px)">
+  <meta name="theme-color" content="#4499d2" media="(max-width: 500px)">
   <title>Cottrell Vermeulen Tucker Architecture</title>
   <style>
     @font-face {
@@ -372,6 +372,20 @@
         object-fit: cover;
         z-index: 0;
       }
+      /* Fades the top of the photo into the sky colour Safari paints behind its
+         status bar (the page colour layer is #4499d2 while the hero is in view),
+         so the two meet without a seam. */
+      .m-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100px;
+        z-index: 1; /* above the photo, below the header + CVTA letters (later in DOM) */
+        pointer-events: none;
+        background: linear-gradient(to bottom, #4499d2 0%, rgba(68, 153, 210, 0) 100%);
+      }
       .m-hero__header {
         position: relative;
         z-index: 1;
@@ -585,11 +599,13 @@
       position: fixed;
       inset: 0;
       z-index: -1;
-      background-color: var(--page-colour, #fff);
+      background-color: var(--page-colour, #4499d2);
       transition: background-color 0.8s ease-in-out;
       pointer-events: none;
     }
-    section[data-color]:not(.s-hero):not(.m-hero) { background-color: transparent !important; }
+    /* The intro keeps its own solid white so the hero's sky colour can never
+       show through it while the wash catches up. */
+    section[data-color]:not(.s-hero):not(.m-hero):not(.s-intro):not(.m-desc) { background-color: transparent !important; }
   </style>
   <link rel="stylesheet" href="menu.css?v=22">
   <link rel="stylesheet" href="award-more.css?v=1">
@@ -598,7 +614,7 @@
        but the overlay <div> below is already in the DOM so first paint is covered. -->
   <script defer src="https://unpkg.com/@rive-app/webgl2@2.43.1/rive.js"></script>
   <script defer src="Rive/loader.js?v=2"></script>
-  <script defer src="Rive/menubar.js?v=7"></script>
+  <script defer src="Rive/menubar.js?v=8"></script>
 </head>
 <body>
 
@@ -658,7 +674,7 @@
   <main>
 
     <!-- HERO -->
-    <section class="s-hero" id="hero" data-color="#fff">
+    <section class="s-hero" id="hero" data-color="#4499d2">
       <!-- 67px header row — spacer matching Figma's arrow header height -->
       <div class="hero-header"></div>
       <div class="hero-cvta">
@@ -930,7 +946,7 @@
        the Figma 'Flow_V1' (node 1453-655). Hidden on desktop. -->
   <div class="mobile-view">
 
-    <section class="m-screen m-hero" data-color="#fff">
+    <section class="m-screen m-hero" data-color="#4499d2">
       <img decoding="async" class="m-hero__bg" src="images/web/mobile/hero-bg.webp" alt="">
       <header class="m-hero__header">
         <button class="m-hero__nav" aria-label="Menu">

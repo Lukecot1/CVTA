@@ -111,18 +111,29 @@
     const hero = h.getBoundingClientRect();
     return hero.height > 0 && hero.bottom > restingSlot().top;
   }
+  // iOS Safari resizes its bars while you scroll, which nudges scrollY by a
+  // few px without the user scrolling up — ignore those, and only spring the
+  // arrow back on a deliberate upward scroll (a few px in total).
+  let lastViewH = window.innerHeight;
+  let upTravel = 0;
+  const UP_TRIGGER = 4;
   function onScrollHide() {
     const y = Math.max(0, window.scrollY);   // ignore iOS top bounce
+    const maxY = document.documentElement.scrollHeight - window.innerHeight;
     const dy = y - lastY;
     lastY = y;
-    if (menuOpen || y <= 0 || overHero()) { if (hiddenBy) placeCanvas(0, true); return; }
+    if (window.innerHeight !== lastViewH) { lastViewH = window.innerHeight; return; }
+    if (menuOpen || y <= 0 || overHero()) { upTravel = 0; if (hiddenBy) placeCanvas(0, true); return; }
+    if (y >= maxY - 1) return;                // iOS bottom bounce
     if (dy > 0) {
+      upTravel = 0;
       // Move up with the page until fully off-screen.
       const max = restingSlot().bottom + 8;
       const next = Math.min(max, hiddenBy + dy);
       if (next !== hiddenBy) placeCanvas(next, false);
     } else if (dy < 0 && hiddenBy) {
-      placeCanvas(0, true);
+      upTravel += -dy;
+      if (upTravel >= UP_TRIGGER) { upTravel = 0; placeCanvas(0, true); }
     }
   }
   window.addEventListener('scroll', onScrollHide, { passive: true });
