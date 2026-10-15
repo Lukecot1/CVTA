@@ -486,7 +486,7 @@
       .m-proj__img  { width: 99px; height: 120px; object-fit: cover; flex-shrink: 0; }
       .m-proj__rule { height: 2px; background: #000; width: 100%; }
 
-      /* link button — Figma 1474-1400/1435/1480: tinted pill label + yellow
+      /* link button — Figma 1474-1400/1435/1480: #eaeaea multiply pill label + yellow
          arrow circle 10px to its right, sitting right after the content. */
       .m-link {
         display: flex;
@@ -501,11 +501,11 @@
         line-height: 20px;
         padding: 12px 16px;
         border-radius: 999px;
-        background: var(--m-link-bg, #ececec);
+        background: #eaeaea;
+        mix-blend-mode: multiply;
         color: #000;
         white-space: nowrap;
       }
-      .m-featured, .m-studio { --m-link-bg: #b73f16; }
       .m-link__arrow { width: 40px; height: 40px; flex-shrink: 0; }
 
       /* ── 4 · AWARDS ────────────────────────────────────────
