@@ -666,8 +666,11 @@
         el.hidden = cat !== 'all' && !el.dataset.cats.split(' ').includes(cat);
       });
     }
-    document.querySelectorAll('.filter-pill').forEach(pill => {
-      pill.addEventListener('click', () => applyProjectFilter(pill.dataset.cat));
+    // One delegated listener catches pill taps in both the desktop and the
+    // mobile filter (the mobile list is parsed after this script runs).
+    document.addEventListener('click', (e) => {
+      const pill = e.target.closest('.filter-pill[data-cat]');
+      if (pill) applyProjectFilter(pill.dataset.cat);
     });
 
     // Menu links (desktop + mobile) close via CVTANav so Rive VM stays in sync.
@@ -702,13 +705,6 @@
             mFilterClosed.classList.add('is-entering');
             setTimeout(() => mFilterClosed.classList.remove('is-entering'), 300);
           }, 850);
-        });
-        // Pill single-select (shared with desktop pills, selectAll handles both)
-        mFilterRow.querySelectorAll('.filter-pill').forEach(pill => {
-          pill.addEventListener('click', () => {
-            mFilterRow.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('is-selected'));
-            pill.classList.add('is-selected');
-          });
         });
       }
     });
