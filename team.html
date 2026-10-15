@@ -101,14 +101,16 @@
       display: block;
     }
 
-    .m-nav-drawer { display: none; }
+    /* menu.css (loaded after this) sets display:flex on both drawers — the
+       extra `body` keeps the full-screen mobile menu off desktop. */
+    body .m-nav-drawer { display: none; }
 
     /* ── MOBILE — Figma 1623-792 (393 wide) ────────────────────
        Photo centred on top, then name / role / bio at the 12px side
        padding. One bio is open; the rest show a "See my info" button. */
     @media (max-width: 500px) {
       .overlay, .nav-drawer, #cvta-loader { display: none !important; }
-      .m-nav-drawer { display: flex; }
+      body .m-nav-drawer { display: flex; }
 
       main { padding: calc(76px + env(safe-area-inset-top, 0px)) 12px 48px; }
       .bio {
