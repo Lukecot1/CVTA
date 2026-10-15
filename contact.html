@@ -156,6 +156,10 @@
       .s-contact { padding: 24px 12px; }
       .s-contact__header { padding-top: 46px; } /* Figma mobile: 40px arrow slot + 6 */
     }
+    /* Socials — one 120×48 image (LinkedIn 0–48, Instagram 72–120) with a
+       link laid over each icon. */
+    .socials { position: relative; width: 120px; height: 48px; }
+    .socials__link { position: absolute; top: 0; width: 48px; height: 48px; }
   </style>
   <link rel="stylesheet" href="menu.css?v=22">
 
@@ -219,7 +223,7 @@
     <section class="s-contact__follow">
       <div class="s-contact__rule"></div>
       <p>Follow us</p>
-      <img class="s-contact__socials" src="images/mobile/socials.svg" alt="LinkedIn and Instagram" width="120" height="48">
+      <div class="socials"><img class="s-contact__socials" src="images/mobile/socials.svg" alt="" width="120" height="48"><a class="socials__link" href="https://www.linkedin.com/company/cottrell-vermeulen/home/" target="_blank" rel="noopener" aria-label="CVTA on LinkedIn" style="left: 0;"></a><a class="socials__link" href="https://www.instagram.com/cottverm/" target="_blank" rel="noopener" aria-label="CVTA on Instagram" style="left: 72px;"></a></div>
       <div class="s-contact__rule"></div>
     </section>
 
